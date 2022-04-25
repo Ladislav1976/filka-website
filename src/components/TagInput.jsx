@@ -3,6 +3,7 @@ import style from "./TagInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 //just a component
 function Tag(props) {
@@ -52,16 +53,23 @@ export default function TagInput(props) {
   }
 
   return (
-    <div className={style.searchBox}>
-      <input
-        type="text"
-        className={style.tagInput}
-        placeholder="enter tags"
-        value={searchedTag}
-        onChange={handleChange}
-        onKeyPress={handleKeyPress}
-      />
-      <div className={style.tagList}>{tagListRender}</div>
-    </div>
+    <>
+      <div className={style.searchMain}>
+        <div className={style.searchBox}>
+          <input
+            type="text"
+            className={style.searchInput}
+            placeholder="Napiste nazov jedla"
+            value={searchedTag}
+            onChange={handleChange}
+            onKeyPress={handleKeyPress}
+          />
+          <div className={style.searchButton}>
+            <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon> Hľadať
+          </div>
+        </div>
+        <div className={style.searchList}>{tagListRender}</div>
+      </div>
+    </>
   );
 }

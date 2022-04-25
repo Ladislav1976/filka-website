@@ -19,3 +19,15 @@
   text-shadow: 1px 1px 2px rgb(211, 186, 86), 0 0 1em rgb(157, 255, 0),
     0 0 0.2em rgba(251, 255, 0, 0.837);
 }
+
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.tags {
+  width: 150px;
+  font-family: black, "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: small;
+}

@@ -1,0 +1,51 @@
+body {
+  font-family: black, "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+.times,
+.ks {
+  height: 25px;
+  border: 1px grey dotted;
+  border-radius: 5px;
+}
+
+.times {
+  height: 20px;
+  width: 30px;
+}
+.ingredientInput {
+  width: 200px;
+  height: 20px;
+  border: 1px grey dotted;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 5px;
+}
+.ingredientButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #558113;
+  border: 1px solid;
+  border-color: rgb(233, 229, 229);
+  border-radius: 10px;
+  height: 22px;
+  width: 50px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
+  color: white;
+  font-size: x-small;
+  padding-left: 0px;
+  margin-top: 5px;
+}
+
+.ing,
+.firstline {
+  box-sizing: border-box;
+  font-family: black, "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  color: green;
+  padding: 10px;
+
+  border-bottom: 1px solid grey;
+}

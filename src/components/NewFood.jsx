@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TagInput from "./TagInput";
+import ProcedureInput from "./ProcedureInput";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
 
@@ -256,10 +256,14 @@ export default function NewFood(props) {
           </div>
         </div>
         <div className={style.procedureBox}>
-          <div>Nazov:</div>
+          <div><p>Nazov:</p></div>
           <input className={style.foodname} type="text" />
-          <div>Postup:</div>
-          <textarea className={style.procedure} rows="20" />
+          <div><p>Postup:</p></div>
+          <ProcedureInput
+            addToStepsList={props.addToStepsList}
+            stepsList={props.stepsList}
+            removeFromSStepsList={props.removeFromSStepsList}
+          ></ProcedureInput>
         </div>
       </div>
       <input

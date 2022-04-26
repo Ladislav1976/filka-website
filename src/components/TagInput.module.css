@@ -12,12 +12,12 @@
   border-color: rgb(233, 229, 229);
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  height: 20px;
+  height: 25px;
   width: 200px;
   font-family: rgb(95, 93, 93), "Lucida Sans", "Lucida Sans Regular",
     "Lucida Grande";
   margin-left: 10px;
-  font-size: x-small;
+  font-size: 16px;
   padding-left: 10px;
 }
 .searchButton {
@@ -29,11 +29,11 @@
   border-color: rgb(233, 229, 229);
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  height: 22px;
-  width: 50px;
+  height: 27px;
+  width: 80px;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
   color: white;
-  font-size: x-small;
+  font-size: 14px;
   padding-left: 0px;
 }
 

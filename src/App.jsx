@@ -5,6 +5,25 @@ import NewFood from "./components/NewFood";
 import FoodItemList from "./components/FoodItemList";
 import TagInput from "./components/TagInput";
 
+function Times(props) {
+  return (
+    <>
+      <div className={style.timesIngredient}>{props.times}</div>
+    </>
+  );
+}
+
+function Unit(props) {
+  return (
+    <>
+      <div className={style.unitIngredient}>{props.unit}</div>
+    </>
+  );
+}
+
+function Ingredient(props) {
+  return <div className={style.ingIngredient}>{props.ing}</div>;
+}
 function App() {
   const [data, setData] = useState([
     {
@@ -33,10 +52,31 @@ function App() {
       date: "1 Feb 2018",
     },
   ]);
-
+  const [maxFoodId, setMaxFoodId] = useState(5);
   const [filterTagList, setFilterTagList] = useState(new Set([]));
   const [modalNewFlag, setModalNewFlag] = useState(true);
   const [ingredientList, setIngredientList] = useState(new Set([]));
+  const [stepsList, setStepsList] = useState(new Set([]));
+
+  function handleNewFoodSave(foodItem) {
+    let current_time = new Date().toLocaleDateString("en-uk", {
+      day: "numeric",
+      year: "numeric",
+      month: "short",
+    });
+    let newData = data.slice();
+    let newFoodId = maxFoodId + 1;
+    setMaxFoodId(newFoodId);
+    foodItem.id = newFoodId;
+    foodItem.likes = 0;
+    foodItem.dislikes = 0;
+    foodItem.fave = false;
+    foodItem.date = current_time;
+
+    newData.push(foodItem);
+    setData(newData);
+    setModalNewFlag(false);
+  }
 
   function addToTagList(tag) {
     let tagListArray = [...filterTagList];
@@ -53,21 +93,33 @@ function App() {
     setFilterTagList(newTagList);
   }
 
-  function addToIngredientList(ing) {
-    let ingredientListArray = [...ingredientList];
-    let ingredientListLowerCase = ingredientListArray.map((str) =>
-      str.toLowerCase()
-    );
-    let newIngredientListSet = new Set(ingredientListLowerCase);
+  function addToIngredientList(times, unit, ing) {
+    let newIngredientList = new Set(ingredientList);
     if (ing === "") {
       return;
-    } else if (newIngredientListSet.has(ing.toLowerCase())) {
+    }
+    newIngredientList.add(
+      <>
+        <div className={style.ingredient}>
+          <Times times={times} key={times} />
+          <Unit unit={unit} key={unit} />
+          {"   "}
+          <Ingredient ing={ing} key={ing} />
+        </div>
+      </>
+    );
+    // newIngredientList.add();
+    // newIngredientList.add(); // push for set
+    setIngredientList(newIngredientList);
+    console.log("newIngredientList::::", newIngredientList);
+  }
+  function addToStepsList(step) {
+    let newStepsList = new Set(stepsList);
+    if (step === "") {
       return;
     }
-
-    let newIngredientList = new Set(ingredientList); // slice for sets
-    newIngredientList.add(ing); // push for set
-    setIngredientList(newIngredientList);
+    newStepsList.add(step);
+    setStepsList(newStepsList);
   }
 
   function removeFromTagList(tag) {
@@ -80,6 +132,12 @@ function App() {
     let newIngredientList = new Set(ingredientList); // slice for sets
     newIngredientList.delete(ing); // push for set
     setIngredientList(newIngredientList);
+  }
+
+  function removeFromSStepsList(step) {
+    let newStepsList = new Set(stepsList); // slice for sets
+    newStepsList.delete(step); // push for set
+    setStepsList(newStepsList);
   }
 
   function setModalNewFlagTrue(flag) {
@@ -108,6 +166,9 @@ function App() {
             addToIngredientList={addToIngredientList}
             ingredientList={ingredientList}
             removeFromIngredientList={removeFromIngredientList}
+            addToStepsList={addToStepsList}
+            stepsList={stepsList}
+            removeFromSStepsList={removeFromSStepsList}
           ></NewFood>
         </Modal>
       </div>

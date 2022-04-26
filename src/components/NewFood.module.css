@@ -18,8 +18,8 @@ body {
 
 .main {
   background-color: white;
-  height: 1000px;
-  width: 1000px;
+  height: auto;
+  width: auto
 }
 
 .image {
@@ -40,6 +40,7 @@ body {
   display: flex;
   flex-direction: column;
   background-color: rgb(247, 240, 231);
+  width: 150px;
 }
 .food {
   margin: 0px 0px 10px 10px;
@@ -74,7 +75,7 @@ body {
 .ingredientsImageBox {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  width: 350px;
   margin-left: 10px;
 }
 .foodimage {
@@ -88,16 +89,24 @@ body {
 }
 
 .procedureBox {
-  flex-grow: 7;
+  width: 700px;
 }
 .foodname,
 .procedure {
-  width: 640px;
+  width: 670px;
   border: 1px grey dotted;
   border-radius: 5px;
+  margin-left: 10px;
+  height: 30px;
 }
 
 .procedure {
-  width: 640px;
   height: 100px;
+}
+.foodname{
+  font-size: 20px;
+}
+
+p{
+ margin: 10px;
 }

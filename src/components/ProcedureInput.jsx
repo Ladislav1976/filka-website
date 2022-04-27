@@ -33,7 +33,7 @@ export default function ProcedureInput(props) {
   }
 
   function handleStepDelete(step) {
-    props.removeFromSStepsList(step);
+    props.removeFromStepsList(step);
   }
 
   let stepsListArray = [...stepsList];

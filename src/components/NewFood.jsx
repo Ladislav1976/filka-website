@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProcedureInput from "./ProcedureInput";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
@@ -6,22 +6,30 @@ import IngredientInput from "./IngredientInput";
 //TODO: add rest of the inputs
 //TODO: style
 export default function NewFood(props) {
-  const [imgLink, setImgLink] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(null);
+  const nameTagSet = props.nameTagSet;
+  const ingredientSet = props.ingredientSet;
+  const stepsSet = props.stepsSet;
   const [tagSet, setTagSet] = useState(new Set());
+  const [foodTagSet, setFoodTagSet] = props.foodTagSetState;
+  const [images, setImages] = useState([]);
+  const [imageURLs, setImageURLs] = useState([]);
+  let foodTagSetArray = [...foodTagSet];
+  let ingredientSetArray = [...ingredientSet];
 
-  function handleImgChange(event) {
-    setImgLink(event.target.value);
+  function handleFoodSave() {
+    // handleAddToNameTagList();
+    props.onFoodSave(makeFoodRecord());
+  }
+
+  function handleAddToNameTagList() {
+    let nameSplit = name.split(" ");
+    console.log("nameSplit:", nameSplit);
+    props.addToNameTagList(nameSplit);
   }
 
   function handleNameChange(event) {
     setName(event.target.value);
-  }
-
-  function compareTags(tag1, tag2) {
-    let tag1LowerCase = tag1.toLowerCase();
-    let tag2LowerCase = tag2.toLowerCase();
-    return tag1LowerCase == tag2LowerCase;
   }
 
   function addToTagList(tag) {
@@ -39,59 +47,113 @@ export default function NewFood(props) {
     setTagSet(newTagList);
   }
 
-  function removeFromTagSet(tag) {
-    let newTagList = new Set(tagSet); // slice for sets
-    newTagList.delete(tag); // push for set
-    setTagSet(newTagList);
+  function handleAddToFoodTagList(tag) {
+    if (foodTagSetArray.includes(tag)) {
+      props.removeFromFoodTagList(tag);
+    } else {
+      props.addToFoodTagList(tag);
+    }
   }
 
   function makeFoodRecord() {
-    if (name === "" && imgLink === "" && tagSet === "") {
-      alert("Name , Image, Tags can not be empty");
-    } else if (imgLink === "" && tagSet === "") {
-      alert("Image, Tags can not be empty");
-    } else if (name === "" && tagSet === "") {
-      alert("Name , Tags can not be empty");
+    if (
+      name === "" &&
+      ingredientSetArray === "" &&
+      foodTagSet === "" &&
+      stepsSet === ""
+    ) {
+      alert("Nazov , Suroviny, Druj jedla, Postup nie se uvedene");
+    } else if (
+      ingredientSetArray === "" &&
+      foodTagSet === "" &&
+      stepsSet === ""
+    ) {
+      alert("Suroviny, Druj jedla, Postup nie se uvedene");
+    } else if (name === "" && foodTagSet === "" && stepsSet === "") {
+      alert("Nazov , Druj jedla, Postup nie se uvedene");
+    } else if (name === "" && ingredientSetArray === "" && stepsSet === "") {
+      alert("Nazov , Suroviny, Postup nie se uvedene");
+    } else if (name === "" && ingredientSetArray === "" && foodTagSet === "") {
+      alert("Nazov , Suroviny, Druj jedla nie se uvedene");
+    } else if (name === "" && ingredientSetArray === "") {
+      alert("Nazov, Suroviny nie se uvedene");
+    } else if (name === "" && foodTagSet === "") {
+      alert("Nazov, Druj jedla nie se uvedene");
+    } else if (name === "" && stepsSet === "") {
+      alert("Nazov, Postup nie se uvedene");
+    } else if (ingredientSetArray === "" && foodTagSet === "") {
+      alert("Suroviny, Druj jedla nie se uvedene");
+    } else if (ingredientSetArray === "" && stepsSet === "") {
+      alert("Suroviny, Postup nie se uvedene");
     } else if (name === "") {
-      alert("Name can not be empty");
-    } else if (imgLink === "") {
-      alert("Image can not be empty");
-    } else if (tagSet === "") {
-      alert("Tags can not be empty");
+      alert("Nazov nie je uvedeny");
+    } else if (ingredientSetArray === "") {
+      alert("Suroviny nie je uvedeny");
+    } else if (foodTagSet === "") {
+      alert("Druj jedla, Postup nie je uvedeny");
+    } else if (foodTagSet === "") {
+      alert("Druj jedla nie je uvedeny");
+    } else if (foodTagSet === "") {
+      alert("Postup nie je uvedeny");
     } else
       return {
-        id: props.foodItemEditRender.id,
         name: name,
-        image: imgLink,
-        tags: [...tagSet],
+        image: imageURLs,
+        ingredients: [...ingredientSet],
+        foodTags: [...foodTagSet],
+        nameTags: [...nameTagSet],
+        steps: [...stepsSet],
       };
   }
 
-  const [file, setFile] = useState("");
-  const onInputChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  // const [file, setFile] = useState("");
+  // const onInputChange = (e) => {
+  //   setFile(e.target.files[0]);
+  // };
+
+  useEffect(() => {
+    if (images.length < 1) return;
+    const newImageUrls = [];
+    images.forEach((image) => newImageUrls.push(URL.createObjectURL(image)));
+    setImageURLs(newImageUrls);
+  }, [images]);
+
+  function onImageChange(e) {
+    setImages([...e.target.files]);
+  }
+  // function removeFromTagSet(tag) {
+  //   let newTagList = new Set(tagSet); // slice for sets
+  //   newTagList.delete(tag); // push for set
+  //   setTagSet(newTagList);
 
   return (
     <div className={style.main}>
       <div className={style.header}>NOVY RECEPT</div>
       <div className={style.fooodbox}>
-        <div className={style.foodtypes}>
+        <div className={style.foodtypesbox}>
           <div className={style.food}>
             <img
               className={style.image}
               src="https://www.nin.sk/wp-content/uploads/2019/01/img_2802-900x1350.jpg"
               alt="POLIEVKY"
+              onClick={() => handleAddToFoodTagList("POLIEVKY")}
+              checked={foodTagSetArray.includes("POLIEVKY")}
             />
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("POLIEVKY")}
+                className={style.checkboxInput}
+                name="POLIEVKY"
+                id="POLIEVKY"
                 key="POLIEVKY"
+                onChange={() => handleAddToFoodTagList("POLIEVKY")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="POLIEVKY"
+                onClick={() => handleAddToFoodTagList("POLIEVKY")}
+              >
                 POLIEVKY
               </label>
             </div>
@@ -101,54 +163,210 @@ export default function NewFood(props) {
               className={style.image}
               src="https://www.gyron.sk/storage/article_images/f_2011020010.png"
               alt="MASO A HYDINA"
+              onClick={() => handleAddToFoodTagList("MASO A HYDINA")}
             />
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("MASO A HYDINA")}
+                name="MASO A HYDINA"
+                className={style.checkboxInput}
+                id="MASO A HYDINA"
                 key="MASO A HYDINA"
+                onChange={() => handleAddToFoodTagList("MASO A HYDINA")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("MASO A HYDINA")}
+              >
                 MASO A HYDINA
               </label>
             </div>
           </div>
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://www.svetbedniciek.sk/userfiles_sk//product-images/7328/86e2a6bd7db4b1e8dcad27c5dc8ce49d.262x262.fit.q95.jpg"
-              alt="RYBY"
-            />
-            <div className="inputlabel">
+          <div className={style.foodMaso}>
+            <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
-                key="RYBY"
+                checked={foodTagSetArray.includes("HOVADZIE")}
+                name="HOVADZIE"
+                className={style.checkboxInput}
+                id="HOVADZIE"
+                key="HOVADZIE"
+                onChange={() => handleAddToFoodTagList("HOVADZIE")}
               />
-              <label className={style.label} htmlFor="tag">
-                RYBY
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("HOVADZIE")}
+              >
+                HOVADZIE
               </label>
             </div>
           </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("BRAVCOVE")}
+                name="BRAVCOVE"
+                className={style.checkboxInput}
+                id="BRAVCOVE"
+                key="BRAVCOVE"
+                onChange={() => handleAddToFoodTagList("BRAVCOVE")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("BRAVCOVE")}
+              >
+                BRAVCOVE
+              </label>
+            </div>
+          </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("KURACIE")}
+                name="KURACIE"
+                className={style.checkboxInput}
+                id="KURACIE"
+                key="KURACIE"
+                onChange={() => handleAddToFoodTagList("KURACIE")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("KURACIE")}
+              >
+                KURACIE
+              </label>
+            </div>
+          </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("KACACIE")}
+                name="KACACIE"
+                className={style.checkboxInput}
+                id="KACACIE"
+                key="KACACIE"
+                onChange={() => handleAddToFoodTagList("KACACIE")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("KACACIE")}
+              >
+                KACACIE
+              </label>
+            </div>
+          </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("KRALIK")}
+                name="KRALIK"
+                className={style.checkboxInput}
+                id="KRALIK"
+                key="KRALIK"
+                onChange={() => handleAddToFoodTagList("KRALIK")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("KRALIK")}
+              >
+                KRALIK
+              </label>
+            </div>
+          </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("JAHNA")}
+                name="JAHNA"
+                className={style.checkboxInput}
+                id="JAHNA"
+                key="JAHNA"
+                onChange={() => handleAddToFoodTagList("JAHNA")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("JAHNA")}
+              >
+                JAHNA
+              </label>
+            </div>
+          </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("RYBA")}
+                name="RYBA"
+                className={style.checkboxInput}
+                id="RYBA"
+                key="RYBA"
+                onChange={() => handleAddToFoodTagList("RYBA")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("RYBA")}
+              >
+                RYBA
+              </label>
+            </div>
+          </div>
+          <div className={style.foodMaso}>
+            <div>
+              <input
+                type="checkbox"
+                checked={foodTagSetArray.includes("INE")}
+                name="INE"
+                className={style.checkboxInput}
+                id="INE"
+                key="INE"
+                onChange={() => handleAddToFoodTagList("INE")}
+              />
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("INE")}
+              >
+                INE
+              </label>
+            </div>
+          </div>
+
           <div className={style.food}>
             <img
               className={style.image}
               src="https://img.mimibazar.sk/s/bs/9/220205/19/i60958.jpg"
               alt="BEZMASITE JEDLA"
+              onClick={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
             />
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("BEZMASITE JEDLA")}
+                name="BEZMASITE JEDLA"
+                className={style.checkboxInput}
+                id="BEZMASITE JEDLA"
                 key="BEZMASITE JEDLA"
+                onChange={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
+              >
                 BEZMASITE JEDLA
               </label>
             </div>
@@ -159,16 +377,23 @@ export default function NewFood(props) {
               className={style.image}
               src="https://www.dennikrelax.sk/include/crop.php?h=480&w=720&f=../photos/amarant.jpg"
               alt="PRILOHY"
+              onClick={() => handleAddToFoodTagList("PRILOHY")}
             />
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("PRILOHY")}
+                name="PRILOHY"
+                className={style.checkboxInput}
+                id="PRILOHY"
                 key="PRILOHY"
+                onChange={() => handleAddToFoodTagList("PRILOHY")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("PRILOHY")}
+              >
                 PRILOHY
               </label>
             </div>
@@ -177,18 +402,25 @@ export default function NewFood(props) {
           <div className={style.food}>
             <img
               className={style.image}
-              src="https://i.pinimg.com/736x/a3/29/4f/a3294fc39a067c63b012fdf7a4b28817.jpg"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGGE2i7To_F9Sl2qbNG6Fv38hZ0MAilY4l-phNS4mpieX6znGVYrl5K8C48pdjWCWbx-s&usqp=CAU"
               alt="KOLACE A DEZERTY"
+              onClick={() => handleAddToFoodTagList("KOLACE A DEZERTY")}
             />
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("KOLACE A DEZERTY")}
+                name="KOLACE A DEZERTY"
+                className={style.checkboxInput}
+                id="KOLACE A DEZERTY"
                 key="KOLACE A DEZERTY"
+                onChange={() => handleAddToFoodTagList("KOLACE A DEZERTY")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("KOLACE A DEZERTY")}
+              >
                 KOLACE A DEZERTY
               </label>
             </div>
@@ -196,18 +428,25 @@ export default function NewFood(props) {
           <div className={style.food}>
             <img
               className={style.image}
-              src="https://www.domacakuchyna.sk/images/Recepty/Bezmasite/Spagety-spenatovo_syrove/cropped-spagety-spenatovo_syrove00.jpg"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZVgjDPFoecZAoqQkNrjFaKaF1M7Iy2K4daQ&usqp=CAU"
               alt="CESTOVINY"
+              onClick={() => handleAddToFoodTagList("CESTOVINY")}
             />
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("CESTOVINY")}
+                name="CESTOVINY"
+                className={style.checkboxInput}
+                id="CESTOVINY"
                 key="CESTOVINY"
+                onChange={() => handleAddToFoodTagList("CESTOVINY")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("CESTOVINY")}
+              >
                 CESTOVINY
               </label>
             </div>
@@ -217,59 +456,79 @@ export default function NewFood(props) {
               className={style.image}
               src="https://img.aktuality.sk/foto/MHg1MTk6NDg1MHgzMjM1LzkyMHg3NjAvc21hcnQvaW1n/mS3qqABtQ1vf_Yi8XVL5Cw.jpg?st=7ygkC0k_nRu6IarjLFo0TL4_jSQ6j_LWctMX2-SUBoQ&ts=1600752583&e=0"
               alt="NATIERKY"
+              onClick={() => handleAddToFoodTagList("NATIERKY")}
             />
 
             <div>
               <input
                 type="checkbox"
-                checked=""
-                name="tag"
-                id="tag"
+                checked={foodTagSetArray.includes("NATIERKY")}
+                name="NATIERKY"
+                className={style.checkboxInput}
+                id="NATIERKY"
                 key="NATIERKY"
+                onChange={() => handleAddToFoodTagList("NATIERKY")}
               />
-              <label className={style.label} htmlFor="tag">
+              <label
+                className={style.label}
+                htmlFor="tag"
+                onClick={() => handleAddToFoodTagList("NATIERKY")}
+              >
                 NATIERKY
               </label>
             </div>
           </div>
         </div>
         <div className={style.ingredientsImageBox}>
-          <img
+          {/* <img
             className={style.foodimage}
-            src="https://www.nin.sk/wp-content/uploads/2019/01/img_2802-900x1350.jpg"
+            src="logo.jpg"
             alt="foodimage"
-          />
+          /> */}
+          {imageURLs.map((imageSrc) => (
+            <img className={style.foodimage} src={imageSrc} />
+          ))}
           <input
-            className={style.foodinput}
+            className={style.imageinput}
             type="file"
-            id="image_input"
-            accept="image/png, image/jpg, image/jpeg"
-            onChange={onInputChange}
+            multiple
+            accept="image/*"
+            onChange={onImageChange}
           />
           <div>
             <div>Suroviny:</div>
             <IngredientInput
               addToIngredientList={props.addToIngredientList}
-              ingredientList={props.ingredientList}
+              ingredientList={ingredientSet}
               removeFromIngredientList={props.removeFromIngredientList}
             ></IngredientInput>
           </div>
         </div>
         <div className={style.procedureBox}>
-          <div><p>Nazov:</p></div>
-          <input className={style.foodname} type="text" />
-          <div><p>Postup:</p></div>
+          <div>
+            <p>Nazov:</p>
+          </div>
+          <input
+            className={style.foodname}
+            type="text"
+            onChange={handleNameChange}
+            onClick={handleAddToNameTagList}
+          />
+          <div>
+            <p>Postup:</p>
+          </div>
           <ProcedureInput
             addToStepsList={props.addToStepsList}
-            stepsList={props.stepsList}
-            removeFromSStepsList={props.removeFromSStepsList}
+            stepsList={stepsSet}
+            removeFromStepsList={props.removeFromStepsList}
           ></ProcedureInput>
         </div>
       </div>
       <input
         type="button"
         value="Save"
-        onClick={() => props.onFoodSave(makeFoodRecord())}
+        onClick={handleFoodSave}
+        // onClick={() => props.onFoodSave(makeFoodRecord())}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import style from "./TagInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -22,7 +21,7 @@ function Tag(props) {
 // TODO: style everytnig
 export default function TagInput(props) {
   const [searchedTag, setSearchedTag] = useState("");
-  const [tagList, setTagList] = props.tagListState;
+  const [filterTagList, setFilterTagList] = props.filterTagListState;
 
   function addSearchTagToTagList() {
     props.addToTagList(searchedTag);
@@ -46,7 +45,7 @@ export default function TagInput(props) {
 
   const tagListRender = [];
 
-  for (const tag of tagList) {
+  for (const tag of filterTagList) {
     tagListRender.push(
       <Tag tag={tag} key={tag} onTagDelete={() => handleTagDelete(tag)} />
     );

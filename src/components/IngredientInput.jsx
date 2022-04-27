@@ -9,6 +9,7 @@ function Ing(props) {
       <div className={style.ingredient}>
         {" "}
         <FontAwesomeIcon
+        className={style.ingredientIcon}
           icon={faTimesCircle}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}

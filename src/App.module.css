@@ -19,6 +19,27 @@
 
 }
 
+.droplist{
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-end;
+  margin: 10px 0 10px 10px;
+  padding: 5px;
+}
+
+.newFoodButton{  
+  
+  
+  font-family: rgb(95, 93, 93), "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  margin-left: 10px;
+  font-size: 18px;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.newFoodButton:hover{color: orange;font-weight: bold;}
+
 .main {
   display: flex;
   flex-direction: row;
@@ -71,7 +92,8 @@
     font-weight: bold;
     text-decoration: underline;
     font-size: 12px;
-    color: black
+    color: orange;
+    font-weight: bold;
     
   }
 
@@ -79,9 +101,11 @@
     font-size: 10px;
     font-weight: bold;
     vertical-align: baseline;
+    cursor: pointer;
   }
   .foodMaso{  margin: 0px 0px 10px 40px;}
   .label:hover {
     text-decoration: underline;
     font-size: 12px;
+    color: orange;
   }

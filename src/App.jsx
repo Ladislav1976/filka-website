@@ -2,6 +2,7 @@ import style from "./App.module.css";
 import { useState } from "react";
 import Modal from "./components/Modal";
 import NewFood from "./components/NewFood";
+import EditFood from "./components/EditFood";
 import FoodItemList from "./components/FoodItemList";
 import TagInput from "./components/TagInput";
 
@@ -28,10 +29,10 @@ function App() {
   const [data, setData] = useState([
     {
       id: 0,
-      name: "Pepperoni Pizza polievky",
+      name: "Pepperoni Pizza",
       image: "https://i.imgur.com/YBZacyX.jpeg",
       ingredients: ["sunka", "vajce"],
-      foodTags: ["sunka", "vajce", "RYBA"],
+      foodTags: ["sunka", "vajce", "RYBA", "MASO A HYDINA"],
       steps: "",
       date: "1 Feb 2018",
     },
@@ -48,11 +49,13 @@ function App() {
   ]);
   const [maxFoodId, setMaxFoodId] = useState(2);
   const [filterTagList, setFilterTagList] = useState(new Set([]));
-  const [modalNewFlag, setModalNewFlag] = useState(true);
+  const [modalNewFlag, setModalNewFlag] = useState(false);
+  const [modalEditFlag, setModalEditFlag] = useState(false);
   const [ingredientSet, setIngredientSet] = useState(new Set([]));
   const [stepsSet, setStepsSet] = useState(new Set([]));
   const [nameTagSet, setNameTagSet] = useState(new Set());
   const [foodTagSet, setFoodTagSet] = useState(new Set());
+  const [foodItemEditRender, setFoodItemEditRender] = useState(null);
   let filterTagListArray = [...filterTagList];
 
   function handleNewFoodSave(foodItem) {
@@ -157,6 +160,12 @@ function App() {
     setModalNewFlag(true);
   }
 
+  function setModalEditFlagTrue(flag) {
+    setModalEditFlag(true);
+  }
+
+
+
   function handleAddToTagList(tag) {
     console.log("typeof tag: ", typeof tag);
     if (filterTagListArray && Array.isArray(filterTagListArray)) {
@@ -177,13 +186,18 @@ function App() {
     <>
       <div className={style.App}>
         <header className={style.Appheader}>Filka Family</header>
-        <main className={style.Appmain}>
-          <TagInput
-            filterTagListState={[filterTagList, setFilterTagList]}
-            addToTagList={addToTagList}
-            removeFromTagList={removeFromTagList}
-          />
-        </main>
+        <div className={style.droplist}>
+          <div className={style.newFoodButton} onClick={setModalNewFlagTrue}>
+            NOVY RECEPT
+          </div>
+          <main className={style.Appmain}>
+            <TagInput
+              filterTagListState={[filterTagList, setFilterTagList]}
+              addToTagList={addToTagList}
+              removeFromTagList={removeFromTagList}
+            />
+          </main>
+        </div>
         <div className={style.main}>
           <div className={style.foodtypesbox}>
             <div className={style.food}>
@@ -197,7 +211,6 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  // checked={foodTagSetArray.includes("POLIEVKY")}
                   checked={filterTagListArray
                     .map((str) => str.toLowerCase())
                     .includes("polievky")}
@@ -210,8 +223,8 @@ function App() {
                 />
                 <label
                   className={style.label}
-                  htmlFor="POLIEVKY"
-                  // onClick={() => handleAddToFoodTagList("POLIEVKY")}
+                  htmlFor="tag"
+                  onClick={() => handleAddToTagList("POLIEVKY")}
                 >
                   POLIEVKY
                 </label>
@@ -227,17 +240,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  // checked={foodTagSetArray.includes("MASO A HYDINA")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("maso a hydina")}
                   name="MASO A HYDINA"
                   className={style.checkboxInput}
                   id="MASO A HYDINA"
                   key="MASO A HYDINA"
-                  // onChange={() => handleAddToFoodTagList("MASO A HYDINA")}
+                  onChange={() => handleAddToTagList("MASO A HYDINA")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  // onClick={() => handleAddToFoodTagList("MASO A HYDINA")}
+                  onClick={() => handleAddToTagList("MASO A HYDINA")}
                 >
                   MASO A HYDINA
                 </label>
@@ -247,17 +262,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("HOVADZIE")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("hovadzie")}
                   name="HOVADZIE"
                   className={style.checkboxInput}
                   id="HOVADZIE"
                   key="HOVADZIE"
-                  //onChange={() => handleAddToFoodTagList("HOVADZIE")}
+                  onChange={() => handleAddToTagList("HOVADZIE")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("HOVADZIE")}
+                  onClick={() => handleAddToTagList("HOVADZIE")}
                 >
                   HOVADZIE
                 </label>
@@ -267,17 +284,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("BRAVCOVE")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("bravcove")}
                   name="BRAVCOVE"
                   className={style.checkboxInput}
                   id="BRAVCOVE"
                   key="BRAVCOVE"
-                  //onChange={() => handleAddToFoodTagList("BRAVCOVE")}
+                  onChange={() => handleAddToTagList("BRAVCOVE")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("BRAVCOVE")}
+                  onClick={() => handleAddToTagList("BRAVCOVE")}
                 >
                   BRAVCOVE
                 </label>
@@ -287,17 +306,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("KURACIE")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("kuracie")}
                   name="KURACIE"
                   className={style.checkboxInput}
                   id="KURACIE"
                   key="KURACIE"
-                  //onChange={() => handleAddToFoodTagList("KURACIE")}
+                  onChange={() => handleAddToTagList("KURACIE")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("KURACIE")}
+                  onClick={() => handleAddToTagList("KURACIE")}
                 >
                   KURACIE
                 </label>
@@ -307,17 +328,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("KACACIE")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("kacacie")}
                   name="KACACIE"
                   className={style.checkboxInput}
                   id="KACACIE"
                   key="KACACIE"
-                  //onChange={() => handleAddToFoodTagList("KACACIE")}
+                  onChange={() => handleAddToTagList("KACACIE")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("KACACIE")}
+                  onClick={() => handleAddToTagList("KACACIE")}
                 >
                   KACACIE
                 </label>
@@ -327,17 +350,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("KRALIK")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("kralik")}
                   name="KRALIK"
                   className={style.checkboxInput}
                   id="KRALIK"
                   key="KRALIK"
-                  //onChange={() => handleAddToFoodTagList("KRALIK")}
+                  onChange={() => handleAddToTagList("KRALIK")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("KRALIK")}
+                  onClick={() => handleAddToTagList("KRALIK")}
                 >
                   KRALIK
                 </label>
@@ -347,17 +372,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("JAHNA")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("jahna")}
                   name="JAHNA"
                   className={style.checkboxInput}
                   id="JAHNA"
                   key="JAHNA"
-                  //onChange={() => handleAddToFoodTagList("JAHNA")}
+                  onChange={() => handleAddToTagList("JAHNA")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("JAHNA")}
+                  onClick={() => handleAddToTagList("JAHNA")}
                 >
                   JAHNA
                 </label>
@@ -367,17 +394,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("RYBA")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("ryba")}
                   name="RYBA"
                   className={style.checkboxInput}
                   id="RYBA"
                   key="RYBA"
-                  //onChange={() => handleAddToFoodTagList("RYBA")}
+                  onChange={() => handleAddToTagList("RYBA")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("RYBA")}
+                  onClick={() => handleAddToTagList("RYBA")}
                 >
                   RYBA
                 </label>
@@ -387,17 +416,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("INE")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("ine")}
                   name="INE"
                   className={style.checkboxInput}
                   id="INE"
                   key="INE"
-                  //onChange={() => handleAddToFoodTagList("INE")}
+                  onChange={() => handleAddToTagList("INE")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("INE")}
+                  onClick={() => handleAddToTagList("INE")}
                 >
                   INE
                 </label>
@@ -414,17 +445,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("BEZMASITE JEDLA")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("bezmasite jedla")}
                   name="BEZMASITE JEDLA"
                   className={style.checkboxInput}
                   id="BEZMASITE JEDLA"
                   key="BEZMASITE JEDLA"
-                  //onChange={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
+                  onChange={() => handleAddToTagList("BEZMASITE JEDLA")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
+                  onClick={() => handleAddToTagList("BEZMASITE JEDLA")}
                 >
                   BEZMASITE JEDLA
                 </label>
@@ -441,17 +474,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("PRILOHY")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("prilohy")}
                   name="PRILOHY"
                   className={style.checkboxInput}
                   id="PRILOHY"
                   key="PRILOHY"
-                  //onChange={() => handleAddToFoodTagList("PRILOHY")}
+                  onChange={() => handleAddToTagList("PRILOHY")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("PRILOHY")}
+                  onClick={() => handleAddToTagList("PRILOHY")}
                 >
                   PRILOHY
                 </label>
@@ -468,17 +503,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("KOLACE A DEZERTY")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("kolace a dezerty")}
                   name="KOLACE A DEZERTY"
                   className={style.checkboxInput}
                   id="KOLACE A DEZERTY"
                   key="KOLACE A DEZERTY"
-                  //onChange={() => handleAddToFoodTagList("KOLACE A DEZERTY")}
+                  onChange={() => handleAddToTagList("KOLACE A DEZERTY")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("KOLACE A DEZERTY")}
+                  onClick={() => handleAddToTagList("KOLACE A DEZERTY")}
                 >
                   KOLACE A DEZERTY
                 </label>
@@ -494,17 +531,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("CESTOVINY")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("cestoviny")}
                   name="CESTOVINY"
                   className={style.checkboxInput}
                   id="CESTOVINY"
                   key="CESTOVINY"
-                  //onChange={() => handleAddToFoodTagList("CESTOVINY")}
+                  onChange={() => handleAddToTagList("CESTOVINY")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("CESTOVINY")}
+                  onClick={() => handleAddToTagList("CESTOVINY")}
                 >
                   CESTOVINY
                 </label>
@@ -521,17 +560,19 @@ function App() {
               <div>
                 <input
                   type="checkbox"
-                  //checked={foodTagSetArray.includes("NATIERKY")}
+                  checked={filterTagListArray
+                    .map((str) => str.toLowerCase())
+                    .includes("natierky")}
                   name="NATIERKY"
                   className={style.checkboxInput}
                   id="NATIERKY"
                   key="NATIERKY"
-                  //onChange={() => handleAddToFoodTagList("NATIERKY")}
+                  onChange={() => handleAddToTagList("NATIERKY")}
                 />
                 <label
                   className={style.label}
                   htmlFor="tag"
-                  //onClick={() => handleAddToFoodTagList("NATIERKY")}
+                  onClick={() => handleAddToTagList("NATIERKY")}
                 >
                   NATIERKY
                 </label>
@@ -542,6 +583,8 @@ function App() {
             <FoodItemList
               data={data}
               filterTagList={filterTagList}
+              setModalEditFlagTrue={setModalEditFlagTrue}
+              foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
             ></FoodItemList>
           </div>
         </div>
@@ -560,6 +603,23 @@ function App() {
             addToNameTagList={addToNameTagList}
             onFoodSave={handleNewFoodSave}
           ></NewFood>
+        </Modal>
+        <Modal visible={modalEditFlag} setModalFlag={setModalEditFlag}>
+          <EditFood
+            addToIngredientList={addToIngredientList}
+            ingredientSet={ingredientSet}
+            removeFromIngredientList={removeFromIngredientList}
+            addToStepsList={addToStepsList}
+            stepsSet={stepsSet}
+            removeFromStepsList={removeFromStepsList}
+            foodTagSetState={[foodTagSet, setFoodTagSet]}
+            addToFoodTagList={addToFoodTagList}
+            removeFromFoodTagList={removeFromFoodTagList}
+            nameTagSet={nameTagSet}
+            addToNameTagList={addToNameTagList}
+            onFoodSave={handleNewFoodSave}
+            foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
+          ></EditFood>
         </Modal>
       </div>
     </>

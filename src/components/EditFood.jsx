@@ -6,14 +6,18 @@ import IngredientInput from "./IngredientInput";
 //TODO: add rest of the inputs
 //TODO: style
 export default function NewFood(props) {
-  const [name, setName] = useState(null);
-  const nameTagSet = props.nameTagSet;
-  const ingredientSet = props.ingredientSet;
-  const stepsSet = props.stepsSet;
-  const [tagSet, setTagSet] = useState(new Set());
-  const [foodTagSet, setFoodTagSet] = props.foodTagSetState;
+  const [foodItemEditRender, setFoodItemEditRender] =
+    props.foodItemEditRenderState;
+
+  const [name, setName] = useState(foodItemEditRender.name);
+  const nameTagSet = useState(foodItemEditRender.nameTags);
+  const ingredientSet = useState(foodItemEditRender.ingredients);
+  const stepsSet = useState(foodItemEditRender.steps);
+  // const [tagSet, setTagSet] = useState(new Set());
+  const [foodTagSet, setFoodTagSet] = useState(foodItemEditRender.foodTags);
   const [images, setImages] = useState([]);
-  const [imageURLs, setImageURLs] = useState([]);
+
+  const [imageURLs, setImageURLs] = useState([foodItemEditRender.image]);
   let foodTagSetArray = [...foodTagSet];
   let ingredientSetArray = [...ingredientSet];
 
@@ -32,20 +36,20 @@ export default function NewFood(props) {
     setName(event.target.value);
   }
 
-  function addToTagList(tag) {
-    let tagListArray = [...tagSet];
-    let tagListLowerCase = tagListArray.map((str) => str.toLowerCase());
-    let newTagListSet = new Set(tagListLowerCase);
-    if (tag === "") {
-      return;
-    } else if (newTagListSet.has(tag.toLowerCase())) {
-      return;
-    }
+  // function addToTagList(tag) {
+  //   let tagListArray = [...tagSet];
+  //   let tagListLowerCase = tagListArray.map((str) => str.toLowerCase());
+  //   let newTagListSet = new Set(tagListLowerCase);
+  //   if (tag === "") {
+  //     return;
+  //   } else if (newTagListSet.has(tag.toLowerCase())) {
+  //     return;
+  //   }
 
-    let newTagList = new Set(tagSet); // slice for sets
-    newTagList.add(tag); // push for set
-    setTagSet(newTagList);
-  }
+  //   let newTagList = new Set(tagSet); // slice for sets
+  //   newTagList.add(tag); // push for set
+  //   setTagSet(newTagList);
+  // }
 
   function handleAddToFoodTagList(tag) {
     if (foodTagSetArray.includes(tag)) {
@@ -97,6 +101,8 @@ export default function NewFood(props) {
       alert("Postup nie je uvedeny");
     } else
       return {
+        ...foodItemEditRender,
+        id: foodItemEditRender.id,
         name: name,
         image: imageURLs,
         ingredients: [...ingredientSet],
@@ -128,7 +134,7 @@ export default function NewFood(props) {
 
   return (
     <div className={style.main}>
-      <div className={style.header}>NOVY RECEPT</div>
+      <div className={style.header}>RECEPT</div>
       <div className={style.fooodbox}>
         <div className={style.foodtypesbox}>
           <div className={style.food}>
@@ -136,6 +142,7 @@ export default function NewFood(props) {
               className={style.image}
               src="https://www.nin.sk/wp-content/uploads/2019/01/img_2802-900x1350.jpg"
               alt="POLIEVKY"
+              value={imageURLs}
               onClick={() => handleAddToFoodTagList("POLIEVKY")}
               checked={foodTagSetArray.includes("POLIEVKY")}
             />
@@ -151,7 +158,7 @@ export default function NewFood(props) {
               />
               <label
                 className={style.label}
-                htmlFor="tag"
+                htmlFor="POLIEVKY"
                 onClick={() => handleAddToFoodTagList("POLIEVKY")}
               >
                 POLIEVKY

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function Ing(props) {
   return (
@@ -9,8 +9,8 @@ function Ing(props) {
       <div className={style.ingredient}>
         {" "}
         <FontAwesomeIcon
-        className={style.ingredientIcon}
-          icon={faTimesCircle}
+          className={style.ingredientIcon}
+          icon={faXmark}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}
         {props.ing}

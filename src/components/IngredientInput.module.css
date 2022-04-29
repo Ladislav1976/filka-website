@@ -4,7 +4,7 @@ body {
 }
 .times,
 .unit {
-  height: 25px;
+  height: 22px;
   border: 1px grey dotted;
   border-radius: 5px;
   background-color: whitesmoke;
@@ -78,4 +78,5 @@ body {
   padding-bottom: 10px;
 }
 
-.ingredientIcon{  color: rgba(0, 128, 0, 0.192);}
+.ingredientIcon{  color: rgba(0, 128, 0);
+  cursor: pointer;}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import style from "./ProcedureInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function Step(props) {
   return (
@@ -9,7 +9,7 @@ function Step(props) {
       <div className={style.step}>
         {" "}
         <FontAwesomeIcon
-          icon={faTimesCircle}
+          icon={faXmark}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}
         {props.step}
@@ -36,12 +36,24 @@ export default function ProcedureInput(props) {
     props.removeFromStepsList(step);
   }
 
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      addStepToTagList();
+    }
+  }
+
   let stepsListArray = [...stepsList];
   const proceduteListRender = [];
+  let StepId = 0;
   for (const step of stepsListArray) {
     proceduteListRender.push(
-      <Step step={step} key={step} onTagDelete={() => handleStepDelete(step)} />
+      <Step
+        step={step}
+        key={StepId}
+        onTagDelete={() => handleStepDelete(step)}
+      />
     );
+    StepId++;
   }
 
   return (
@@ -55,7 +67,14 @@ export default function ProcedureInput(props) {
       <div className={style.ingredientButton} onClick={addStepToTagList}>
         Pridať
       </div>
-      ;<div className={style.addedstep}>{proceduteListRender}</div>
+      <div className={style.addedstep}>{proceduteListRender}</div>
+      {/* <input
+        className={style.addedstep}
+        type="text"
+        onChange={handleChangeStep}
+        onKeyPress={handleKeyPress}
+        value={proceduteListRender}
+      /> */}
     </>
   );
 }

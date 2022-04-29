@@ -1,15 +1,15 @@
 import { useState } from "react";
 import style from "./TagInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 //just a component
 function Tag(props) {
   return (
-    <div className={style.tag}>
+    <div className={style.tag} onClick={props.onTagDelete}>
       <FontAwesomeIcon
-        icon={faTimesCircle}
+        icon={faXmark}
         onClick={props.onTagDelete}
       ></FontAwesomeIcon>{" "}
       {props.tag}
@@ -47,7 +47,12 @@ export default function TagInput(props) {
 
   for (const tag of filterTagList) {
     tagListRender.push(
-      <Tag tag={tag} key={tag} onTagDelete={() => handleTagDelete(tag)} />
+      <Tag
+        className={style.tagname}
+        tag={tag}
+        key={tag}
+        onTagDelete={() => handleTagDelete(tag)}
+      />
     );
   }
 
@@ -63,10 +68,11 @@ export default function TagInput(props) {
             onChange={handleChange}
             onKeyPress={handleKeyPress}
           />
-          <div className={style.searchButton}>
-            <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon> Hľadať
+          <div className={style.searchButton} onClick={addSearchTagToTagList}>
+            <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
           </div>
         </div>
+
         <div className={style.searchList}>{tagListRender}</div>
       </div>
     </>

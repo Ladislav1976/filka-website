@@ -1,20 +1,44 @@
 import { useState, useEffect } from "react";
-import ProcedureInput from "./ProcedureInput";
+import StepsInput from "./StepsInput";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
 
-//TODO: add rest of the inputs
-//TODO: style
-export default function NewFood(props) {
+function Times(props) {
+  return (
+    <>
+      <div className={style.timesIngredient}>{props.times}</div>
+    </>
+  );
+}
+
+function Unit(props) {
+  return (
+    <>
+      <div className={style.unitIngredient}>{props.unit}</div>
+    </>
+  );
+}
+
+function Ingredient(props) {
+  return <div className={style.ingIngredient}>{props.ing}</div>;
+}
+
+export default function EditFood(props) {
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
 
   const [name, setName] = useState(foodItemEditRender.name);
-  const nameTagSet = useState(foodItemEditRender.nameTags);
-  const ingredientSet = useState(foodItemEditRender.ingredients);
-  const stepsSet = useState(foodItemEditRender.steps);
+  const [nameTagSet, setNameTagSet] = useState(
+    new Set([foodItemEditRender.nameTags])
+  );
+  const [ingredientSet, setIngredientSet] = useState(
+    new Set(foodItemEditRender.ingredients)
+  );
+  const [stepsSet, setStepsSet] = useState(new Set(foodItemEditRender.steps));
   // const [tagSet, setTagSet] = useState(new Set());
-  const [foodTagSet, setFoodTagSet] = useState(foodItemEditRender.foodTags);
+  const [foodTagSet, setFoodTagSet] = useState(
+    new Set(foodItemEditRender.foodTags)
+  );
   const [images, setImages] = useState([]);
 
   const [imageURLs, setImageURLs] = useState([foodItemEditRender.image]);
@@ -53,10 +77,65 @@ export default function NewFood(props) {
 
   function handleAddToFoodTagList(tag) {
     if (foodTagSetArray.includes(tag)) {
-      props.removeFromFoodTagList(tag);
+      removeFromFoodTagList(tag);
     } else {
-      props.addToFoodTagList(tag);
+      addToFoodTagList(tag);
     }
+  }
+
+  function addToIngredientList(times, unit, ing) {
+    let newIngredientList = new Set(ingredientSet);
+    if (ing === "") {
+      return;
+    }
+    newIngredientList.add(
+      <>
+        <Times times={times} key={times} />
+        <Unit unit={unit} key={unit} />
+        {"   "}
+        <Ingredient ing={ing} key={ing} />
+      </>
+    );
+    setIngredientSet(newIngredientList);
+  }
+
+  function removeFromIngredientList(ing) {
+    let newIngredientList = new Set(ingredientSet); // slice for sets
+    newIngredientList.delete(ing); // push for set
+    setIngredientSet(newIngredientList);
+  }
+
+  function addToStepsList(step) {
+    let newStepsList = new Set(stepsSet);
+    if (step === "") {
+      return;
+    }
+    newStepsList.add(step);
+    setStepsSet(newStepsList);
+  }
+
+  function removeFromStepsList(step) {
+    let newStepsList = new Set(stepsSet); // slice for sets
+    newStepsList.delete(step); // push for set
+    setStepsSet(newStepsList);
+  }
+
+  function addToFoodTagList(tag) {
+    let newFoodTagSet = new Set(foodTagSet);
+    newFoodTagSet.add(tag);
+    setFoodTagSet(newFoodTagSet);
+  }
+
+  function removeFromFoodTagList(tag) {
+    let newFoodTagSet = new Set(foodTagSet);
+    newFoodTagSet.delete(tag);
+    setFoodTagSet(newFoodTagSet);
+  }
+
+  function addToNameTagList(tag) {
+    let newNameTagSet = new Set(nameTagSet);
+    newNameTagSet.add(tag);
+    setNameTagSet(newNameTagSet);
   }
 
   function makeFoodRecord() {
@@ -500,9 +579,9 @@ export default function NewFood(props) {
           <div>
             <div>Suroviny:</div>
             <IngredientInput
-              addToIngredientList={props.addToIngredientList}
+              addToIngredientList={addToIngredientList}
               ingredientList={ingredientSet}
-              removeFromIngredientList={props.removeFromIngredientList}
+              removeFromIngredientList={removeFromIngredientList}
             ></IngredientInput>
           </div>
         </div>
@@ -519,11 +598,11 @@ export default function NewFood(props) {
           <div>
             <p>Postup:</p>
           </div>
-          <ProcedureInput
+          <StepsInput
             addToStepsList={props.addToStepsList}
             stepsList={stepsSet}
             removeFromStepsList={props.removeFromStepsList}
-          ></ProcedureInput>
+          ></StepsInput>
         </div>
       </div>
       <input

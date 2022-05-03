@@ -1,5 +1,5 @@
 import { useState } from "react";
-import style from "./ProcedureInput.module.css";
+import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,52 +12,69 @@ function Step(props) {
           icon={faXmark}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}
-        {props.step}
+        <div>{props.step}</div>
       </div>
     </>
   );
 }
 
-export default function ProcedureInput(props) {
+export default function StepsInput(props) {
   const [addedStep, setAddedStep] = useState("");
-
+  const [stepId, setStepId] = useState(1);
+  const [stepIdCounter, setStepIdCounter] = useState(1);
   const stepsList = props.stepsList;
 
   function handleChangeStep(event) {
     setAddedStep(event.target.value);
   }
 
+  function handleChangeStepId(event) {
+    setStepId(event.target.value);
+  }
+  // let stepIdCounter = 1;
   function addStepToTagList() {
-    props.addToStepsList(addedStep);
-    setAddedStep("");
-  }
-
-  function handleStepDelete(step) {
-    props.removeFromStepsList(step);
-  }
-
-  function handleKeyPress(event) {
-    if (event.key === "Enter") {
-      addStepToTagList();
+    if (stepId == stepIdCounter) {
+      console.log("stepIdCounter:", stepIdCounter);
+      props.addToStepsList(stepId, addedStep);
+      setStepIdCounter(stepIdCounter + 1);
+      setStepId(stepIdCounter)
+      console.log("stepIdCounter +1:", stepIdCounter);
+    } else if (stepIdCounter != stepId) {
+      props.addToStepsList(stepId, addedStep);
     }
+    setAddedStep("");
+    setStepId(stepIdCounter);
+    console.log("stepId:", stepId);
   }
+
+  function handleStepDelete(stepId, addedStep) {
+    props.removeFromStepsList(stepId, addedStep);
+  }
+
+  // function handleKeyPress(event) {
+  //   if (event.key === "Enter") {
+  //     addStepToTagList();
+  //   }
+  // }
 
   let stepsListArray = [...stepsList];
   const proceduteListRender = [];
-  let StepId = 0;
+  let Id = 0;
   for (const step of stepsListArray) {
     proceduteListRender.push(
-      <Step
-        step={step}
-        key={StepId}
-        onTagDelete={() => handleStepDelete(step)}
-      />
+      <Step step={step} key={Id} onTagDelete={() => handleStepDelete(step)} />
     );
-    StepId++;
+    Id++;
   }
 
   return (
     <>
+      <input
+        className={style.stepId}
+        type="text"
+        onChange={handleChangeStepId}
+        value={stepId}
+      />
       <textarea
         className={style.step}
         rows="5"

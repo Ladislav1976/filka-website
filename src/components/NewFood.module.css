@@ -127,3 +127,7 @@ body {
 p{
  margin: 10px;
 }
+
+.timesIngredient{width: 30px; margin-left: 5px;}
+.unitIngredient{width: 55px;}
+.ingIngredient{width: 150px;}

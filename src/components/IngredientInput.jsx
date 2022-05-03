@@ -50,14 +50,16 @@ export default function IngredientInput(props) {
 
   let ingredientListArray = [...ingredientList];
   const ingredientListRender = [];
+  let ingreId = 0;
   for (const ingre of ingredientListArray) {
     ingredientListRender.push(
       <Ing
         ing={ingre}
-        key={ingre}
+        key={ingreId}
         onTagDelete={() => handleIngredientDelete(ingre)}
       />
     );
+    ingreId++;
   }
 
   return (

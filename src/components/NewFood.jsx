@@ -1,17 +1,50 @@
 import { useState, useEffect } from "react";
-import ProcedureInput from "./ProcedureInput";
+import StepsInput from "./StepsInput";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
 
-//TODO: add rest of the inputs
-//TODO: style
+function Times(props) {
+  return (
+    <>
+      <div className={style.timesIngredient}>{props.times}</div>
+    </>
+  );
+}
+
+function Unit(props) {
+  return (
+    <>
+      <div className={style.unitIngredient}>{props.unit}</div>
+    </>
+  );
+}
+
+function Ingredient(props) {
+  return <div className={style.ingIngredient}>{props.ing}</div>;
+}
+
+function Step(props) {
+  return (
+    <>
+      <div className={style.step}>{props.step}</div>
+    </>
+  );
+}
+
+function StepID(props) {
+  return (
+    <>
+      <div className={style.stepid}>{props.id}</div>
+    </>
+  );
+}
 export default function NewFood(props) {
   const [name, setName] = useState(null);
-  const nameTagSet = props.nameTagSet;
-  const ingredientSet = props.ingredientSet;
-  const stepsSet = props.stepsSet;
+  const [nameTagSet, setNameTagSet] = useState(new Set());
+  const [ingredientSet, setIngredientSet] = useState(new Set());
+  const [stepsSet, setStepsSet] = useState(new Set());
   const [tagSet, setTagSet] = useState(new Set());
-  const [foodTagSet, setFoodTagSet] = props.foodTagSetState;
+  const [foodTagSet, setFoodTagSet] = useState(new Set());
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState([]);
   let foodTagSetArray = [...foodTagSet];
@@ -25,7 +58,7 @@ export default function NewFood(props) {
   function handleAddToNameTagList() {
     let nameSplit = name.split(" ");
     console.log("nameSplit:", nameSplit);
-    props.addToNameTagList(nameSplit);
+    addToNameTagList(nameSplit);
   }
 
   function handleNameChange(event) {
@@ -49,10 +82,82 @@ export default function NewFood(props) {
 
   function handleAddToFoodTagList(tag) {
     if (foodTagSetArray.includes(tag)) {
-      props.removeFromFoodTagList(tag);
+      removeFromFoodTagList(tag);
     } else {
-      props.addToFoodTagList(tag);
+      addToFoodTagList(tag);
     }
+  }
+  function addToIngredientList(times, unit, ing) {
+    let newIngredientList = new Set(ingredientSet);
+    let timesId = 0;
+    let unitId = 1000;
+    let ingId = 10000;
+    if (ing === "") {
+      return;
+    }
+    newIngredientList.add(
+      <>
+        <Times times={times} key={timesId} />
+        <Unit unit={unit} key={unitId} />
+        {"   "}
+        <Ingredient ing={ing} key={ingId} />
+      </>
+    );
+    timesId++;
+    unitId++;
+    ingId++;
+    setIngredientSet(newIngredientList);
+  }
+
+  function removeFromIngredientList(ing) {
+    let newIngredientList = new Set(ingredientSet); // slice for sets
+    newIngredientList.delete(ing); // push for set
+    setIngredientSet(newIngredientList);
+  }
+
+  function addToStepsList(id, step) {
+
+    for (const step of stepsSet) {
+        if (!step.id.includes(id))
+        {let newStepsList = new Set(stepsSet);
+    let stepId = 0;
+    let Id = 1000;
+    if (stepsSet === "") {
+      return;
+    }
+    newStepsList.add(
+      <>
+        <StepID id={id} key={Id} />
+        <Step step={step} key={stepId} />
+      </>
+    );
+    stepId++;
+    Id++;
+    setStepsSet(newStepsList);
+    }}}
+
+  function removeFromStepsList(stepsSet, stepId) {
+    let newStepsList = new Set(stepsSet); // slice for sets
+    newStepsList.delete(stepsSet, stepId); // push for set
+    setStepsSet(newStepsList);
+  }
+
+  function addToFoodTagList(tag) {
+    let newFoodTagSet = new Set(foodTagSet);
+    newFoodTagSet.add(tag);
+    setFoodTagSet(newFoodTagSet);
+  }
+
+  function removeFromFoodTagList(tag) {
+    let newFoodTagSet = new Set(foodTagSet);
+    newFoodTagSet.delete(tag);
+    setFoodTagSet(newFoodTagSet);
+  }
+
+  function addToNameTagList(tag) {
+    let newNameTagSet = new Set(nameTagSet);
+    newNameTagSet.add(tag);
+    setNameTagSet(newNameTagSet);
   }
 
   function makeFoodRecord() {
@@ -493,9 +598,9 @@ export default function NewFood(props) {
           <div>
             <div>Suroviny:</div>
             <IngredientInput
-              addToIngredientList={props.addToIngredientList}
+              addToIngredientList={addToIngredientList}
               ingredientList={ingredientSet}
-              removeFromIngredientList={props.removeFromIngredientList}
+              removeFromIngredientList={removeFromIngredientList}
             ></IngredientInput>
           </div>
         </div>
@@ -512,11 +617,11 @@ export default function NewFood(props) {
           <div>
             <p>Postup:</p>
           </div>
-          <ProcedureInput
-            addToStepsList={props.addToStepsList}
+          <StepsInput
+            addToStepsList={addToStepsList}
             stepsList={stepsSet}
-            removeFromStepsList={props.removeFromStepsList}
-          ></ProcedureInput>
+            removeFromStepsList={removeFromStepsList}
+          ></StepsInput>
         </div>
       </div>
       <input

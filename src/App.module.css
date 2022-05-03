@@ -1,3 +1,6 @@
+header{
+  background-color: aquamarine;
+}
 .App {
   display: flex;
   flex-direction: column;
@@ -61,9 +64,7 @@
 
 }
 
-.timesIngredient{width: 30px; margin-left: 5px;}
-.unitIngredient{width: 55px;}
-.ingIngredient{width: 150px;}
+
 
 .foodtypesbox {
   display: flex;

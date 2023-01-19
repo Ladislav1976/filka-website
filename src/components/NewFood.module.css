@@ -99,8 +99,58 @@ body {
 .imageinput{
   margin: 10px 0 10px 0;
   cursor: pointer;
+  
+}
+input[type="file"]{display:none}
+.imagePreview{
+  width:300px;
+  height: 300px;
+  min-height: 100px;min-width: 100px;
+  border:2px solid #dddddd ;
+  margin: 15px;
+  
+  display:flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  font-weight: bold;
+  gap:10px;
+  color:#cccccc;
+  background-position: center;
+  background-size: cover;
+  flex-wrap: wrap;
+
 }
 
+figure{
+  width: 80%;
+}
+
+img{
+  width: 100%;
+}
+.numOfFiles{
+  text-align: center;
+  margin:5px 0 5px 0;
+  font-size: smaller;
+}
+/* .imagePreview{
+  width:300px;
+  height: 300px;
+  min-height: 100px;
+  border:2px solid #dddddd ;
+  margin-top: 15px;
+  
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color:#cccccc;
+} */
+/* .imagePreview__image{
+  display:none;
+  width: 100;
+} */
 
 .procedureBox {
   background-color: rgb(255, 255, 255);;
@@ -127,7 +177,17 @@ body {
 p{
  margin: 10px;
 }
+/* .timesIngredientBox{
 
-.timesIngredient{width: 30px; margin-left: 5px;}
-.unitIngredient{width: 55px;}
-.ingIngredient{width: 150px;}
+.timesIngredientBoxs{  display: flex;
+  flex-direction: row;
+  justify-content:flex-start;
+   margin-left: 5px;}
+} */
+.timesIngredient{
+  box-sizing: border-box;
+  text-align: right;
+  width: 50px;
+  }
+.unitIngredient{width: 55px;padding-left:5px ;}
+.ingIngredient{width: 110px;}

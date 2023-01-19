@@ -5,6 +5,8 @@ export default function FoodItem(props) {
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
 
+
+  // console.log("image:", props.food.image);
   function handlePushFoodToEditRender() {
     // console.log("handlePushFoodToEditRender", props.food);
     setFoodItemEditRender(props.food);

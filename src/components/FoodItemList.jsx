@@ -8,7 +8,8 @@ export default function FoodItemList(props) {
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
 
-  for (const food of props.data) {
+
+  for (const food of props.food) {
     const filterTagsListRender = [];
     for (const filterTag of filterTagListArray) {
       if (
@@ -27,8 +28,8 @@ export default function FoodItemList(props) {
     if (filterTagsListRender.length === 0) {
       foodItemListRender.push(
         <FoodItem
-          key={food.id}
           food={food}
+          key={food.id}
           setModalEditFlagTrue={props.setModalEditFlagTrue}
           foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
         />

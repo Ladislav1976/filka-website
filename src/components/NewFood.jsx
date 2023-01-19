@@ -31,21 +31,22 @@ function Step(props) {
   );
 }
 
-function StepID(props) {
+function Image(props) {
   return (
     <>
-      <div className={style.stepid}>{props.id}</div>
+      <div className={style.image}>{props.image}</div>
     </>
   );
 }
+
 export default function NewFood(props) {
   const [name, setName] = useState(null);
   const [nameTagSet, setNameTagSet] = useState(new Set());
   const [ingredientSet, setIngredientSet] = useState(new Set());
-  const [stepsSet, setStepsSet] = useState(new Set());
+  const [stepsList, setStepsList] = useState(new Set([]));
   const [tagSet, setTagSet] = useState(new Set());
   const [foodTagSet, setFoodTagSet] = useState(new Set());
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState("");
   const [imageURLs, setImageURLs] = useState([]);
   let foodTagSetArray = [...foodTagSet];
   let ingredientSetArray = [...ingredientSet];
@@ -56,13 +57,14 @@ export default function NewFood(props) {
   }
 
   function handleAddToNameTagList() {
-    let nameSplit = name.split(" ");
+    let nameSplit = name?.split(" ");
     console.log("nameSplit:", nameSplit);
     addToNameTagList(nameSplit);
   }
 
   function handleNameChange(event) {
     setName(event.target.value);
+    // handleAddToNameTagList()
   }
 
   function addToTagList(tag) {
@@ -115,31 +117,42 @@ export default function NewFood(props) {
     setIngredientSet(newIngredientList);
   }
 
-  function addToStepsList(id, step) {
-
-    for (const step of stepsSet) {
-        if (!step.id.includes(id))
-        {let newStepsList = new Set(stepsSet);
+  function addToStepsList(step, stepPosition) {
+    // let newStepsSet = new Set(stepsList);
+    let newStepsList = [...stepsList];
     let stepId = 0;
-    let Id = 1000;
-    if (stepsSet === "") {
+    console.log("stepPosition:", stepPosition);
+    // let position = stepPosition - 1;
+    // console.log("position:", position);
+    if (stepsList === "") {
       return;
     }
-    newStepsList.add(
-      <>
-        <StepID id={id} key={Id} />
-        <Step step={step} key={stepId} />
-      </>
-    );
-    stepId++;
-    Id++;
-    setStepsSet(newStepsList);
-    }}}
+    if (step != "") {
+      if (stepPosition === "") {
+        let index = newStepsList.length;
+        stepPosition = index + 1;
+      } else {
+      }
+      // if (stepPosition == "") {
+      //   newStepsSet.add(
+      //     <>
+      //       <Step step={step} key={stepId} />
+      //     </>
+      //   );
+      //   setStepsList(newStepsSet);
+      // }
+      // if ((stepPosition) => 0) {
+      newStepsList.splice(stepPosition, 0, <Step step={step} key={stepId} />);
+      setStepsList(newStepsList);
+      // }
+      stepId++;
+    }
+  }
 
-  function removeFromStepsList(stepsSet, stepId) {
-    let newStepsList = new Set(stepsSet); // slice for sets
-    newStepsList.delete(stepsSet, stepId); // push for set
-    setStepsSet(newStepsList);
+  function removeFromStepsList(step) {
+    let newStepsList = new Set(stepsList); // slice for sets
+    newStepsList.delete(step); // push for set
+    setStepsList(newStepsList);
   }
 
   function addToFoodTagList(tag) {
@@ -165,18 +178,18 @@ export default function NewFood(props) {
       name === "" &&
       ingredientSetArray === "" &&
       foodTagSet === "" &&
-      stepsSet === ""
+      stepsList === ""
     ) {
       alert("Nazov , Suroviny, Druj jedla, Postup nie se uvedene");
     } else if (
       ingredientSetArray === "" &&
       foodTagSet === "" &&
-      stepsSet === ""
+      stepsList === ""
     ) {
       alert("Suroviny, Druj jedla, Postup nie se uvedene");
-    } else if (name === "" && foodTagSet === "" && stepsSet === "") {
+    } else if (name === "" && foodTagSet === "" && stepsList === "") {
       alert("Nazov , Druj jedla, Postup nie se uvedene");
-    } else if (name === "" && ingredientSetArray === "" && stepsSet === "") {
+    } else if (name === "" && ingredientSetArray === "" && stepsList === "") {
       alert("Nazov , Suroviny, Postup nie se uvedene");
     } else if (name === "" && ingredientSetArray === "" && foodTagSet === "") {
       alert("Nazov , Suroviny, Druj jedla nie se uvedene");
@@ -184,11 +197,11 @@ export default function NewFood(props) {
       alert("Nazov, Suroviny nie se uvedene");
     } else if (name === "" && foodTagSet === "") {
       alert("Nazov, Druj jedla nie se uvedene");
-    } else if (name === "" && stepsSet === "") {
+    } else if (name === "" && stepsList === "") {
       alert("Nazov, Postup nie se uvedene");
     } else if (ingredientSetArray === "" && foodTagSet === "") {
       alert("Suroviny, Druj jedla nie se uvedene");
-    } else if (ingredientSetArray === "" && stepsSet === "") {
+    } else if (ingredientSetArray === "" && stepsList === "") {
       alert("Suroviny, Postup nie se uvedene");
     } else if (name === "") {
       alert("Nazov nie je uvedeny");
@@ -203,11 +216,11 @@ export default function NewFood(props) {
     } else
       return {
         name: name,
-        image: imageURLs,
+        image: [...imageURLs],
         ingredients: [...ingredientSet],
         foodTags: [...foodTagSet],
         nameTags: [...nameTagSet],
-        steps: [...stepsSet],
+        steps: [...stepsList],
       };
   }
 
@@ -217,9 +230,17 @@ export default function NewFood(props) {
   // };
 
   useEffect(() => {
+    let ID = 0;
+    let DD = "";
     if (images.length < 1) return;
     const newImageUrls = [];
-    images.forEach((image) => newImageUrls.push(URL.createObjectURL(image)));
+    images.forEach((image) =>
+      // URL.createObjectURL(image).then(
+      //   newImageUrls.push(<Image image={image} key={ID} />)
+      // )
+      newImageUrls.push(URL.createObjectURL(image))
+    );
+    ID++;
     setImageURLs(newImageUrls);
   }, [images]);
 
@@ -586,7 +607,7 @@ export default function NewFood(props) {
         </div>
         <div className={style.ingredientsImageBox}>
           {imageURLs.map((imageSrc) => (
-            <img className={style.foodimage} src={imageSrc} />
+            <img className={style.foodimage} key={imageSrc} src={imageSrc} />
           ))}
           <input
             className={style.imageinput}
@@ -619,7 +640,7 @@ export default function NewFood(props) {
           </div>
           <StepsInput
             addToStepsList={addToStepsList}
-            stepsList={stepsSet}
+            stepListState={stepsList}
             removeFromStepsList={removeFromStepsList}
           ></StepsInput>
         </div>

@@ -1,16 +1,17 @@
 import { useState } from "react";
 import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+// import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 
 function Ing(props) {
   return (
     <>
-      <div className={style.ingredient}>
+      <div id="c" className={style.ingredient}>
         {" "}
         <FontAwesomeIcon
           className={style.ingredientIcon}
-          icon={faXmark}
+          icon={faTrash}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}
         {props.ing}
@@ -24,7 +25,8 @@ export default function IngredientInput(props) {
   const [addedUnit, setAddedUnit] = useState("ks");
   const [addedIngredient, setAddedIngredient] = useState("");
 
-  const ingredientList = props.ingredientList;
+  const ingredientsSet = props.ingredientsList;
+  const ingredientSetID = props.ingredientsIDList;
 
   function addIngredientToTagList() {
     props.addToIngredientList(addedTimes, addedUnit, addedIngredient);
@@ -45,12 +47,25 @@ export default function IngredientInput(props) {
     setAddedIngredient(event.target.value);
   }
   function handleIngredientDelete(ing) {
+    // let tt = b.document.getElementsByClassName("ingredientsList");
+    // let inputVal = tt.document.getElementsByClassName("ingredient");
+    // let c = b.getElementsByClassName("ingredientsList");
+    // let inputVal = c.getElementsByClassName("dd");
+    let b = document.getElementsByClassName("ingredient");
+    console.log("inputVal", b);
+    // let inputVal = document.getElementsByClassName("dd");
+    // let b = (document.getElementById("demo").innerHTML = inputVal[0].id);
+    // console.log("ingrs", b);
     props.removeFromIngredientList(ing);
   }
 
-  let ingredientListArray = [...ingredientList];
+  let ingredientListArray = [...ingredientsSet];
   const ingredientListRender = [];
-  let ingreId = 0;
+  let ingreId = 100;
+
+  // const obj = Object.assign({}, ingredientListArray, ingredientSetID);
+  // console.log("obj", obj);
+
   for (const ingre of ingredientListArray) {
     ingredientListRender.push(
       <Ing
@@ -69,6 +84,7 @@ export default function IngredientInput(props) {
           <input
             type="number"
             className={style.times}
+            id="tm"
             value={addedTimes}
             onChange={handleChangeTimes}
           />
@@ -98,12 +114,18 @@ export default function IngredientInput(props) {
             value={addedIngredient}
             onChange={handleChangeIngredient}
           />
-          <div
+          {/* <div
             className={style.ingredientButton}
             onClick={addIngredientToTagList}
           >
             Pridať
-          </div>
+          </div> */}
+          <FontAwesomeIcon
+            className={style.ingredientIcon}
+            icon={faCartPlus}
+            onClick={addIngredientToTagList}
+          ></FontAwesomeIcon>
+          <FontAwesomeIcon icon="fa-solid fa-cart-plus" />
         </div>
         <div className={style.firstline}></div>
         <div className={style.ingredientsList}>{ingredientListRender}</div>

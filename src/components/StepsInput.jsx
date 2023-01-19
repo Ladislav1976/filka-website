@@ -2,17 +2,19 @@ import { useState } from "react";
 import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function Step(props) {
   return (
     <>
+      <div className={style.stepID}>{props.stepID}</div>{" "}
       <div className={style.step}>
-        {" "}
         <FontAwesomeIcon
-          icon={faXmark}
+          className={style.stepIcon}
+          icon={faTrash}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}
-        <div>{props.step}</div>
+        <div className={style.stepText}>{props.step}</div>
       </div>
     </>
   );
@@ -20,49 +22,65 @@ function Step(props) {
 
 export default function StepsInput(props) {
   const [addedStep, setAddedStep] = useState("");
-  const [stepId, setStepId] = useState(1);
+  const [stepIdSet, setStepIdSet] = useState("");
   const [stepIdCounter, setStepIdCounter] = useState(1);
-  const stepsList = props.stepsList;
+  const add = 1;
+  const stepsList = props.stepListState;
+  let stepsListArray = [...stepsList];
 
   function handleChangeStep(event) {
     setAddedStep(event.target.value);
   }
 
   function handleChangeStepId(event) {
-    setStepId(event.target.value);
+    setStepIdSet(event.target.value);
   }
-  // let stepIdCounter = 1;
-  function addStepToTagList() {
-    if (stepId == stepIdCounter) {
-      console.log("stepIdCounter:", stepIdCounter);
-      props.addToStepsList(stepId, addedStep);
-      setStepIdCounter(stepIdCounter + 1);
-      setStepId(stepIdCounter)
-      console.log("stepIdCounter +1:", stepIdCounter);
-    } else if (stepIdCounter != stepId) {
-      props.addToStepsList(stepId, addedStep);
+
+  function getPosition(elementToFind, arrayElements) {
+    var i;
+    for (i = 0; i < arrayElements.length; i += 1) {
+      if (arrayElements[i] === elementToFind) {
+        return i;
+      }
     }
+    return null; //not found
+  }
+
+  function addStepToTagList() {
+    let ID = "";
+    if (stepIdSet == "" || stepIdSet == 0) {
+      ID = stepIdSet;
+    } else {
+      ID = stepIdSet - 1;
+    }
+    // let ID = stepIdSet -1 ;
+    // console.log("stepIdSet", stepIdSet);
+    // console.log("ID: ", ID);
+    // if (stepIdSet > 1) {
+    //   stepID = stepIdSet - 1;
+    // } else {
+    //   stepID = stepIdSet;
+    // }
+
+    props.addToStepsList(addedStep, ID);
     setAddedStep("");
-    setStepId(stepIdCounter);
-    console.log("stepId:", stepId);
   }
 
-  function handleStepDelete(stepId, addedStep) {
-    props.removeFromStepsList(stepId, addedStep);
+  function handleStepDelete(step) {
+    props.removeFromStepsList(step);
   }
 
-  // function handleKeyPress(event) {
-  //   if (event.key === "Enter") {
-  //     addStepToTagList();
-  //   }
-  // }
-
-  let stepsListArray = [...stepsList];
   const proceduteListRender = [];
   let Id = 0;
   for (const step of stepsListArray) {
+    let stepID = getPosition(step, stepsListArray);
     proceduteListRender.push(
-      <Step step={step} key={Id} onTagDelete={() => handleStepDelete(step)} />
+      <Step
+        step={step}
+        stepID={stepID + 1}
+        key={Id}
+        onTagDelete={() => handleStepDelete(step)}
+      />
     );
     Id++;
   }
@@ -70,10 +88,10 @@ export default function StepsInput(props) {
   return (
     <>
       <input
-        className={style.stepId}
+        className={style.stepIdSet}
+        stepidset={stepIdSet}
         type="text"
         onChange={handleChangeStepId}
-        value={stepId}
       />
       <textarea
         className={style.step}

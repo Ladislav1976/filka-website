@@ -42,6 +42,7 @@ body {
   font-size: x-small;
   padding-left: 0px;
   margin-top: 5px;
+  cursor: pointer;
 }
 
 .ingredientButton:hover {

@@ -4,11 +4,16 @@
   margin: 10px;
   border-radius: 5px;
   cursor: pointer;
+  transition: all .3s ease-in-out;
 }
+
 
 .food:hover {
   border: 2px solid black;
+  transform: scale(1.01);
 }
+
+
 
 .image {
   width: 150px;

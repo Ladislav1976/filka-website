@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+import { useGet, useState, useEffect } from "react";
 import StepsInput from "./StepsInput";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
+import React, { Component } from "react";
+import Image from "./Image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 function Times(props) {
   return (
@@ -23,27 +27,130 @@ function Ingredient(props) {
   return <div className={style.ingIngredient}>{props.ing}</div>;
 }
 
+function Step(props) {
+  return (
+    <>
+      <div className={style.step}>{props.step}</div>
+    </>
+  );
+}
+// function Image(props) {
+//   return (
+//     <>
+//       <div className={style.image}>{props.image}</div>
+//     </>
+//   );
+// }
 export default function EditFood(props) {
+  // console.log("HOOK");
+  const [rawFoodTags, refetchFoodTags, postFoodTag] = props.foodTags;
+  let foodTagsBackEnd = rawFoodTags ?? [];
+
+  const [rawSteps, refetchSteps, postStep] = props.steps;
+  let stepsBackEnd = rawSteps ?? [];
+
+  const [rawIngredients, refetchIngredients, postIngredients] =
+    props.ingredients;
+  let ingredientsBackEnd = rawIngredients ?? [];
+
+  const [
+    rawIngredient,
+    refetchIngredient,
+    postIngredient,
+    loadingIngredient,
+    error,
+  ] = props.ingredient;
+
+  let ingredientBackEnd = rawIngredient ?? [];
+
+  let ingredientLengh = props.ingredientLengh;
+
+  const [rawUnit, refetchUnit, postUnit] = props.unit;
+  let unitBackEnd = rawUnit ?? [];
+
+  // const [rawVolume, refetchVolume, postVolume] = props.volume;
+  // let volumeBackEnd = rawVolume ?? [];
+
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
-
   const [name, setName] = useState(foodItemEditRender.name);
   const [nameTagSet, setNameTagSet] = useState(
     new Set([foodItemEditRender.nameTags])
   );
-  const [ingredientSet, setIngredientSet] = useState(
-    new Set(foodItemEditRender.ingredients)
-  );
-  const [stepsSet, setStepsSet] = useState(new Set(foodItemEditRender.steps));
-  // const [tagSet, setTagSet] = useState(new Set());
+
   const [foodTagSet, setFoodTagSet] = useState(
     new Set(foodItemEditRender.foodTags)
   );
-  const [images, setImages] = useState([]);
+  const [foodTagSetID, setFoodTagSetID] = useState(
+    new Set(foodItemEditRender.foodTagsID)
+  );
+
+  const [stepsSet, setStepsSet] = useState(new Set(foodItemEditRender.steps));
+  const [stepsSetID, setStepsSetID] = useState(
+    new Set(foodItemEditRender.stepsID)
+  );
+
+  const [ingredientsSet, setIngredientsSet] = useState(
+    new Set(foodItemEditRender.ingredients)
+  );
+  const [ingredientSetNotDiv, setIngredientSetNotDiv] = useState(
+    new Set(foodItemEditRender.ingredientsNotDiv)
+  );
+
+  const [ingredientSetID, setIngredientSetID] = useState(
+    new Set(foodItemEditRender.ingredientsID)
+  );
+
+  const [date, setDate] = useState(foodItemEditRender.date);
+
+  const [images, setImages] = useState("");
 
   const [imageURLs, setImageURLs] = useState([foodItemEditRender.image]);
+  const [imageFlag, setImageFlag] = useState(true);
+  const [imageURLsReader, setImageURLsReader] = useState();
+  console.log("imageURLs", imageURLs);
   let foodTagSetArray = [...foodTagSet];
-  let ingredientSetArray = [...ingredientSet];
+  let ingredientSetArray = [...ingredientsSet];
+
+  // foodTags
+  let foodTagsListfoodTag = [];
+  foodTagsBackEnd.forEach((e) => {
+    foodTagsListfoodTag.push(e.foodTag);
+  });
+
+  let foodTagsListID = [];
+  foodTagSet.forEach((tag) => {
+    foodTagsBackEnd.map((e) => {
+      if (e.foodTag === tag) {
+        foodTagsListID.push(e.id);
+      }
+    });
+  });
+
+  // // Steps
+  // let stepsListSteps = [];
+  // stepsBackEnd.forEach((e) => {
+  //   stepsListSteps.push(e.steps);
+  // });
+
+  // let stepsListID = [];
+  // stepsSet.forEach((step) => {
+  //   stepsBackEnd.map((e) => {
+  //     if (e.step === step) {
+  //       stepsListID.push(e.id);
+  //     }
+  //   });
+  // });
+
+  // Ingredients
+  // let ingredientsID = [];
+  // ingredientSetNotDiv.forEach((datatags) => {
+  //   ingredientsBackEnd.map((e) => {
+  //     if (e.id === datatags) {
+  //       ingredientsID.push(e);
+  //     }
+  //   });
+  // });
 
   function handleFoodSave() {
     // handleAddToNameTagList();
@@ -51,8 +158,7 @@ export default function EditFood(props) {
   }
 
   function handleAddToNameTagList() {
-    let nameSplit = name.split(" ");
-    console.log("nameSplit:", nameSplit);
+    let nameSplit = name?.split(" ");
     props.addToNameTagList(nameSplit);
   }
 
@@ -82,53 +188,238 @@ export default function EditFood(props) {
       addToFoodTagList(tag);
     }
   }
+  function stepsCheckPost(step) {
+    let filter = stepsBackEnd.filter((element) => element.step == step);
+    if (filter == "") {
+      postStep({ step: step }).then(refetchSteps);
+    }
+    addToStepIDList(step);
+  }
+
+  function ingredientsCheckPost(times, unit, ing) {
+    let filterUnit = unitBackEnd.filter((element) => element.unit == unit);
+    if (filterUnit == "") {
+      postUnit({ unit: unit });
+    }
+
+    let filterIngre = ingredientBackEnd.filter(
+      (element) => element.ingredient == ing
+    );
+    if (filterIngre == "") {
+      postIngredient({ ingredient: ing });
+    }
+
+    setTimeout(() => {
+      let unitBack = refetchUnit();
+      let ingredientBack = refetchIngredient();
+      unitBack.then((unitB) => {
+        ingredientBack.then((ingredientB) => {
+          ingredientsPost(times, unit, ing, ingredientB, unitB);
+        });
+      });
+    }, 10);
+  }
+
+  function addTofoodTagIDList(foodTag) {
+    let newfoodTagIDList = new Set(foodTagSetID);
+    setTimeout(() => {
+      let foodTagBack = refetchFoodTags();
+      foodTagBack.then((s) => {
+        let filterFoodTag = s.filter((element) => element.foodTag == foodTag);
+        newfoodTagIDList.add(filterFoodTag[0].id);
+        setFoodTagSetID(newfoodTagIDList);
+      });
+    }, 100);
+  }
+
+  function addToStepIDList(step) {
+    let newStepsIDList = new Set(stepsSetID);
+    setTimeout(() => {
+      let steps = refetchSteps();
+      steps.then((s) => {
+        let filterStep = s.filter((element) => element.step == step);
+        newStepsIDList.add(filterStep[0].id);
+        setStepsSetID(newStepsIDList);
+      });
+    }, 100);
+  }
+
+  function addToIngredientsIDList(times, unitID, ingID) {
+    let newIngredientsIDList = new Set(ingredientSetID);
+    let filter = [];
+    setTimeout(() => {
+      let ingre = refetchIngredients();
+      ingre.then((ingreback) => {
+        filter = ingredientsBackEndFilter(times, unitID, ingID, ingreback);
+        newIngredientsIDList.add(filter[0].id);
+        setIngredientSetID(newIngredientsIDList);
+      });
+    }, 100);
+  }
+
+  function handleUnitToID(unit, unitB) {
+    let unitID = "";
+    unitB.forEach((u) => {
+      if (u.unit == unit) {
+        unitID = u.id;
+      }
+    });
+    return unitID;
+  }
+
+  function handleIngredientToID(ing, ingredientB) {
+    let ingID = "";
+    ingredientB.forEach((i) => {
+      if (i.ingredient == ing) {
+        ingID = i.id;
+      }
+    });
+    return ingID;
+  }
+
+  function ingredientsBackEndFilter(times, unitID, ingID, currentIngreBackEnd) {
+    let filter = "";
+    filter = currentIngreBackEnd.filter(
+      (element) =>
+        element.volume == times &&
+        element.units == unitID &&
+        element.ingredientName == ingID
+    );
+    return filter;
+  }
+
+  function ingredientsPost(times, unit, ing, ingredientB, unitB) {
+    let unitID = handleUnitToID(unit, unitB);
+    let ingID = handleIngredientToID(ing, ingredientB);
+
+    //Filter to make sure ingredients does not exist then POST
+    let filter = ingredientsBackEndFilter(
+      times,
+      unitID,
+      ingID,
+      ingredientsBackEnd
+    );
+    if (filter == "") {
+      postIngredients({
+        volume: times,
+        units: [unitID],
+        ingredientName: [ingID],
+      });
+    }
+    addToIngredientsIDList(times, unitID, ingID);
+  }
 
   function addToIngredientList(times, unit, ing) {
-    let newIngredientList = new Set(ingredientSet);
+    let IDtimes = 0;
+    let IDunit = 100;
+    let IDingredient = 1000;
+    let newIngredientList = new Set(ingredientsSet);
     if (ing === "") {
       return;
     }
     newIngredientList.add(
       <>
-        <Times times={times} key={times} />
-        <Unit unit={unit} key={unit} />
+        <Times times={times} key={IDtimes} />
+        <Unit unit={unit} key={IDunit} />
         {"   "}
-        <Ingredient ing={ing} key={ing} />
+        <Ingredient ing={ing} key={IDingredient} />
       </>
     );
-    setIngredientSet(newIngredientList);
+    IDtimes++;
+    IDunit++;
+    IDingredient++;
+    ingredientsCheckPost(times, unit, ing);
+    setIngredientsSet(newIngredientList);
   }
 
-  function removeFromIngredientList(ing) {
-    let newIngredientList = new Set(ingredientSet); // slice for sets
-    newIngredientList.delete(ing); // push for set
-    setIngredientSet(newIngredientList);
+  function removeFromIngredientList(ing, ingrs) {
+    // let ings = [];
+    // let ings = ing.includes(ing);
+    // let inputVal = document.getElementsByClassName("dd");
+    // document.getElementById("demo").innerHTML = inputVal.tagName;
+    // console.log("ingrs", inputVal);
+    let newIngredientsSet = new Set(ingredientsSet); // slice for sets
+    let newIngredientsIDSet = new Set(ingredientSetID); // slice for sets
+    newIngredientsSet.delete(ing); // push for set
+    // let ingre = ing.map((element) => element[0]);
+    // console.log("ingre", ingre);
+    // console.log("ings.id", ingre.id);
+    // console.log("ings[0].id", ings[0].id);
+    newIngredientsIDSet.delete(ing[0].id);
+    setIngredientSetID(newIngredientsIDSet);
+    setIngredientsSet(newIngredientsSet);
   }
 
-  function addToStepsList(step) {
-    let newStepsList = new Set(stepsSet);
-    if (step === "") {
+  function addToStepsList(step, stepPosition) {
+    // let newStepsSet = new Set(stepsList);
+    let newStepsList = [...stepsSet];
+    let stepId = 0;
+    // console.log("stepPosition:", stepPosition);
+    // let position = stepPosition - 1;
+    // console.log("position:", position);
+    if (stepsSet === "") {
       return;
     }
-    newStepsList.add(step);
-    setStepsSet(newStepsList);
+    if (step != "") {
+      if (stepPosition === "") {
+        let index = newStepsList.length;
+        stepPosition = index + 1;
+      } else {
+      }
+      // if (stepPosition == "") {
+      //   newStepsSet.add(
+      //     <>
+      //       <Step step={step} key={stepId} />
+      //     </>
+      //   );
+      //   setStepsList(newStepsSet);
+      // }
+      // if ((stepPosition) => 0) {
+      newStepsList.splice(stepPosition, 0, <Step step={step} key={stepId} />);
+      stepsCheckPost(step);
+
+      setStepsSet(newStepsList);
+      // }
+      stepId++;
+    }
   }
 
   function removeFromStepsList(step) {
-    let newStepsList = new Set(stepsSet); // slice for sets
-    newStepsList.delete(step); // push for set
-    setStepsSet(newStepsList);
+    let newStepsSet = new Set(stepsSet);
+    let newStepsIDSet = new Set(stepsSetID);
+    newStepsSet.delete(step);
+    let filterStep = stepsBackEnd.filter((element) => element.step == step);
+    newStepsIDSet.delete(filterStep[0].id);
+    setStepsSetID(newStepsIDSet);
+    setStepsSet(newStepsSet);
   }
 
-  function addToFoodTagList(tag) {
+  function addToFoodTagList(foodTag) {
     let newFoodTagSet = new Set(foodTagSet);
-    newFoodTagSet.add(tag);
+    newFoodTagSet.add(foodTag);
+    foodTagPost(foodTag);
     setFoodTagSet(newFoodTagSet);
+  }
+
+  function foodTagPost(foodTag) {
+    let filter = foodTagsListfoodTag.filter(
+      (element) => element.foodTag == foodTag
+    );
+    if (filter == "") {
+      postFoodTag({ foodTag: foodTag });
+    }
+    addTofoodTagIDList(foodTag);
   }
 
   function removeFromFoodTagList(tag) {
     let newFoodTagSet = new Set(foodTagSet);
+    let newFoodTagIDSet = new Set(foodTagSetID);
     newFoodTagSet.delete(tag);
+    let filterfoodTag = foodTagsBackEnd.filter(
+      (element) => element.foodTag == tag
+    );
+    newFoodTagIDSet.delete(filterfoodTag[0].id);
+    setFoodTagSetID(newFoodTagIDSet);
     setFoodTagSet(newFoodTagSet);
   }
 
@@ -139,6 +430,7 @@ export default function EditFood(props) {
   }
 
   function makeFoodRecord() {
+    // const data = new FormData();
     if (
       name === "" &&
       ingredientSetArray === "" &&
@@ -180,41 +472,240 @@ export default function EditFood(props) {
       alert("Postup nie je uvedeny");
     } else
       return {
-        ...foodItemEditRender,
+        // ...foodItemEditRender,
+        // data.append("id", foodItemEditRender.id);
+        // data.append("name", name);
+        // data.append("image", imageURLsReader);
+        // data.append("ingredients", [...ingredientSetID]);
+        // data.append("steps", [...stepsSetID]);
+        // data.append("foodTags", [...foodTagSetID]);
+        // data.append("date", date);
+
         id: foodItemEditRender.id,
         name: name,
-        image: imageURLs,
-        ingredients: [...ingredientSet],
-        foodTags: [...foodTagSet],
-        nameTags: [...nameTagSet],
-        steps: [...stepsSet],
+        image: imageURLsReader,
+        ingredients: [...ingredientSetID],
+        steps: [...stepsSetID],
+        foodTags: [...foodTagSetID],
+        date: date,
+        // nameTags: [...nameTagSet],
       };
   }
 
-  // const [file, setFile] = useState("");
-  // const onInputChange = (e) => {
-  //   setFile(e.target.files[0]);
-  // };
-
-  useEffect(() => {
-    if (images.length < 1) return;
-    const newImageUrls = [];
-    images.forEach((image) => newImageUrls.push(URL.createObjectURL(image)));
-    setImageURLs(newImageUrls);
-  }, [images]);
-
-  function onImageChange(e) {
-    setImages([...e.target.files]);
+  function objectLength(obj) {
+    var result = 0;
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        // or Object.prototype.hasOwnProperty.call(obj, prop)
+        result++;
+      }
+    }
+    return result;
   }
-  // function removeFromTagSet(tag) {
-  //   let newTagList = new Set(tagSet); // slice for sets
-  //   newTagList.delete(tag); // push for set
-  //   setTagSet(newTagList);
+
+  // function handleImage() {
+  //   let formdata = new FormData();
+  //   console.log("image", state);
+  //   formdata.append("image", state);
+  //   setImages2(formdata);
+  // }
+  // function onImageChange(e) {
+  //   setImages(e.target.files);
+  //   state = { file: images };
+  //   handleImage();
+  // }
+
+  // function previewImage() {
+  //   const input = document.getElementById("image-input");
+  //   const preview = document.getElementById("image-preview");
+
+  //   const reader = new FileReader();
+  //   reader.onload = function () {
+  //     preview.src = reader.result;
+  //   };
+
+  //   if (input.files && input.files[0]) {
+  //     reader.readAsDataURL(input.files[0]);
+  //   }
+  // }
+  // const reader = new FileReader();
+
+  // function handleEvent(event) {
+  //   // eventLog.textContent += `${event.type}: ${event.loaded} bytes transferred\n`;
+
+  //   if (event.type === "load") {
+  //     images.src = reader.result;
+  //   }
+  // }
+  // function getAllPictures(pics) {
+  //   pics.then((data) => {
+  //     return data.forEach((picture) => {
+  //       // The setState will trigger a re-render
+  //       setImageURLs((photo) => [...photo, picture.Key]);
+  //     });
+  //   });
+  // }
+
+  // function addListeners(reader) {
+  //   reader.addEventListener("loadstart", handleEvent);
+  //   reader.addEventListener("load", handleEvent);
+  //   reader.addEventListener("loadend", handleEvent);
+  //   reader.addEventListener("progress", handleEvent);
+  //   reader.addEventListener("error", handleEvent);
+  //   reader.addEventListener("abort", handleEvent);
+  // }
+
+  // useEffect(() => {
+  // let ID = 0;
+  // let DD = "";
+
+  // if (images.length < 1) return;
+  // const newImageUrls = [];
+  // const newImageUrls2 = [];
+  // console.log("images", images);
+
+  // // imageURLs.map((imageSrc) => newImageUrls2.push(imageSrc)),
+  // images.forEach((image) =>
+  //   // URL.createObjectURL(image).then(
+  //   //   newImageUrls.push(<Image image={image} key={ID} />)
+  //   // )
+  //   newImageUrls.push(URL.createObjectURL(image))
+  // );
+  // console.log("newImageUrls", newImageUrls);
+
+  // if (images) {
+  //   addListeners(reader);
+  //   reader.readAsDataURL(images);
+  // }
+
+  // reader.readAsDataURL(images);
+  // formData.append("image", images);
+  // images.forEach((image) => reader.readAsDataURL(image));
+
+  //   ID++;
+  //   setImageURLsReader(images);
+  //   setImageURLs(newImageUrls);
+  // }, [images]);
+  // function readerhandler() {
+  //   setTimeout(() => {
+  //     console.log("images", images);
+  //   }, 100);
+  // }
+  function onImageChange(e) {
+    // setImages([...e.target.files]);
+  }
+  // useEffect(() => {
+  function onInputChange() {
+    setImageFlag(false);
+    const image_input = document.getElementById("inpFile");
+    const imageContainer = document.getElementById("imagePreview");
+    const numOfFiles = document.getElementById("numOfFiles");
+
+    imageContainer.classList.remove(`.${style.imagePrevieww}`);
+    imageContainer.classList.add(`.${style.imagePreview}`);
+
+    console.log("image_input.type", image_input.type);
+    imageContainer.innerHTML = "";
+    numOfFiles.textContent = `${image_input.files.length}Files selected`;
+    if (image_input.files.length > 0) {
+      console.log("image_input YES");
+
+      for (let i of image_input.files) {
+        // image_input.files.forEach((i) => {
+        console.log("i", i);
+        let reader = new FileReader();
+        let figure = document.createElement("figure");
+        let figCap = document.createElement("figcaption");
+
+        // figCap.innerText = i.name;
+        figure.setAttribute("src", reader.result);
+        figure.appendChild(figCap);
+        reader.onload = () => {
+          let img = document.createElement("img");
+          img.setAttribute("src", reader.result);
+          figure.insertBefore(img, figCap);
+        };
+        imageContainer.appendChild(figure);
+        reader.readAsDataURL(i);
+      }
+    } else {
+      setImageFlag(true);
+    }
+  }
+  // useEffect(() => {
+  //   const image_input = document.querySelector(`.${style.imageinput}`);
+  //   const imageContainer = document.getElementById("imagePreview");
+  //   const numOfFiles = document.getElementById("numOfFiles");
+
+  //   // function preview() {
+  //   console.log("image_input.type", image_input.type);
+  //   imageContainer.innerHTML = "";
+  //   numOfFiles.textContent = `${image_input.files.length}Files selected`;
+  //   for (let i of image_input.files) {
+  //     let reader = new FileReader();
+  //     let figure = document.createElement("figure");
+  //     let figCap = document.createElement("figcaption");
+
+  //     figCap.innerText = i.name;
+  //     figure.setAttribute("src", reader.result);
+  //     figure.appendChild(figCap);
+  //     reader.onload = () => {
+  //       let img = document.createElement("img");
+  //       img.setAttribute("src", reader.result);
+  //       // img.setAttribute("src", reader.result);
+  //       figure.insertBefore(img, figCap);
+  //     };
+  //     imageContainer.appendChild(figure);
+  //     reader.readAsDataURL(i);
+  //   }
+
+  // useEffect(() => {
+  //   const image_input = document.querySelector(`.${style.imageinput}`);
+  //   let uploaded_image = "";
+
+  //   image_input.addEventListener("change", function () {
+  //     const reader = new FileReader();
+  //     reader.addEventListener("load", function () {
+  //       console.log("bla0");
+  //       uploaded_image = reader.result;
+  //       document.querySelector(
+  //         `.${style.imagePreview}`
+  //       ).style.backgroundImage = `url(${uploaded_image})`;
+  //       console.log("hej", this);
+  //     });
+  //     reader.readAsDataURL(this.files[0]);
+  //     setImageURLsReader(reader);
+  //   });
+
+  // const inpFile = document.getElementById("inpFile");
+  // const previewContainer = document.getElementById("imagePreview");
+  // const previewImage = previewContainer.querySelector(
+  //   `.${style.imagePreview__image}`
+  // );
+  // const previewDefaultText = previewContainer.querySelector(
+  //   `.${style.imagePreview__defaultText}`
+  // );
+
+  // inpFile.addEventListener("change", function () {
+  //   const file = this.files[0];
+  //   console.log("bla0");
+  //   if (file) {
+  //     const reader = new FileReader();
+
+  //     reader.addEventListener("load", function () {
+  //       previewImage.setAttribute("src", this.result);
+  //     });
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     previewDefaultText.style.display = null;
+  //     previewImage.style.display = null;
+  //   }
+  // });
 
   return (
     <div className={style.main}>
       <div className={style.header}>RECEPT</div>
-      <div className={style.fooodbox}>
+      <div className={style.fooodbox} id="fooodbox">
         <div className={style.foodtypesbox}>
           <div className={style.food}>
             <img
@@ -566,21 +1057,41 @@ export default function EditFood(props) {
           </div>
         </div>
         <div className={style.ingredientsImageBox}>
-          {imageURLs.map((imageSrc) => (
-            <img className={style.foodimage} src={imageSrc} />
-          ))}
+          <Image visible={imageFlag} imageURLs={imageURLs}></Image>
+          <div className={style.imagePrevieww} id="imagePreview">
+            {/* <span className={style.imagePreview__defaultText}>
+              Image Preview
+            </span> */}
+          </div>
+
           <input
+            // className={style.imageinput}
             className={style.imageinput}
             type="file"
             multiple
             accept="image/*"
-            onChange={onImageChange}
+            id="inpFile"
+            // id="image-input"
+            onChange={onInputChange}
+            display="none"
           />
+          <label for="inpFile">
+            <FontAwesomeIcon
+              className={style.stepIcon}
+              icon={faCircleArrowUp}
+              onClick={props.onTagDelete}
+              id="inpFileIcon"
+            ></FontAwesomeIcon>
+          </label>
+          <p className={style.numOfFiles} id="numOfFiles">
+            No Files chosen
+          </p>
           <div>
             <div>Suroviny:</div>
             <IngredientInput
               addToIngredientList={addToIngredientList}
-              ingredientList={ingredientSet}
+              ingredientsList={ingredientsSet}
+              ingredientsIDList={ingredientSetID}
               removeFromIngredientList={removeFromIngredientList}
             ></IngredientInput>
           </div>
@@ -591,6 +1102,7 @@ export default function EditFood(props) {
           </div>
           <input
             className={style.foodname}
+            value={name}
             type="text"
             onChange={handleNameChange}
             onClick={handleAddToNameTagList}
@@ -599,9 +1111,9 @@ export default function EditFood(props) {
             <p>Postup:</p>
           </div>
           <StepsInput
-            addToStepsList={props.addToStepsList}
-            stepsList={stepsSet}
-            removeFromStepsList={props.removeFromStepsList}
+            addToStepsList={addToStepsList}
+            stepListState={stepsSet}
+            removeFromStepsList={removeFromStepsList}
           ></StepsInput>
         </div>
       </div>

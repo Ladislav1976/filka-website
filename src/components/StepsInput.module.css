@@ -1,5 +1,5 @@
 
-.step,.stepId {
+.step,.stepIdSet {
   display: flex;
   
   justify-content:flex-start;
@@ -7,11 +7,21 @@
     border: 1px grey dotted;
     border-radius: 5px;
     margin-left: 10px;
-    font-size: 16px;
+    font-size: 14px;
     background-color: whitesmoke;
 
   }
-  .stepId {
+  .step{
+    margin-top: 10px;
+  }
+  .stepText{margin:5px 0 5px 0;}
+  .stepId{
+    padding-left: 15px;
+    
+  }
+
+
+  .stepIdSet {
     width: 50px;
     height: 30px;
   margin-bottom: 10px;}
@@ -19,9 +29,10 @@
 .addedstep {
     width: 670px;
     border: 0px white transparent;
+   
     margin-bottom: 10px;
     font-size: 16px;
-    background-color: whitesmoke;
+    
     
   }
 
@@ -45,4 +56,6 @@
 
   .ingredientButton:hover {
     background-color: #81c221;
+    cursor: pointer;
   }
+  .stepIcon{cursor: pointer}

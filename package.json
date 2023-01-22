@@ -23,7 +23,7 @@
     "react-native-image-picker": "^5.0.0",
     "react-refetch": "^3.0.1",
     "react-router-dom": "^6.4.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "redocx": "^1.1.4",
     "restful-react": "^15.9.4",
     "use-fetch-hook": "^1.1.0",

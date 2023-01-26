@@ -1,38 +1,22 @@
-import style from "./Modal.module.css";
+import style from "./Image.module.css";
+
 
 //props.visible -> says if modal should appear
 export default function Image(props) {
-  //   function onModalClose(e) {
-  //     props.setModalFlag(false);
-  //   }
+  const newImageUrlsRender = [];
+const imageURLs = props.imageURLs
 
-  //   function onModalContentClick(event) {
-  //     event.stopPropagation();
-  //   }
+  if(props.imageURLs.length<1) return;
+  let IDs=0
 
-  console.log("props.imageURLs", props.imageURLs);
-  console.log("props.visible", props.visible);
-  if (props.visible == true) {
-    return (
-      <>
-        {props.imageURLs.map((imageSrc) => (
-          <img
-            className={style.foodimage}
-            // className={style.imagePreview__image}
-            key={imageSrc}
-            src={imageSrc}
-            alt="Image Preview"
-          />
-        ))}
-      </>
-    );
-  } else {
-    <img
-      className={style.foodimage}
-      // className={style.imagePreview__image}
-      key=""
-      src=""
-      alt="Image Preview"
-    />;
+  imageURLs.forEach((image) => {  newImageUrlsRender.push(<img
+    className={style.foodimage}
+    key={IDs}
+    src={image.image}
+    alt="Image Preview"
+  />) ;IDs++ })
+  
+
+    return (<div className={style.imagebox}>{newImageUrlsRender}</div>)
   }
-}
+   

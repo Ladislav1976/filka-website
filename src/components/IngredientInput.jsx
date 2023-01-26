@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -27,6 +27,34 @@ export default function IngredientInput(props) {
 
   const ingredientsSet = props.ingredientsList;
   const ingredientSetID = props.ingredientsIDList;
+  const [ingredientSetBulk ,setIngredientSetBulk]=useState("")
+// console.log("ingredientsSet",ingredientsSet)
+// console.log("ingredientSetID",ingredientSetID)
+let ingredientsList = [...ingredientsSet];
+let ingredientsListID = [...ingredientSetID];
+// console.log("newingredientSetID",ingredientsListID)
+useEffect(() => {
+  let array = [];
+  for (let i = 0; i < ingredientsList.length; i++) {for (let u = 0; u < ingredientsListID.length; u++) {
+    if(i==u){
+      array.push({ing:ingredientsList[i],ingID:ingredientsListID[u]});};setIngredientSetBulk(array)
+    }};
+    
+  }
+    ,[])
+    
+
+// const merge = (ingredientsList, ingredientListID) => {
+//   return {ingre:{
+//     ing:ingredientsList,
+//     ingID: ingredientListID
+//   }};
+// }
+
+// let ingredientTemp = merge(ingredientsList, ingredientListID)
+// console.log("ingredientSetBulk",ingredientSetBulk)
+// setIngredientSetBulk(ingredientTemp)
+
 
   function addIngredientToTagList() {
     props.addToIngredientList(addedTimes, addedUnit, addedIngredient);
@@ -46,32 +74,36 @@ export default function IngredientInput(props) {
   function handleChangeIngredient(event) {
     setAddedIngredient(event.target.value);
   }
-  function handleIngredientDelete(ing) {
+  function handleIngredientDelete(ingID,ing) {
     // let tt = b.document.getElementsByClassName("ingredientsList");
     // let inputVal = tt.document.getElementsByClassName("ingredient");
     // let c = b.getElementsByClassName("ingredientsList");
     // let inputVal = c.getElementsByClassName("dd");
-    let b = document.getElementsByClassName("ingredient");
-    console.log("inputVal", b);
+    // let b = document.getElementsByClassName("ingredient");
+    // console.log("ingredietn ingID", ingID);
+    // console.log("ingredietn ing", ing);
     // let inputVal = document.getElementsByClassName("dd");
     // let b = (document.getElementById("demo").innerHTML = inputVal[0].id);
     // console.log("ingrs", b);
-    props.removeFromIngredientList(ing);
+    props.removeFromIngredientList(ingID,ing);
   }
 
-  let ingredientListArray = [...ingredientsSet];
+  // let ingredientListArray = [...ingredientSetBulk];
   const ingredientListRender = [];
   let ingreId = 100;
+  // console.log("ingredientSetBulk", ingredientSetBulk.ingre);
 
-  // const obj = Object.assign({}, ingredientListArray, ingredientSetID);
-  // console.log("obj", obj);
-
-  for (const ingre of ingredientListArray) {
+//   for(const [index,value] of ingredientSetBulk){
+//     console.log(index,value);
+// }
+   for (const ingre of ingredientSetBulk) {
+    // console.log("ingre.ing", ingre.ing);console.log("ingre.ID", ingre.ingID);
     ingredientListRender.push(
       <Ing
-        ing={ingre}
+        ing={ingre.ing}
+        ingID={ingre.ingID}
         key={ingreId}
-        onTagDelete={() => handleIngredientDelete(ingre)}
+        onTagDelete={() => handleIngredientDelete(ingre.ingID,ingre.ing)}
       />
     );
     ingreId++;
@@ -125,7 +157,7 @@ export default function IngredientInput(props) {
             icon={faCartPlus}
             onClick={addIngredientToTagList}
           ></FontAwesomeIcon>
-          <FontAwesomeIcon icon="fa-solid fa-cart-plus" />
+         
         </div>
         <div className={style.firstline}></div>
         <div className={style.ingredientsList}>{ingredientListRender}</div>

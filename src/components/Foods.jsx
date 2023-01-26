@@ -9,12 +9,14 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGet, useMutate } from "restful-react";
 import { render } from "@testing-library/react";
+import axios from 'axios';
 
 function IngrID(props) {
   // let items = document.getElementsByClassName("dd")[0].childNodes;
   // var datePart = document.getElementById("dd");
   // setTimeout(() => {
-  //   var doc = document.getElementsByClassName("dd");
+  //   var doc = document.getElementById("dd").innerText;
+  //   console.log("doc",doc)})
   //   var notes = null;
   //   for (var i = 0; i < doc.childNodes.length; i++) {
   //     if (doc.childNodes[i].className == "4") {
@@ -43,7 +45,7 @@ function IngrID(props) {
   return (
     <>
       <div className="dd" id="dd">
-        cc
+        
       </div>
     </>
   );
@@ -99,6 +101,9 @@ function Foods() {
     path: "/unit/",
   });
 
+  const { data: rawImagefood, refetch: refetchImagefood } = useGet({
+    path: "/imagefood/",
+  });
   // const { data: rawVolume, refetch: refetchVolume } = useGet({
   //   path: "/volume/",
   // });
@@ -117,6 +122,11 @@ function Foods() {
     verb: "POST",
     path: "/foodTags/",
   });
+  const { mutate: postImageFood } = useMutate({
+    verb: "POST",
+    path: "/imagefood/",
+  });
+
 
   const { mutate: postStep } = useMutate({
     verb: "POST",
@@ -148,6 +158,7 @@ function Foods() {
   let steps = rawSteps ?? [];
   let ingredients = rawIngredients ?? [];
   let ingredientRaw = rawIngredient ?? [];
+  let imageFoodRaw = rawImagefood ?? [];
   let ingredient = [];
 
   let unit = rawUnit ?? [];
@@ -167,6 +178,15 @@ function Foods() {
       });
     });
 
+   
+    // imageFood
+     let imageFoodList = []
+    imageFoodRaw.map((e) => {
+          if (e.food === data.id) {
+            imageFoodList.push(e);
+          }
+        });
+    
     // Steps
     let stepsList = [];
     let stepsIDList = [];
@@ -246,7 +266,7 @@ function Foods() {
     foods.push({
       id: data.id,
       name: data.name,
-      image: data.image,
+      image: imageFoodList,
       ingredients: ingredientsList,
       ingredientsID: ingredientsIDList,
       ingredientsNotDiv: ingredientsListNotDiv,
@@ -258,6 +278,7 @@ function Foods() {
     });
   });
 
+
   const [maxFoodId, setMaxFoodId] = useState(2);
   const [filterTagList, setFilterTagList] = useState(new Set([]));
   const [modalNewFlag, setModalNewFlag] = useState(false);
@@ -267,7 +288,7 @@ function Foods() {
   // const [stepsSet, setStepsSet] = useState(new Set([]));
   // const [nameTagSet, setNameTagSet] = useState(new Set());
   // const [foodTagSet, setFoodTagSet] = useState(new Set());
-  const [foodItemEditRender, setFoodItemEditRender] = useState(foods);
+  const [foodItemEditRender, setFoodItemEditRender] = useState("");
 
   let filterTagListArray = [...filterTagList];
 
@@ -284,11 +305,14 @@ function Foods() {
     // foodItem.likes = 0;
     // foodItem.dislikes = 0;
     // foodItem.fave = false;
-    foodItem.date = current_time;
+    // foodItem.date = current_time;
     console.log("foodItem:", foodItem);
     fetch("http://localhost:8000/foods/", {
       method: "POST",
       body: foodItem,
+      headers: {
+        "Content-Type": "multipart/form-data",        
+      },
     })
       .then((res) => console.log(res))
       .catch((error) => console.log(error))
@@ -310,44 +334,47 @@ function Foods() {
   }
 
   function handleEditFoodSave(foodItem) {
-    // let form_data = new FormData();
-    // form_data.append("id", foodItem.id);
-    // form_data.append("name", foodItem.name);
-    // form_data.append("image", foodItem.image);
-    // form_data.append("ingredients", foodItem.ingredients);
-    // form_data.append("steps", foodItem.steps);
-    // form_data.append("date", foodItem.date);
-    // form_data.append("foodTags", foodItem.foodTags);
-
-    // id: foodItemEditRender.id,
-    // name: name,
-    // image: [...imageURLs],
-    // ingredients: [...ingredientSetID],
-    // steps: [...stepsSetID],
-    // foodTags: [...foodTagSetID],
-    // date: date,
-    // handleNewTagSave(foodItem.tags);
-    // let newData = data.filter((d) => d.id != foodItem.id);
-    // newData.push(foodItem);
-    // newData.sort((a, b) => a.id - b.id);
+    console.log("foodItem",foodItem)
+    console.log("imageFoodItem",foodItem.imageFoodItem)
     put(
-      foodItem,
-      { pathParams: foodItem.id }
+      foodItem.foodItem,
+      { pathParams: foodItem.foodItem.id }
       // {
       //   headers: {
       //     "content-type": "multipart/form-data",
       //   },
     ).then(refetchFood);
-    // setData(newData);
+    imgageFoodCheckPost(foodItem.imageFoodItem)
     setModalEditFlag(false);
   }
+
+  function imgageFoodCheckPost(image) {
+        console.log("imageFoodRaw",imageFoodRaw)
+    image.image.forEach((e)=> {
+      let a = []
+      a = imageFoodRaw.filter(
+        (element) => element.id == e.id
+      )
+      if(a==""){
+        let formdata = new FormData()
+        formdata.append("name", e.name);
+        formdata.append("image", e.image);
+        formdata.append("date", e.date);
+        formdata.append("food", e.food);
+        console.log("Posting formdata",formdata)
+        // fetch("http://127.0.0.1:8000/imagefood/", {
+        //   method: "POST",
+        //   body: formdata,
+        //   headers: {'X-CSRFToken': 'csrftoken'}, 
+        // })
+        postImageFood(formdata).then(refetchImagefood);
+      }})
+    }
 
   function addToTagList(tag) {
     let filterTagListArray = [...filterTagList];
     let tagListLowerCase = filterTagListArray.map((str) => str.toLowerCase());
     let newTagListSet = new Set(tagListLowerCase);
-
-    console.log("tag.newTagListSet:", newTagListSet);
     if (tag === "") {
       return;
     } else if (newTagListSet.has(tag.toLowerCase())) {

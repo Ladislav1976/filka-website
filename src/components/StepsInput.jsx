@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -24,11 +24,28 @@ export default function StepsInput(props) {
   const [addedStep, setAddedStep] = useState("");
   const [stepIdSet, setStepIdSet] = useState("");
   const [stepIdCounter, setStepIdCounter] = useState(1);
+  const [stepListBulk, setStepListBulk] = useState("");
   const add = 1;
-  const stepsList = props.stepListState;
-  let stepsListArray = [...stepsList];
+  const stepsSet = props.stepsSetState;
+  const stepsSetID = props.stepsSetIDState;
+  let stepsList = [...stepsSet];
+  let stepsListID = [...stepsSetID];
+  // let stepsListArray = [...stepsList];
+  console.log("stepsSet",stepsSet)
+  console.log("stepsList",stepsList)
+  useEffect(() => {
+    console.log("BEEE")
+    let array = [];
+    for (let i = 0; i < stepsList.length; i++) {for (let u = 0; u < stepsListID.length; u++) {
+      if(i==u){
+        array.push({step:stepsList[i],stepID:stepsListID[u]});};console.log("AHOJJJJJ");setStepListBulk(array)
+      }};
+      
+    }
+      ,)
 
   function handleChangeStep(event) {
+    console.log("DDDDDDDDDD", event.target.value);
     setAddedStep(event.target.value);
   }
 
@@ -54,7 +71,8 @@ export default function StepsInput(props) {
       ID = stepIdSet - 1;
     }
     // let ID = stepIdSet -1 ;
-    // console.log("stepIdSet", stepIdSet);
+    console.log("addedStep ID", ID);
+    console.log("addedStep", addedStep,ID);
     // console.log("ID: ", ID);
     // if (stepIdSet > 1) {
     //   stepID = stepIdSet - 1;
@@ -66,20 +84,24 @@ export default function StepsInput(props) {
     setAddedStep("");
   }
 
-  function handleStepDelete(step) {
-    props.removeFromStepsList(step);
+  function handleStepDelete(st,stID) {
+    console.log("step", st)
+    console.log("stepID", stID)
+    props.removeFromStepsList(st,stID);
   }
 
   const proceduteListRender = [];
   let Id = 0;
-  for (const step of stepsListArray) {
-    let stepID = getPosition(step, stepsListArray);
+  for (const step of stepListBulk) {
+    let stepID = getPosition(step.stepID, stepsList);
+    console.log("stepID", stepID)
     proceduteListRender.push(
       <Step
-        step={step}
+        step={step.step}
+        stID={step.stepID}
         stepID={stepID + 1}
         key={Id}
-        onTagDelete={() => handleStepDelete(step)}
+        onTagDelete={() => handleStepDelete(step.step,step.stepID)}
       />
     );
     Id++;

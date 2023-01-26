@@ -10,6 +10,7 @@ export default function FoodItemList(props) {
 
 
   for (const food of props.food) {
+    
     const filterTagsListRender = [];
     for (const filterTag of filterTagListArray) {
       if (
@@ -24,7 +25,7 @@ export default function FoodItemList(props) {
         console.log("filterrag NOT added:");
       }
     }
-
+   
     if (filterTagsListRender.length === 0) {
       foodItemListRender.push(
         <FoodItem

@@ -122,8 +122,21 @@ input[type="file"]{display:none}
 
 }
 
+#images{
+  width:300px;
+  height: 300px;
+  min-height: 100px;min-width: 100px;
+  position:relative;
+  margin:auto;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 5px;
+  flex-wrap: wrap;
+
+}
+
 figure{
-  width: 80%;
+  width: 45%;
 }
 
 img{

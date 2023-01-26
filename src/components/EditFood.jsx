@@ -73,6 +73,7 @@ export default function EditFood(props) {
 
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
+    const [foodID, setFoodID] = useState(foodItemEditRender.id);
   const [name, setName] = useState(foodItemEditRender.name);
   const [nameTagSet, setNameTagSet] = useState(
     new Set([foodItemEditRender.nameTags])
@@ -89,6 +90,7 @@ export default function EditFood(props) {
   const [stepsSetID, setStepsSetID] = useState(
     new Set(foodItemEditRender.stepsID)
   );
+  console.log("stepsSetTTTTTTT",stepsSet)
 
   const [ingredientsSet, setIngredientsSet] = useState(
     new Set(foodItemEditRender.ingredients)
@@ -104,11 +106,13 @@ export default function EditFood(props) {
   const [date, setDate] = useState(foodItemEditRender.date);
 
   const [images, setImages] = useState("");
-
-  const [imageURLs, setImageURLs] = useState([foodItemEditRender.image]);
+  const [imagePreview, setImagePreview] = useState([]);
+  const [imageURLs, setImageURLs] = useState(foodItemEditRender.image);
+  const [imageURLsList, setImageURLsList] = useState(foodItemEditRender.image);
+  
   const [imageFlag, setImageFlag] = useState(true);
-  const [imageURLsReader, setImageURLsReader] = useState();
-  console.log("imageURLs", imageURLs);
+  const [imageURLsPost, setImageURLsPost] = useState(foodItemEditRender.image);
+
   let foodTagSetArray = [...foodTagSet];
   let ingredientSetArray = [...ingredientsSet];
 
@@ -219,6 +223,7 @@ export default function EditFood(props) {
       });
     }, 10);
   }
+
 
   function addTofoodTagIDList(foodTag) {
     let newfoodTagIDList = new Set(foodTagSetID);
@@ -332,20 +337,26 @@ export default function EditFood(props) {
     setIngredientsSet(newIngredientList);
   }
 
-  function removeFromIngredientList(ing, ingrs) {
+  function removeFromIngredientList(ingID,ing) {
     // let ings = [];
     // let ings = ing.includes(ing);
     // let inputVal = document.getElementsByClassName("dd");
-    // document.getElementById("demo").innerHTML = inputVal.tagName;
-    // console.log("ingrs", inputVal);
+    console.log("delete ingID", ingID);
+    console.log("delete  ing", ing);
     let newIngredientsSet = new Set(ingredientsSet); // slice for sets
     let newIngredientsIDSet = new Set(ingredientSetID); // slice for sets
+    console.log("newIngredientsSet before", newIngredientsSet);
+    console.log("newIngredientsIDSet before", newIngredientsIDSet);
     newIngredientsSet.delete(ing); // push for set
+    console.log("newIngredientsSet after", newIngredientsSet);
+    // let filterStep = ingredientsBackEnd.filter((element) => element.step == step);
     // let ingre = ing.map((element) => element[0]);
     // console.log("ingre", ingre);
     // console.log("ings.id", ingre.id);
     // console.log("ings[0].id", ings[0].id);
-    newIngredientsIDSet.delete(ing[0].id);
+    newIngredientsIDSet.delete(ingID);
+    
+    console.log("newIngredientsIDSet after", newIngredientsIDSet);
     setIngredientSetID(newIngredientsIDSet);
     setIngredientsSet(newIngredientsSet);
   }
@@ -354,7 +365,8 @@ export default function EditFood(props) {
     // let newStepsSet = new Set(stepsList);
     let newStepsList = [...stepsSet];
     let stepId = 0;
-    // console.log("stepPosition:", stepPosition);
+    console.log("stepPosition step:", step);
+    console.log("stepPosition:", stepPosition);
     // let position = stepPosition - 1;
     // console.log("position:", position);
     if (stepsSet === "") {
@@ -385,11 +397,17 @@ export default function EditFood(props) {
   }
 
   function removeFromStepsList(step) {
+    console.log("step",step)
     let newStepsSet = new Set(stepsSet);
     let newStepsIDSet = new Set(stepsSetID);
+    console.log("newStepsSet before",newStepsSet)
     newStepsSet.delete(step);
     let filterStep = stepsBackEnd.filter((element) => element.step == step);
+    console.log("newStepsSet after",newStepsSet)
+    console.log("filterStep.id",filterStep)
+    console.log("newStepsIDSet before",newStepsIDSet)
     newStepsIDSet.delete(filterStep[0].id);
+    console.log("newStepsIDSet after",newStepsIDSet)
     setStepsSetID(newStepsIDSet);
     setStepsSet(newStepsSet);
   }
@@ -430,7 +448,16 @@ export default function EditFood(props) {
   }
 
   function makeFoodRecord() {
-    // const data = new FormData();
+    const foodItem={
+      id: foodItemEditRender.id,
+      name: name,
+      ingredients: [...ingredientSetID],
+      steps: [...stepsSetID],
+      foodTags: [...foodTagSetID],
+      date: date,
+      // nameTags: [...nameTagSet],
+    };
+    const imageFoodItem= {image: [...imageURLsPost]}
     if (
       name === "" &&
       ingredientSetArray === "" &&
@@ -471,25 +498,9 @@ export default function EditFood(props) {
     } else if (foodTagSet === "") {
       alert("Postup nie je uvedeny");
     } else
-      return {
-        // ...foodItemEditRender,
-        // data.append("id", foodItemEditRender.id);
-        // data.append("name", name);
-        // data.append("image", imageURLsReader);
-        // data.append("ingredients", [...ingredientSetID]);
-        // data.append("steps", [...stepsSetID]);
-        // data.append("foodTags", [...foodTagSetID]);
-        // data.append("date", date);
 
-        id: foodItemEditRender.id,
-        name: name,
-        image: imageURLsReader,
-        ingredients: [...ingredientSetID],
-        steps: [...stepsSetID],
-        foodTags: [...foodTagSetID],
-        date: date,
-        // nameTags: [...nameTagSet],
-      };
+      return {foodItem,imageFoodItem}
+      
   }
 
   function objectLength(obj) {
@@ -591,8 +602,62 @@ export default function EditFood(props) {
   //     console.log("images", images);
   //   }, 100);
   // }
+ 
+
+   // images for Posting
+  useEffect(() => {
+    let newImageUrlsPost = []
+    let ID = 0;
+    let newImageURL = []
+    let newImagePreview = []
+    let newImageUrls = (imageURLs)
+
+
+    if (images.length < 1) return;
+    images.forEach((image) =>
+    newImageUrlsPost.push(
+      {id:0, name:name,image:image,date:date,food:foodID}  ),
+      setImageURLsPost(newImageUrlsPost));
+
+
+      images.forEach((image) =>
+      newImageUrls.push(
+        {id:0, name:name,image:(URL.createObjectURL(image)),date:date,food:foodID}),
+        setImageURLsList(newImageUrls)); 
+
+
+      images.forEach((image) =>
+      newImageURL.push(URL.createObjectURL(image)))
+      newImageURL.forEach((image) =>
+      {newImagePreview.push(<img
+        className={style.foodimage}
+        key={ID}
+        src={image}
+        alt="Image Preview"
+      />)});  ID++;
+      setImagePreview(newImagePreview)
+    }, [images]);
+
+//     // images for Preview
+//     useEffect(() => {
+
+//         if (images.length < 1) return;
+   
+//   }, [images]);
+
+
+//     // images for Images list
+//     useEffect(() => {
+      
+//       if (images.length < 1) return;
+
+//  }, [images]);
+
+
+
+
   function onImageChange(e) {
-    // setImages([...e.target.files]);
+    setImages([...e.target.files]);
   }
   // useEffect(() => {
   function onInputChange() {
@@ -1057,11 +1122,11 @@ export default function EditFood(props) {
           </div>
         </div>
         <div className={style.ingredientsImageBox}>
-          <Image visible={imageFlag} imageURLs={imageURLs}></Image>
-          <div className={style.imagePrevieww} id="imagePreview">
-            {/* <span className={style.imagePreview__defaultText}>
+       
+          <div className={style.images} id="imagePreview">{imagePreview}
+            <span className={style.imagePreview__defaultText}>
               Image Preview
-            </span> */}
+            </span>
           </div>
 
           <input
@@ -1069,23 +1134,24 @@ export default function EditFood(props) {
             className={style.imageinput}
             type="file"
             multiple
-            accept="image/*"
+            accept="image/jpeg,image/png,image/gif"
             id="inpFile"
             // id="image-input"
-            onChange={onInputChange}
+            onChange={onImageChange}
             display="none"
           />
           <label for="inpFile">
             <FontAwesomeIcon
               className={style.stepIcon}
               icon={faCircleArrowUp}
-              onClick={props.onTagDelete}
+              // onClick={props.onTagDelete}
               id="inpFileIcon"
             ></FontAwesomeIcon>
           </label>
           <p className={style.numOfFiles} id="numOfFiles">
             No Files chosen
           </p>
+          <Image visible={imageFlag} imageURLs={imageURLsList}></Image>
           <div>
             <div>Suroviny:</div>
             <IngredientInput
@@ -1112,7 +1178,8 @@ export default function EditFood(props) {
           </div>
           <StepsInput
             addToStepsList={addToStepsList}
-            stepListState={stepsSet}
+            stepsSetState={stepsSet}
+            stepsSetIDState={stepsSetID}
             removeFromStepsList={removeFromStepsList}
           ></StepsInput>
         </div>

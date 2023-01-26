@@ -1,0 +1,8 @@
+.imagebox{
+    display: flex;
+    flex-direction: row;
+
+ 
+
+}
+.foodimage{width: 100px;height: 100px;margin: 3px;}

@@ -55,21 +55,21 @@ export default function StepsInput(props) {
   let stepsListID = [...stepsSetID];
   let stepListBulk = [];
   console.log("setStepsSet 3", stepsSet);
-  console.log("stepsSetID 3", stepsSetID);
-  if (stepsList.length != stepsListID.length) {
-    // console.log("not equal");
-  } else {
-    // console.log(" equal");
-  }
+  // console.log("stepsSetID 3", stepsSetID);
+  // if (stepsList.length != stepsListID.length) {
+  //   // console.log("not equal");
+  // } else {
+  //   // console.log(" equal");
+  // }
 
-  for (let i = 0; i < stepsList.length; i++) {
-    for (let u = 0; u < stepsListID.length; u++) {
-      if (i == u) {
-        stepListBulk.push({ step: stepsList[i], stepID: stepsListID[u] });
-        // console.log("stepListBulk", stepListBulk);
-      }
-    }
-  }
+  // for (let i = 0; i < stepsList.length; i++) {
+  //   for (let u = 0; u < stepsListID.length; u++) {
+  //     if (i == u) {
+  //       stepListBulk.push({ step: stepsList[i], stepID: stepsListID[u] });
+  //       // console.log("stepListBulk", stepListBulk);
+  //     }
+  //   }
+  // }
 
   function handleChangeStep(event) {
     setAddedStep(event.target.value);
@@ -133,14 +133,15 @@ export default function StepsInput(props) {
 
   const proceduteListRender = [];
   let Id = 1;
-  for (const step of stepListBulk) {
-    let stepID = getPosition(step.step, stepsList);
-
+  for (const step of stepsSet) {
+    let steID = getPosition(step.step, stepsList);
+    console.log("step", step);
+    console.log("stepID", steID);
     proceduteListRender.push(
       <Step
-        step={step.step}
-        stepID={step.stepID}
-        stID={stepID + 1}
+        step={step.step.step}
+        stepID={step.step.id}
+        stID={steID + 1}
         key={Id}
         addStepToTagList={addStepToTagList}
         onTagDelete={() => handleStepDelete(step.step, step.stepID)}

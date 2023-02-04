@@ -201,7 +201,7 @@ function Foods() {
           let a = e.step;
           // console.log("e.step", e);
           // stepsList.push(<div className={style.unitIngredient}>{e.step}</div>);
-          stepsList.push(e.step);
+          stepsList.push(e);
           stepsIDList.push(e.id);
           // console.log("e.step", e.step, "e.id", e.id);
         }

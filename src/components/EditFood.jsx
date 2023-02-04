@@ -275,11 +275,11 @@ export default function EditFood(props) {
     let newStepsIDList = new Set(stepsSetID);
     setTimeout(() => {
       let steps = refetchSteps();
-      console.log("stepsssssss", steps);
+      // console.log("stepsssssss", steps);
       steps.then((s) => {
         let filterStep = s.filter((element) => element.step == step);
-        console.log("filterStep AAAAA", filterStep);
-        console.log("filterStep id", filterStep[0].id);
+        // console.log("filterStep AAAAA", filterStep);
+        // console.log("filterStep id", filterStep[0].id);
         newStepsIDList.add(filterStep[0].id);
         setStepsSetID(newStepsIDList);
       });
@@ -401,6 +401,7 @@ export default function EditFood(props) {
   }
 
   function addToStepsList(step, stepID, stepPosition) {
+    let obj = { id: stepID, step: step };
     console.log("1step, stepID, stepPosition", step, stepID, stepPosition);
     let newStepsList = [...stepsSet];
     let newStepsIDList = [...stepsSetID];
@@ -418,8 +419,8 @@ export default function EditFood(props) {
       // newStepsList.push(step);
       // newStepsIDList.push(stepID);
       console.log("2step, stepID, stepPosition", step, stepID, stepPosition);
-      newStepsList.splice(stepPosition, 0, step);
-      newStepsIDList.splice(stepPosition, 0, stepID);
+      newStepsList.splice(stepPosition, 0, obj);
+      // newStepsIDList.splice(stepPosition, 0, stepID);
       // newStepsList.splice(stepPosition, 0, step);
 
       console.log("newStepsList", newStepsList);

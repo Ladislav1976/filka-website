@@ -30,7 +30,18 @@ function Ingredient(props) {
 function Step(props) {
   return (
     <>
-      <div className={style.step}>{props.step}</div>
+      <textarea
+        className={style.step}
+        rows="5"
+        value={props.step}
+        // onChange={handleUpdateStep}
+      />
+      <div
+        className={style.ingredientButton}
+        // onClick={() => props.addStepToTagList(step, stepID)}
+      >
+        Pridať
+      </div>
     </>
   );
 }
@@ -46,7 +57,7 @@ export default function EditFood(props) {
   const [rawFoodTags, refetchFoodTags, postFoodTag] = props.foodTags;
   let foodTagsBackEnd = rawFoodTags ?? [];
 
-  const [rawSteps, refetchSteps, postStep] = props.steps;
+  const [rawSteps, refetchSteps, postStep, putStep] = props.steps;
   let stepsBackEnd = rawSteps ?? [];
 
   const [rawIngredients, refetchIngredients, postIngredients] =
@@ -73,7 +84,7 @@ export default function EditFood(props) {
 
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
-    const [foodID, setFoodID] = useState(foodItemEditRender.id);
+  const [foodID, setFoodID] = useState(foodItemEditRender.id);
   const [name, setName] = useState(foodItemEditRender.name);
   const [nameTagSet, setNameTagSet] = useState(
     new Set([foodItemEditRender.nameTags])
@@ -90,7 +101,6 @@ export default function EditFood(props) {
   const [stepsSetID, setStepsSetID] = useState(
     new Set(foodItemEditRender.stepsID)
   );
-  console.log("stepsSetTTTTTTT",stepsSet)
 
   const [ingredientsSet, setIngredientsSet] = useState(
     new Set(foodItemEditRender.ingredients)
@@ -109,7 +119,7 @@ export default function EditFood(props) {
   const [imagePreview, setImagePreview] = useState([]);
   const [imageURLs, setImageURLs] = useState(foodItemEditRender.image);
   const [imageURLsList, setImageURLsList] = useState(foodItemEditRender.image);
-  
+
   const [imageFlag, setImageFlag] = useState(true);
   const [imageURLsPost, setImageURLsPost] = useState(foodItemEditRender.image);
 
@@ -155,6 +165,10 @@ export default function EditFood(props) {
   //     }
   //   });
   // });
+  function handleCheckStep() {
+    // for (let i in step)
+    // props.onFoodSave(makeFoodRecord());
+  }
 
   function handleFoodSave() {
     // handleAddToNameTagList();
@@ -192,13 +206,34 @@ export default function EditFood(props) {
       addToFoodTagList(tag);
     }
   }
-  function stepsCheckPost(step) {
-    let filter = stepsBackEnd.filter((element) => element.step == step);
+
+  function stepsCheckPost(step, stepID) {
+    let stepObj = { id: stepID, step: step };
+    // if (stepID == 0) {
+    //   postStep({ step: step }).then(refetchSteps);
+    // }
+    let filter = stepsBackEnd.filter((element) => element.id == stepID);
+    console.log("filter", filter);
+    // console.log("filter step", filter[0]);
+    // console.log("filter id", filter[0].id);
     if (filter == "") {
       postStep({ step: step }).then(refetchSteps);
     }
+    if (filter != "") {
+      let stepfilter = filter[0];
+      if (stepfilter.step != step) {
+        putStep(stepObj, { pathParams: stepObj.id }).then(refetchSteps);
+      }
+    }
     addToStepIDList(step);
   }
+  // function stepsCheckPostOld(step) {
+  //   let filter = stepsBackEnd.filter((element) => element.step == step);
+  //   if (filter == "") {
+  //     postStep({ step: step }).then(refetchSteps);
+  //   }
+  //   addToStepIDList(step);
+  // }
 
   function ingredientsCheckPost(times, unit, ing) {
     let filterUnit = unitBackEnd.filter((element) => element.unit == unit);
@@ -224,7 +259,6 @@ export default function EditFood(props) {
     }, 10);
   }
 
-
   function addTofoodTagIDList(foodTag) {
     let newfoodTagIDList = new Set(foodTagSetID);
     setTimeout(() => {
@@ -241,8 +275,11 @@ export default function EditFood(props) {
     let newStepsIDList = new Set(stepsSetID);
     setTimeout(() => {
       let steps = refetchSteps();
+      console.log("stepsssssss", steps);
       steps.then((s) => {
         let filterStep = s.filter((element) => element.step == step);
+        console.log("filterStep AAAAA", filterStep);
+        console.log("filterStep id", filterStep[0].id);
         newStepsIDList.add(filterStep[0].id);
         setStepsSetID(newStepsIDList);
       });
@@ -318,11 +355,12 @@ export default function EditFood(props) {
     let IDtimes = 0;
     let IDunit = 100;
     let IDingredient = 1000;
-    let newIngredientList = new Set(ingredientsSet);
+    let newIngredientList = [...ingredientsSet];
     if (ing === "") {
       return;
     }
-    newIngredientList.add(
+    console.log("ingredientsSet before", ingredientsSet);
+    newIngredientList.push(
       <>
         <Times times={times} key={IDtimes} />
         <Unit unit={unit} key={IDunit} />
@@ -330,6 +368,7 @@ export default function EditFood(props) {
         <Ingredient ing={ing} key={IDingredient} />
       </>
     );
+    console.log("newIngredientList after", newIngredientList);
     IDtimes++;
     IDunit++;
     IDingredient++;
@@ -337,7 +376,7 @@ export default function EditFood(props) {
     setIngredientsSet(newIngredientList);
   }
 
-  function removeFromIngredientList(ingID,ing) {
+  function removeFromIngredientList(ingID, ing) {
     // let ings = [];
     // let ings = ing.includes(ing);
     // let inputVal = document.getElementsByClassName("dd");
@@ -355,59 +394,100 @@ export default function EditFood(props) {
     // console.log("ings.id", ingre.id);
     // console.log("ings[0].id", ings[0].id);
     newIngredientsIDSet.delete(ingID);
-    
+
     console.log("newIngredientsIDSet after", newIngredientsIDSet);
     setIngredientSetID(newIngredientsIDSet);
     setIngredientsSet(newIngredientsSet);
   }
 
-  function addToStepsList(step, stepPosition) {
-    // let newStepsSet = new Set(stepsList);
+  function addToStepsList(step, stepID, stepPosition) {
+    console.log("1step, stepID, stepPosition", step, stepID, stepPosition);
     let newStepsList = [...stepsSet];
+    let newStepsIDList = [...stepsSetID];
     let stepId = 0;
-    console.log("stepPosition step:", step);
-    console.log("stepPosition:", stepPosition);
-    // let position = stepPosition - 1;
-    // console.log("position:", position);
-    if (stepsSet === "") {
+    if (stepsSet == "") {
       return;
     }
+
     if (step != "") {
       if (stepPosition === "") {
         let index = newStepsList.length;
         stepPosition = index + 1;
       } else {
       }
-      // if (stepPosition == "") {
-      //   newStepsSet.add(
-      //     <>
-      //       <Step step={step} key={stepId} />
-      //     </>
-      //   );
-      //   setStepsList(newStepsSet);
-      // }
-      // if ((stepPosition) => 0) {
-      newStepsList.splice(stepPosition, 0, <Step step={step} key={stepId} />);
-      stepsCheckPost(step);
+      // newStepsList.push(step);
+      // newStepsIDList.push(stepID);
+      console.log("2step, stepID, stepPosition", step, stepID, stepPosition);
+      newStepsList.splice(stepPosition, 0, step);
+      newStepsIDList.splice(stepPosition, 0, stepID);
+      // newStepsList.splice(stepPosition, 0, step);
+
+      console.log("newStepsList", newStepsList);
+      console.log("newStepsIDList", newStepsIDList);
+      stepsCheckPost(step, stepID);
 
       setStepsSet(newStepsList);
-      // }
-      stepId++;
+      console.log("setStepsSet 1");
+      setStepsSetID(newStepsIDList);
     }
+
+    // if (step != "") {
+    //   stepsCheckPost(step, stepID);
+    //   console.log("newStepsList", newStepsList);
+    //   // newStepsList.push(<Step step={step} key={stepId} />);
+    //   setStepsSet(newStepsList);
+    //   console.log("stepsSet", stepsSet);
+    //   stepId++;
+    // }
   }
 
-  function removeFromStepsList(step) {
-    console.log("step",step)
+  // function addToStepsListOld(step, stepPosition) {
+  //   // let newStepsSet = new Set(stepsList);
+  //   let newStepsList = [...stepsSet];
+  //   let stepId = 0;
+  //   // console.log("stepPosition step:", step);
+  //   // console.log("stepPosition:", stepPosition);
+  //   // let position = stepPosition - 1;
+  //   // console.log("position:", position);
+  //   if (stepsSet === "") {
+  //     return;
+  //   }
+  //   if (step != "") {
+  //     if (stepPosition === "") {
+  //       let index = newStepsList.length;
+  //       stepPosition = index + 1;
+  //     } else {
+  //     }
+  //     // if (stepPosition == "") {
+  //     //   newStepsSet.add(
+  //     //     <>
+  //     //       <Step step={step} key={stepId} />
+  //     //     </>
+  //     //   );
+  //     // }
+  //     // if ((stepPosition) => 0) {
+  //     newStepsList.splice(stepPosition, 0, <Step step={step} key={stepId} />);
+  //     stepsCheckPost(step);
+
+  //     setStepsSet(newStepsList);
+  //     // }
+  //     stepId++;
+  //   }
+  // }
+
+  function removeFromStepsList(step, stepID) {
+    console.log("step delete", step);
+    console.log("stepID delete", stepID);
     let newStepsSet = new Set(stepsSet);
     let newStepsIDSet = new Set(stepsSetID);
-    console.log("newStepsSet before",newStepsSet)
+    console.log("newStepsSet before", newStepsSet);
     newStepsSet.delete(step);
     let filterStep = stepsBackEnd.filter((element) => element.step == step);
-    console.log("newStepsSet after",newStepsSet)
-    console.log("filterStep.id",filterStep)
-    console.log("newStepsIDSet before",newStepsIDSet)
+    console.log("newStepsSet after", newStepsSet);
+    console.log("filterStep.id", filterStep[0].id);
+    console.log("newStepsIDSet before", newStepsIDSet);
     newStepsIDSet.delete(filterStep[0].id);
-    console.log("newStepsIDSet after",newStepsIDSet)
+    console.log("newStepsIDSet after", newStepsIDSet);
     setStepsSetID(newStepsIDSet);
     setStepsSet(newStepsSet);
   }
@@ -448,7 +528,7 @@ export default function EditFood(props) {
   }
 
   function makeFoodRecord() {
-    const foodItem={
+    const foodItem = {
       id: foodItemEditRender.id,
       name: name,
       ingredients: [...ingredientSetID],
@@ -457,7 +537,7 @@ export default function EditFood(props) {
       date: date,
       // nameTags: [...nameTagSet],
     };
-    const imageFoodItem= {image: [...imageURLsPost]}
+    const imageFoodItem = { image: [...imageURLsPost] };
     if (
       name === "" &&
       ingredientSetArray === "" &&
@@ -497,10 +577,7 @@ export default function EditFood(props) {
       alert("Druj jedla nie je uvedeny");
     } else if (foodTagSet === "") {
       alert("Postup nie je uvedeny");
-    } else
-
-      return {foodItem,imageFoodItem}
-      
+    } else return { foodItem, imageFoodItem };
   }
 
   function objectLength(obj) {
@@ -602,59 +679,68 @@ export default function EditFood(props) {
   //     console.log("images", images);
   //   }, 100);
   // }
- 
 
-   // images for Posting
+  // images for Posting
   useEffect(() => {
-    let newImageUrlsPost = []
+    let newImageUrlsPost = [];
     let ID = 0;
-    let newImageURL = []
-    let newImagePreview = []
-    let newImageUrls = (imageURLs)
-
+    let newImageURL = [];
+    let newImagePreview = [];
+    let newImageUrls = imageURLs;
 
     if (images.length < 1) return;
-    images.forEach((image) =>
-    newImageUrlsPost.push(
-      {id:0, name:name,image:image,date:date,food:foodID}  ),
-      setImageURLsPost(newImageUrlsPost));
+    images.forEach(
+      (image) =>
+        newImageUrlsPost.push({
+          id: 0,
+          name: name,
+          image: image,
+          date: date,
+          food: foodID,
+        }),
+      setImageURLsPost(newImageUrlsPost)
+    );
 
+    images.forEach(
+      (image) =>
+        newImageUrls.push({
+          id: 0,
+          name: name,
+          image: URL.createObjectURL(image),
+          date: date,
+          food: foodID,
+        }),
+      setImageURLsList(newImageUrls)
+    );
 
-      images.forEach((image) =>
-      newImageUrls.push(
-        {id:0, name:name,image:(URL.createObjectURL(image)),date:date,food:foodID}),
-        setImageURLsList(newImageUrls)); 
+    images.forEach((image) => newImageURL.push(URL.createObjectURL(image)));
+    newImageURL.forEach((image) => {
+      newImagePreview.push(
+        <img
+          className={style.foodimage}
+          key={ID}
+          src={image}
+          alt="Image Preview"
+        />
+      );
+    });
+    ID++;
+    setImagePreview(newImagePreview);
+  }, [images]);
 
+  //     // images for Preview
+  //     useEffect(() => {
 
-      images.forEach((image) =>
-      newImageURL.push(URL.createObjectURL(image)))
-      newImageURL.forEach((image) =>
-      {newImagePreview.push(<img
-        className={style.foodimage}
-        key={ID}
-        src={image}
-        alt="Image Preview"
-      />)});  ID++;
-      setImagePreview(newImagePreview)
-    }, [images]);
+  //         if (images.length < 1) return;
 
-//     // images for Preview
-//     useEffect(() => {
+  //   }, [images]);
 
-//         if (images.length < 1) return;
-   
-//   }, [images]);
+  //     // images for Images list
+  //     useEffect(() => {
 
+  //       if (images.length < 1) return;
 
-//     // images for Images list
-//     useEffect(() => {
-      
-//       if (images.length < 1) return;
-
-//  }, [images]);
-
-
-
+  //  }, [images]);
 
   function onImageChange(e) {
     setImages([...e.target.files]);
@@ -1122,8 +1208,8 @@ export default function EditFood(props) {
           </div>
         </div>
         <div className={style.ingredientsImageBox}>
-       
-          <div className={style.images} id="imagePreview">{imagePreview}
+          <div className={style.images} id="imagePreview">
+            {imagePreview}
             <span className={style.imagePreview__defaultText}>
               Image Preview
             </span>

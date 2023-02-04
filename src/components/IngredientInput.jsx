@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -27,34 +27,32 @@ export default function IngredientInput(props) {
 
   const ingredientsSet = props.ingredientsList;
   const ingredientSetID = props.ingredientsIDList;
-  const [ingredientSetBulk ,setIngredientSetBulk]=useState("")
-// console.log("ingredientsSet",ingredientsSet)
-// console.log("ingredientSetID",ingredientSetID)
-let ingredientsList = [...ingredientsSet];
-let ingredientsListID = [...ingredientSetID];
-// console.log("newingredientSetID",ingredientsListID)
-useEffect(() => {
-  let array = [];
-  for (let i = 0; i < ingredientsList.length; i++) {for (let u = 0; u < ingredientsListID.length; u++) {
-    if(i==u){
-      array.push({ing:ingredientsList[i],ingID:ingredientsListID[u]});};setIngredientSetBulk(array)
-    }};
-    
+
+  let ingredientsList = [...ingredientsSet];
+  let ingredientsListID = [...ingredientSetID];
+
+  let ingredientSetBulk = [];
+  for (let i = 0; i < ingredientsList.length; i++) {
+    for (let u = 0; u < ingredientsListID.length; u++) {
+      if (i == u) {
+        ingredientSetBulk.push({
+          ing: ingredientsList[i],
+          ingID: ingredientsListID[u],
+        });
+      }
+    }
   }
-    ,[])
-    
 
-// const merge = (ingredientsList, ingredientListID) => {
-//   return {ingre:{
-//     ing:ingredientsList,
-//     ingID: ingredientListID
-//   }};
-// }
+  // const merge = (ingredientsList, ingredientListID) => {
+  //   return {ingre:{
+  //     ing:ingredientsList,
+  //     ingID: ingredientListID
+  //   }};
+  // }
 
-// let ingredientTemp = merge(ingredientsList, ingredientListID)
-// console.log("ingredientSetBulk",ingredientSetBulk)
-// setIngredientSetBulk(ingredientTemp)
-
+  // let ingredientTemp = merge(ingredientsList, ingredientListID)
+  // console.log("ingredientSetBulk",ingredientSetBulk)
+  // setIngredientSetBulk(ingredientTemp)
 
   function addIngredientToTagList() {
     props.addToIngredientList(addedTimes, addedUnit, addedIngredient);
@@ -74,7 +72,7 @@ useEffect(() => {
   function handleChangeIngredient(event) {
     setAddedIngredient(event.target.value);
   }
-  function handleIngredientDelete(ingID,ing) {
+  function handleIngredientDelete(ingID, ing) {
     // let tt = b.document.getElementsByClassName("ingredientsList");
     // let inputVal = tt.document.getElementsByClassName("ingredient");
     // let c = b.getElementsByClassName("ingredientsList");
@@ -85,7 +83,7 @@ useEffect(() => {
     // let inputVal = document.getElementsByClassName("dd");
     // let b = (document.getElementById("demo").innerHTML = inputVal[0].id);
     // console.log("ingrs", b);
-    props.removeFromIngredientList(ingID,ing);
+    props.removeFromIngredientList(ingID, ing);
   }
 
   // let ingredientListArray = [...ingredientSetBulk];
@@ -93,17 +91,17 @@ useEffect(() => {
   let ingreId = 100;
   // console.log("ingredientSetBulk", ingredientSetBulk.ingre);
 
-//   for(const [index,value] of ingredientSetBulk){
-//     console.log(index,value);
-// }
-   for (const ingre of ingredientSetBulk) {
+  //   for(const [index,value] of ingredientSetBulk){
+  //     console.log(index,value);
+  // }
+  for (const ingre of ingredientSetBulk) {
     // console.log("ingre.ing", ingre.ing);console.log("ingre.ID", ingre.ingID);
     ingredientListRender.push(
       <Ing
         ing={ingre.ing}
         ingID={ingre.ingID}
         key={ingreId}
-        onTagDelete={() => handleIngredientDelete(ingre.ingID,ingre.ing)}
+        onTagDelete={() => handleIngredientDelete(ingre.ingID, ingre.ing)}
       />
     );
     ingreId++;
@@ -157,7 +155,6 @@ useEffect(() => {
             icon={faCartPlus}
             onClick={addIngredientToTagList}
           ></FontAwesomeIcon>
-         
         </div>
         <div className={style.firstline}></div>
         <div className={style.ingredientsList}>{ingredientListRender}</div>

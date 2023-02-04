@@ -9,49 +9,48 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGet, useMutate } from "restful-react";
 import { render } from "@testing-library/react";
-import axios from 'axios';
+import axios from "axios";
 
-function IngrID(props) {
-  // let items = document.getElementsByClassName("dd")[0].childNodes;
-  // var datePart = document.getElementById("dd");
-  // setTimeout(() => {
-  //   var doc = document.getElementById("dd").innerText;
-  //   console.log("doc",doc)})
-  //   var notes = null;
-  //   for (var i = 0; i < doc.childNodes.length; i++) {
-  //     if (doc.childNodes[i].className == "4") {
-  //       notes = doc.childNodes[i];
-  //       break;
-  //     }
-  //   }
-  //   console.log(doc);
-  // }, 100);
-  // console.log("items".items.innerText);
-  // var price;
-  // for (let i = 0; i < items.length; i++) {
-  //   price = items[i].innerText;
-  // }
-
-  // items.map((e) => console.log(e.children));
-  // if (items != "") {
-  //   console.log("YES");
-  // } else {
-  //   console.log("NO");
-  // }
-
-  // let data = [].map.call(items, (item) => item.textContent);
-
-  // console.log("DATA", items[0].innerText);
+// function Step(props) {
+//   let step = props.stePPp;
+//   console.log("STEP", step);
+//   return (
+//     <>
+//       <div className={style.timesIngredient}>{step}</div>
+//       {/* <textarea
+//         className={style.step}
+//         rows="5"
+//         value={step}
+//         // onChange={handleUpdateStep} */}
+//       {/* /> */}
+//       {/* <div
+//         className={style.ingredientButton}
+//         // onClick={() => props.addStepToTagList(step, stepID)}
+//       >
+//         Pridať
+//       </div> */}
+//       {/* <textarea className={style.ingIngredient}>{props.step}/> */}
+//     </>
+//   );
+// }
+function Prepol(props) {
+  console.log("AAAAA");
   return (
     <>
-      <div className="dd" id="dd">
-        
-      </div>
+      <div className={style.unitIngredient}>{props.step}</div>
+    </>
+  );
+}
+function IngrID(props) {
+  return (
+    <>
+      <div className="dd" id="dd"></div>
     </>
   );
 }
 
 function Times(props) {
+  // console.log("dsadsadsa");
   return (
     <>
       <div className={style.timesIngredient}>{props.times}</div>
@@ -60,6 +59,7 @@ function Times(props) {
 }
 
 function Unit(props) {
+  // console.log("dsadsadsa");
   return (
     <>
       <div className={style.unitIngredient}>{props.unit}</div>
@@ -127,10 +127,14 @@ function Foods() {
     path: "/imagefood/",
   });
 
-
   const { mutate: postStep } = useMutate({
     verb: "POST",
     path: "/steps/",
+  });
+
+  const { mutate: putStep } = useMutate({
+    verb: "PUT",
+    path: (id) => `/steps/${id}/`,
   });
 
   const { mutate: postVolume } = useMutate({
@@ -178,24 +182,30 @@ function Foods() {
       });
     });
 
-   
     // imageFood
-     let imageFoodList = []
+    let imageFoodList = [];
     imageFoodRaw.map((e) => {
-          if (e.food === data.id) {
-            imageFoodList.push(e);
-          }
-        });
-    
+      if (e.food === data.id) {
+        imageFoodList.push(e);
+      }
+    });
+
     // Steps
     let stepsList = [];
     let stepsIDList = [];
+
     data.steps.forEach((datatags) => {
       steps.map((e) => {
-        if (e.id === datatags) {
+        let stepId = 0;
+        if (e.id == datatags) {
+          let a = e.step;
+          // console.log("e.step", e);
+          // stepsList.push(<div className={style.unitIngredient}>{e.step}</div>);
           stepsList.push(e.step);
           stepsIDList.push(e.id);
+          // console.log("e.step", e.step, "e.id", e.id);
         }
+        stepId++;
       });
     });
 
@@ -278,7 +288,6 @@ function Foods() {
     });
   });
 
-
   const [maxFoodId, setMaxFoodId] = useState(2);
   const [filterTagList, setFilterTagList] = useState(new Set([]));
   const [modalNewFlag, setModalNewFlag] = useState(false);
@@ -311,7 +320,7 @@ function Foods() {
       method: "POST",
       body: foodItem,
       headers: {
-        "Content-Type": "multipart/form-data",        
+        "Content-Type": "multipart/form-data",
       },
     })
       .then((res) => console.log(res))
@@ -334,8 +343,8 @@ function Foods() {
   }
 
   function handleEditFoodSave(foodItem) {
-    console.log("foodItem",foodItem)
-    console.log("imageFoodItem",foodItem.imageFoodItem)
+    console.log("foodItem", foodItem);
+    console.log("imageFoodItem", foodItem.imageFoodItem);
     put(
       foodItem.foodItem,
       { pathParams: foodItem.foodItem.id }
@@ -344,32 +353,31 @@ function Foods() {
       //     "content-type": "multipart/form-data",
       //   },
     ).then(refetchFood);
-    imgageFoodCheckPost(foodItem.imageFoodItem)
+    imgageFoodCheckPost(foodItem.imageFoodItem);
     setModalEditFlag(false);
   }
 
   function imgageFoodCheckPost(image) {
-        console.log("imageFoodRaw",imageFoodRaw)
-    image.image.forEach((e)=> {
-      let a = []
-      a = imageFoodRaw.filter(
-        (element) => element.id == e.id
-      )
-      if(a==""){
-        let formdata = new FormData()
+    console.log("imageFoodRaw", imageFoodRaw);
+    image.image.forEach((e) => {
+      let a = [];
+      a = imageFoodRaw.filter((element) => element.id == e.id);
+      if (a == "") {
+        let formdata = new FormData();
         formdata.append("name", e.name);
         formdata.append("image", e.image);
         formdata.append("date", e.date);
         formdata.append("food", e.food);
-        console.log("Posting formdata",formdata)
+        console.log("Posting formdata", formdata);
         // fetch("http://127.0.0.1:8000/imagefood/", {
         //   method: "POST",
         //   body: formdata,
-        //   headers: {'X-CSRFToken': 'csrftoken'}, 
+        //   headers: {'X-CSRFToken': 'csrftoken'},
         // })
         postImageFood(formdata).then(refetchImagefood);
-      }})
-    }
+      }
+    });
+  }
 
   function addToTagList(tag) {
     let filterTagListArray = [...filterTagList];
@@ -862,7 +870,7 @@ function Foods() {
           onFoodSave={handleEditFoodSave}
           foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
           foodTags={[rawFoodTags, refetchFoodTags, postFoodTag]}
-          steps={[rawSteps, refetchSteps, postStep]}
+          steps={[rawSteps, refetchSteps, postStep, putStep]}
           // ingredientHandler={ingredientHandler}
           ingredients={[rawIngredients, refetchIngredients, postIngredients]}
           ingredient={[

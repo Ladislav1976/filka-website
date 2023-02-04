@@ -16,7 +16,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Foods />}></Route>
         <Route path="/newfood" element={<NewFood />}></Route>
-
       </Routes>
     </Router>
   );

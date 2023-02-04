@@ -5,49 +5,80 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function Step(props) {
+  const [step, setStep] = useState(props.step);
+  // console.log("stepPPPPP", step);
+  const stepID = props.stepID;
+
+  function handleUpdateStep(event) {
+    setStep(event.target.value);
+  }
+
   return (
     <>
-      <div className={style.stepID}>{props.stepID}</div>{" "}
+      <div className={style.stepID}>{props.stID}</div>{" "}
       <div className={style.step}>
         <FontAwesomeIcon
           className={style.stepIcon}
           icon={faTrash}
           onClick={props.onTagDelete}
         ></FontAwesomeIcon>{" "}
-        <div className={style.stepText}>{props.step}</div>
+        {/* <div className={style.stepText}>{props.step}</div> */}
+        {/* <div></div> */}
+        <textarea
+          className={style.step}
+          type="text"
+          rows="2"
+          value={step}
+          onChange={handleUpdateStep}
+        />
+        <div
+          className={style.ingredientButton}
+          onClick={() => props.addStepToTagList(step, stepID)}
+        >
+          Pridať
+        </div>
       </div>
     </>
   );
 }
 
 export default function StepsInput(props) {
-  const [addedStep, setAddedStep] = useState("");
-  const [stepIdSet, setStepIdSet] = useState("");
-  const [stepIdCounter, setStepIdCounter] = useState(1);
-  const [stepListBulk, setStepListBulk] = useState("");
-  const add = 1;
   const stepsSet = props.stepsSetState;
   const stepsSetID = props.stepsSetIDState;
+  const [stepIdSet, setStepIdSet] = useState("");
+  const [addedStep, setAddedStep] = useState("");
+  const [stepIdCounter, setStepIdCounter] = useState(1);
+
+  // const stepsSet = props.stepsSetState;
+  // const stepsSetID = props.stepsSetIDState;
   let stepsList = [...stepsSet];
   let stepsListID = [...stepsSetID];
-  // let stepsListArray = [...stepsList];
-  console.log("stepsSet",stepsSet)
-  console.log("stepsList",stepsList)
-  useEffect(() => {
-    console.log("BEEE")
-    let array = [];
-    for (let i = 0; i < stepsList.length; i++) {for (let u = 0; u < stepsListID.length; u++) {
-      if(i==u){
-        array.push({step:stepsList[i],stepID:stepsListID[u]});};console.log("AHOJJJJJ");setStepListBulk(array)
-      }};
-      
+  let stepListBulk = [];
+  console.log("setStepsSet 3", stepsSet);
+  console.log("stepsSetID 3", stepsSetID);
+  if (stepsList.length != stepsListID.length) {
+    // console.log("not equal");
+  } else {
+    // console.log(" equal");
+  }
+
+  for (let i = 0; i < stepsList.length; i++) {
+    for (let u = 0; u < stepsListID.length; u++) {
+      if (i == u) {
+        stepListBulk.push({ step: stepsList[i], stepID: stepsListID[u] });
+        // console.log("stepListBulk", stepListBulk);
+      }
     }
-      ,)
+  }
 
   function handleChangeStep(event) {
-    console.log("DDDDDDDDDD", event.target.value);
     setAddedStep(event.target.value);
+    // console.log("addedStep", addedStep);
   }
+
+  // function handleUpdateStep(event) {
+  //   setUpdatedStep(event.target.value);
+  // }
 
   function handleChangeStepId(event) {
     setStepIdSet(event.target.value);
@@ -63,16 +94,14 @@ export default function StepsInput(props) {
     return null; //not found
   }
 
-  function addStepToTagList() {
-    let ID = "";
+  function addStepToTagList(st, stID) {
+    let stepPosition = "";
     if (stepIdSet == "" || stepIdSet == 0) {
-      ID = stepIdSet;
+      stepPosition = stepIdSet;
     } else {
-      ID = stepIdSet - 1;
+      stepPosition = stepIdSet - 1;
     }
     // let ID = stepIdSet -1 ;
-    console.log("addedStep ID", ID);
-    console.log("addedStep", addedStep,ID);
     // console.log("ID: ", ID);
     // if (stepIdSet > 1) {
     //   stepID = stepIdSet - 1;
@@ -80,28 +109,41 @@ export default function StepsInput(props) {
     //   stepID = stepIdSet;
     // }
 
-    props.addToStepsList(addedStep, ID);
+    props.addToStepsList(st, stID, stepPosition);
     setAddedStep("");
+    setStepIdSet("");
   }
 
-  function handleStepDelete(st,stID) {
-    console.log("step", st)
-    console.log("stepID", stID)
-    props.removeFromStepsList(st,stID);
+  // function updateStepToTagList(stepID) {
+  //   // let ID = "";
+  //   // if (stepIdSet == "" || stepIdSet == 0) {
+  //   //   ID = stepIdSet;
+  //   // } else {
+  //   //   ID = stepIdSet - 1;
+  //   // }
+
+  //   props.addToStepsList(updatedStep, stepID);
+  //   setStepsSet("");
+  //   setStepIdSet("");
+  // }
+
+  function handleStepDelete(step, stepID) {
+    props.removeFromStepsList(step, stepID);
   }
 
   const proceduteListRender = [];
-  let Id = 0;
+  let Id = 1;
   for (const step of stepListBulk) {
-    let stepID = getPosition(step.stepID, stepsList);
-    console.log("stepID", stepID)
+    let stepID = getPosition(step.step, stepsList);
+
     proceduteListRender.push(
       <Step
         step={step.step}
-        stID={step.stepID}
-        stepID={stepID + 1}
+        stepID={step.stepID}
+        stID={stepID + 1}
         key={Id}
-        onTagDelete={() => handleStepDelete(step.step,step.stepID)}
+        addStepToTagList={addStepToTagList}
+        onTagDelete={() => handleStepDelete(step.step, step.stepID)}
       />
     );
     Id++;
@@ -121,7 +163,10 @@ export default function StepsInput(props) {
         value={addedStep}
         onChange={handleChangeStep}
       />
-      <div className={style.ingredientButton} onClick={addStepToTagList}>
+      <div
+        className={style.ingredientButton}
+        onClick={() => addStepToTagList(addedStep, 0)}
+      >
         Pridať
       </div>
       <div className={style.addedstep}>{proceduteListRender}</div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import StepsInput from "./StepsInput";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
+import LeftPanelFilter from "./LeftPanelFilter";
 
 function Times(props) {
   return (
@@ -42,14 +43,16 @@ function Image(props) {
 export default function NewFood(props) {
   const [name, setName] = useState(null);
   const [nameTagSet, setNameTagSet] = useState(new Set());
-  const [ingredientSet, setIngredientSet] = useState(new Set());
-  const [stepsList, setStepsList] = useState(new Set([]));
+  const [ingredientsSet, setIngredientsSet] = useState(new Set());
+  const [ingredientsSetID, setIngredientsSetID] = useState(new Set());
+  const [stepsSet, setStepsSet] = useState(new Set([]));
+  const [stepsSetID, setStepsSetID] = useState(new Set());
   const [tagSet, setTagSet] = useState(new Set());
   const [foodTagSet, setFoodTagSet] = useState(new Set());
   const [images, setImages] = useState("");
   const [imageURLs, setImageURLs] = useState([]);
   let foodTagSetArray = [...foodTagSet];
-  let ingredientSetArray = [...ingredientSet];
+  let ingredientSetArray = [...ingredientsSet];
 
   function handleFoodSave() {
     // handleAddToNameTagList();
@@ -90,7 +93,7 @@ export default function NewFood(props) {
     }
   }
   function addToIngredientList(times, unit, ing) {
-    let newIngredientList = new Set(ingredientSet);
+    let newIngredientList = new Set(ingredientsSet);
     let timesId = 0;
     let unitId = 1000;
     let ingId = 10000;
@@ -108,23 +111,23 @@ export default function NewFood(props) {
     timesId++;
     unitId++;
     ingId++;
-    setIngredientSet(newIngredientList);
+    setIngredientsSet(newIngredientList);
   }
 
   function removeFromIngredientList(ing) {
-    let newIngredientList = new Set(ingredientSet); // slice for sets
+    let newIngredientList = new Set(ingredientsSet); // slice for sets
     newIngredientList.delete(ing); // push for set
-    setIngredientSet(newIngredientList);
+    setIngredientsSet(newIngredientList);
   }
 
   function addToStepsList(step, stepPosition) {
     // let newStepsSet = new Set(stepsList);
-    let newStepsList = [...stepsList];
+    let newStepsList = [...stepsSet];
     let stepId = 0;
     console.log("stepPosition:", stepPosition);
     // let position = stepPosition - 1;
     // console.log("position:", position);
-    if (stepsList === "") {
+    if (stepsSet === "") {
       return;
     }
     if (step != "") {
@@ -143,16 +146,16 @@ export default function NewFood(props) {
       // }
       // if ((stepPosition) => 0) {
       newStepsList.splice(stepPosition, 0, <Step step={step} key={stepId} />);
-      setStepsList(newStepsList);
+      setStepsSet(newStepsList);
       // }
       stepId++;
     }
   }
 
   function removeFromStepsList(step) {
-    let newStepsList = new Set(stepsList); // slice for sets
+    let newStepsList = new Set(stepsSet); // slice for sets
     newStepsList.delete(step); // push for set
-    setStepsList(newStepsList);
+    setStepsSet(newStepsList);
   }
 
   function addToFoodTagList(tag) {
@@ -178,18 +181,18 @@ export default function NewFood(props) {
       name === "" &&
       ingredientSetArray === "" &&
       foodTagSet === "" &&
-      stepsList === ""
+      stepsSet === ""
     ) {
       alert("Nazov , Suroviny, Druj jedla, Postup nie se uvedene");
     } else if (
       ingredientSetArray === "" &&
       foodTagSet === "" &&
-      stepsList === ""
+      stepsSet === ""
     ) {
       alert("Suroviny, Druj jedla, Postup nie se uvedene");
-    } else if (name === "" && foodTagSet === "" && stepsList === "") {
+    } else if (name === "" && foodTagSet === "" && stepsSet === "") {
       alert("Nazov , Druj jedla, Postup nie se uvedene");
-    } else if (name === "" && ingredientSetArray === "" && stepsList === "") {
+    } else if (name === "" && ingredientSetArray === "" && stepsSet === "") {
       alert("Nazov , Suroviny, Postup nie se uvedene");
     } else if (name === "" && ingredientSetArray === "" && foodTagSet === "") {
       alert("Nazov , Suroviny, Druj jedla nie se uvedene");
@@ -197,11 +200,11 @@ export default function NewFood(props) {
       alert("Nazov, Suroviny nie se uvedene");
     } else if (name === "" && foodTagSet === "") {
       alert("Nazov, Druj jedla nie se uvedene");
-    } else if (name === "" && stepsList === "") {
+    } else if (name === "" && stepsSet === "") {
       alert("Nazov, Postup nie se uvedene");
     } else if (ingredientSetArray === "" && foodTagSet === "") {
       alert("Suroviny, Druj jedla nie se uvedene");
-    } else if (ingredientSetArray === "" && stepsList === "") {
+    } else if (ingredientSetArray === "" && stepsSet === "") {
       alert("Suroviny, Postup nie se uvedene");
     } else if (name === "") {
       alert("Nazov nie je uvedeny");
@@ -217,10 +220,10 @@ export default function NewFood(props) {
       return {
         name: name,
         image: [...imageURLs],
-        ingredients: [...ingredientSet],
+        ingredients: [...ingredientsSet],
         foodTags: [...foodTagSet],
         nameTags: [...nameTagSet],
-        steps: [...stepsList],
+        steps: [...stepsSet],
       };
   }
 
@@ -255,8 +258,12 @@ export default function NewFood(props) {
   return (
     <div className={style.main}>
       <div className={style.header}>NOVY RECEPT</div>
-      <div className={style.fooodbox}>
-        <div className={style.foodtypesbox}>
+      <div className={style.fooodbox} id="fooodbox">
+      <LeftPanelFilter
+          filterTagListArray={foodTagSetArray}
+          handleAddToTagList={handleAddToFoodTagList}
+        />
+        {/* <div className={style.foodtypesbox}>
           <div className={style.food}>
             <img
               className={style.image}
@@ -604,7 +611,7 @@ export default function NewFood(props) {
               </label>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className={style.ingredientsImageBox}>
           {imageURLs.map((imageSrc) => (
             <img className={style.foodimage} key={imageSrc} src={imageSrc} />
@@ -620,7 +627,8 @@ export default function NewFood(props) {
             <div>Suroviny:</div>
             <IngredientInput
               addToIngredientList={addToIngredientList}
-              ingredientList={ingredientSet}
+              ingredientsList={ingredientsSet}
+              ingredientsIDList={ingredientsSetID}
               removeFromIngredientList={removeFromIngredientList}
             ></IngredientInput>
           </div>
@@ -640,7 +648,8 @@ export default function NewFood(props) {
           </div>
           <StepsInput
             addToStepsList={addToStepsList}
-            stepListState={stepsList}
+            stepsSetState={stepsSet}
+            stepsSetIDState={stepsSetID}
             removeFromStepsList={removeFromStepsList}
           ></StepsInput>
         </div>
@@ -649,7 +658,7 @@ export default function NewFood(props) {
         type="button"
         value="Save"
         onClick={handleFoodSave}
-        // onClick={() => props.onFoodSave(makeFoodRecord())}
+      // onClick={() => props.onFoodSave(makeFoodRecord())}
       />
     </div>
   );

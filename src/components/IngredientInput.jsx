@@ -26,10 +26,10 @@ export default function IngredientInput(props) {
   const [addedIngredient, setAddedIngredient] = useState("");
 
   const ingredientsSet = props.ingredientsList;
-  const ingredientSetID = props.ingredientsIDList;
-
+  const ingredientsSetID = props.ingredientsIDList;
+// console.log("ingredientsSet",ingredientsSet)
   let ingredientsList = [...ingredientsSet];
-  let ingredientsListID = [...ingredientSetID];
+  let ingredientsListID = [...ingredientsSetID];
 
   let ingredientSetBulk = [];
   for (let i = 0; i < ingredientsList.length; i++) {

@@ -6,8 +6,18 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function Step(props) {
   const [step, setStep] = useState(props.step);
-  // console.log("stepPPPPP", step);
-  const stepID = props.stepID;
+
+  let stepID = props.stepID;
+
+let stepIDPosition = props.stepIDPosition
+
+  if (stepID == null) { stepID = 0 }
+  console.log("stepID", stepID)
+  // if (stepIDPosition != null) {
+  //   position = stepIDPosition
+  // } else {position = "" }
+ 
+  // console.log("position AAA", position)
 
   function handleUpdateStep(event) {
     setStep(event.target.value);
@@ -33,7 +43,7 @@ function Step(props) {
         />
         <div
           className={style.ingredientButton}
-          onClick={() => props.addStepToTagList(step, stepID)}
+          onClick={() => props.addStepToTagList(step, stepID, stepIDPosition)}
         >
           Pridať
         </div>
@@ -54,22 +64,29 @@ export default function StepsInput(props) {
   let stepsList = [...stepsSet];
   let stepsListID = [...stepsSetID];
   let stepListBulk = [];
-  console.log("setStepsSet 3", stepsSet);
-  console.log("stepsSetID 3", stepsSetID);
-  if (stepsList.length != stepsListID.length) {
-    // console.log("not equal");
-  } else {
-    // console.log(" equal");
+  // console.log("setStepsSet 3", stepsSet);
+  // console.log("stepsSetID 3", stepsSetID);
+
+  // if (stepsList.length != stepsListID.length) {
+
+  // } else {
+
+  // }
+
+  for (let i of stepsList) {
+
+    stepListBulk.push({ id: i.id, step: i.step });
+    // console.log("stepListBulk", stepListBulk);
   }
 
-  for (let i = 0; i < stepsList.length; i++) {
-    for (let u = 0; u < stepsListID.length; u++) {
-      if (i == u) {
-        stepListBulk.push({ step: stepsList[i], stepID: stepsListID[u] });
-        // console.log("stepListBulk", stepListBulk);
-      }
-    }
-  }
+  // for (let i = 0; i < stepsList.length; i++) {
+  //   for (let u = 0; u < stepsListID.length; u++) {
+  //     if (i == u) {
+  //       stepListBulk.push({ step: stepsList[i], stepID: stepsListID[u] });
+
+  //     }
+  //   }
+  // }
 
   function handleChangeStep(event) {
     setAddedStep(event.target.value);
@@ -87,20 +104,28 @@ export default function StepsInput(props) {
   function getPosition(elementToFind, arrayElements) {
     var i;
     for (i = 0; i < arrayElements.length; i += 1) {
-      if (arrayElements[i] === elementToFind) {
+      if (arrayElements[i].id === elementToFind) {
         return i;
       }
     }
     return null; //not found
   }
 
-  function addStepToTagList(st, stID) {
-    let stepPosition = "";
-    if (stepIdSet == "" || stepIdSet == 0) {
-      stepPosition = stepIdSet;
-    } else {
-      stepPosition = stepIdSet - 1;
-    }
+  function addStepToTagList(step, stepID, stepPosition) {
+
+    // let stepPosition = "";
+    // if (stepIdSet == "" || stepIdSet == 0) {
+    //   // console.log("stepIdSetAAAA",stepIdSet)
+    //   stepPosition = stepIdSet;
+    // } else {
+    //   stepPosition = stepIDPosition-1;
+    // }
+    // if ( stepIdSet == 0) {
+    //   // console.log("stepIdSetAAAA",stepIdSet)
+    //   stepPosition = stepIdSet;
+    // } else {
+    //   stepPosition = stepIDPosition-1;
+    // }
     // let ID = stepIdSet -1 ;
     // console.log("ID: ", ID);
     // if (stepIdSet > 1) {
@@ -108,8 +133,8 @@ export default function StepsInput(props) {
     // } else {
     //   stepID = stepIdSet;
     // }
-
-    props.addToStepsList(st, stID, stepPosition);
+    console.log("step, stepID, stepPosition", step, stepID, stepPosition)
+    props.addToStepsList(step, stepID, stepPosition);
     setAddedStep("");
     setStepIdSet("");
   }
@@ -133,21 +158,26 @@ export default function StepsInput(props) {
 
   const proceduteListRender = [];
   let Id = 1;
-  for (const step of stepListBulk) {
-    let stepID = getPosition(step.step, stepsList);
 
+  for (const step of stepListBulk) {
+    // console.log("Id :", Id ,"step.step", step.step,"step.id", step.id)
+    let stepIDPosition = getPosition(step.id, stepsList);
+    // console.log("stepIDPosition 1:", stepIDPosition, "step.step", step.step)
+    // console.log("POSITION", stepIDPosition)
     proceduteListRender.push(
       <Step
         step={step.step}
-        stepID={step.stepID}
-        stID={stepID + 1}
+        stepID={step.id}
+        stepIDPosition={stepIDPosition}
+        stID={Id}
         key={Id}
         addStepToTagList={addStepToTagList}
-        onTagDelete={() => handleStepDelete(step.step, step.stepID)}
+        onTagDelete={() => handleStepDelete(step, stepIDPosition)}
       />
     );
     Id++;
   }
+  // }
 
   return (
     <>

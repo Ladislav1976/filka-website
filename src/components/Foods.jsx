@@ -5,9 +5,11 @@ import NewFood from "./NewFood";
 import EditFood from "./EditFood";
 import FoodItemList from "./FoodItemList";
 import TagInput from "./TagInput";
+import LeftPanelFilter from "./LeftPanelFilter";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGet, useMutate } from "restful-react";
+import { RestfulProvider, error } from "restful-react";
 import { render } from "@testing-library/react";
 import axios from "axios";
 
@@ -71,20 +73,30 @@ function Ingredient(props) {
   return <div className={style.ingIngredient}>{props.ing}</div>;
 }
 
-function Foods() {
+function Foods(props) {
   const base = "https://jsonplaceholder.typicode.com";
-  const { data: rawFoods, refetch: refetchFood } = useGet({
+  const { data: rawFoods,
+    refetch: refetchFood,
+    loading: loadingFoods,
+  } = useGet({
     path: "/foods/",
   });
 
-  const { data: rawFoodTags, refetch: refetchFoodTags } = useGet({
+  const { data: rawFoodTags,
+    refetch: refetchFoodTags,
+    loading: loadingFoodTags,
+  } = useGet({
     path: "/foodTags/",
   });
-  const { data: rawSteps, refetch: refetchSteps } = useGet({
+  const { data: rawSteps,
+    refetch: refetchSteps,
+    loading: loadingSteps} = useGet({
     path: "/steps/",
   });
 
-  const { data: rawIngredients, refetch: refetchIngredients } = useGet({
+  const { data: rawIngredients,
+    refetch: refetchIngredients,
+    loading: loadingIngredients} = useGet({
     path: "/ingredients/",
   });
   let ingredientLengh = 0;
@@ -95,13 +107,20 @@ function Foods() {
     error,
   } = useGet({
     path: "/ingredient/",
-  });
+  })
 
-  const { data: rawUnit, refetch: refetchUnit } = useGet({
+  const { data: rawUnit,
+    refetch: refetchUnit,
+    loading: loadingUnit,
+    error: errorUnit,
+  } = useGet({
     path: "/unit/",
   });
 
-  const { data: rawImagefood, refetch: refetchImagefood } = useGet({
+  const { data: rawImagefood,
+    refetch: refetchImagefood,
+    loading: loadingImageFood
+  } = useGet({
     path: "/imagefood/",
   });
   // const { data: rawVolume, refetch: refetchVolume } = useGet({
@@ -161,10 +180,22 @@ function Foods() {
   let tagsBackEnd = rawFoodTags ?? [];
   let steps = rawSteps ?? [];
   let ingredients = rawIngredients ?? [];
+
   let ingredientRaw = rawIngredient ?? [];
   let imageFoodRaw = rawImagefood ?? [];
   let ingredient = [];
 
+
+
+  // useEffect(() => {
+  //   if (!rawUnit) {
+  //     const timerId = window.setTimeout(() => refetchUnit().then((response) => console.log(response.data))
+  //       .catch((error) => console.log(error)), 1000);
+  //     return () => window.clearTimeout(timerId);
+  //   } else {
+  //     return;
+  //   }
+  // }, [rawUnit, refetchUnit, errorUnit]);
   let unit = rawUnit ?? [];
   // let volume = rawVolume ?? [];
 
@@ -181,7 +212,7 @@ function Foods() {
         }
       });
     });
-
+    // console.log("imageFoodRaw",imageFoodRaw)
     // imageFood
     let imageFoodList = [];
     imageFoodRaw.map((e) => {
@@ -201,7 +232,7 @@ function Foods() {
           let a = e.step;
           // console.log("e.step", e);
           // stepsList.push(<div className={style.unitIngredient}>{e.step}</div>);
-          stepsList.push(e.step);
+          stepsList.push(e);
           stepsIDList.push(e.id);
           // console.log("e.step", e.step, "e.id", e.id);
         }
@@ -297,8 +328,10 @@ function Foods() {
   // const [stepsSet, setStepsSet] = useState(new Set([]));
   // const [nameTagSet, setNameTagSet] = useState(new Set());
   // const [foodTagSet, setFoodTagSet] = useState(new Set());
-  const [foodItemEditRender, setFoodItemEditRender] = useState("");
-
+  const [foodItemEditRender, setFoodItemEditRender] = ("")
+  // function handleFoodItemEditRender() { 
+  //   return foodItemEditRender
+  // }
   let filterTagListArray = [...filterTagList];
 
   function handleEditttFoodSave(foodItem) {
@@ -352,9 +385,10 @@ function Foods() {
       //   headers: {
       //     "content-type": "multipart/form-data",
       //   },
-    ).then(refetchFood);
-    imgageFoodCheckPost(foodItem.imageFoodItem);
-    setModalEditFlag(false);
+      // ).then(refetchFood);
+    ).then(res=>console.log("res",res)).then(refetchFood).then(imgageFoodCheckPost(foodItem.imageFoodItem)).then(
+    setModalEditFlag(false))
+    
   }
 
   function imgageFoodCheckPost(image) {
@@ -446,11 +480,15 @@ function Foods() {
         </main>
       </div>
       <div className={style.main}>
-        <div className={style.foodtypesbox}>
+        <LeftPanelFilter
+          filterTagListArray={filterTagListArray}
+          handleAddToTagList={handleAddToTagList}
+        />
+        {/* <div className={style.foodtypesbox}>
           <div className={style.food}>
             <img
               className={style.image}
-              src="https://www.nin.sk/wp-content/uploads/2019/01/img_2802-900x1350.jpg"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTszKfZHLLDSg5p19IXvQ9I8-XQbORjp8BTw&usqp=CAU"
               alt="POLIEVKY"
               // onClick={() => handleAddToFoodTagList("POLIEVKY")}
               //checked={foodTagSetArray.includes("POLIEVKY")}
@@ -685,7 +723,8 @@ function Foods() {
           <div className={style.food}>
             <img
               className={style.image}
-              src="https://img.mimibazar.sk/s/bs/9/220205/19/i60958.jpg"
+              // src="https://img.mimibazar.sk/s/bs/9/220205/19/i60958.jpg"
+              src="https://img.aktuality.sk/foto/MHgyODk6NTQ4MngzMzY5LzkyMHg1MTgvc21hcnQvaW1n/gjmMQVO2Q6uwVmy_2PHuUA.jpg?st=EH4nQQprrhExfzBoAJeTaJ60jCANc_0ab4UHfYAVh8U&ts=1531738202&e=0"
               alt="BEZMASITE JEDLA"
               //onClick={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
             />
@@ -825,7 +864,7 @@ function Foods() {
               </label>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className={style.FoodItemList}>
           <FoodItemList
             food={foods}
@@ -868,8 +907,10 @@ function Foods() {
           // nameTagSet={nameTagSet}
           // addToNameTagList={addToNameTagList}
           onFoodSave={handleEditFoodSave}
+          // handleFoodItemEditRender={ handleFoodItemEditRender}
           foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
-          foodTags={[rawFoodTags, refetchFoodTags, postFoodTag]}
+          foodTags={[postFoodTag]}
+          // foodTags={[rawFoodTags, refetchFoodTags, postFoodTag,loadingFoodTags]}
           steps={[rawSteps, refetchSteps, postStep, putStep]}
           // ingredientHandler={ingredientHandler}
           ingredients={[rawIngredients, refetchIngredients, postIngredients]}
@@ -882,7 +923,7 @@ function Foods() {
           ]}
           ingredientLengh={ingredientLengh}
           unit={[rawUnit, refetchUnit, postUnit]}
-          // volume={[rawVolume, refetchVolume, postVolume]}
+        // volume={[rawVolume, refetchVolume, postVolume]}
         ></EditFood>
       </Modal>
     </>

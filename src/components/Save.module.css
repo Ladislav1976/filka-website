@@ -1,0 +1,33 @@
+.loadingIcon{
+    margin-top: 100px;
+    width:100px;
+    margin-left: 100px;
+    font-size: 70px;
+    color:grey ;}
+
+.loadingBox{
+        width: 500px;
+        height: 300px;
+        background-color: white;
+    }
+h3{
+
+    text-align: center;
+    color: grey;
+}
+
+.saveIcon{
+    margin-top: 100px;
+    width:100px;
+    margin-left: 100px;
+    font-size: 70px;
+    color:#558113 ;
+}
+
+.errorIcon{
+    margin-top: 100px;
+    width:100px;
+    margin-left: 100px;
+    font-size: 70px;
+    color:red;
+}

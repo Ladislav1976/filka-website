@@ -27,8 +27,9 @@ export default function IngredientInput(props) {
 
   const ingredientsSet = props.ingredientsList;
   const ingredientsSetID = props.ingredientsIDList;
-// console.log("ingredientsSet",ingredientsSet)
+
   let ingredientsList = [...ingredientsSet];
+
   let ingredientsListID = [...ingredientsSetID];
 
   let ingredientSetBulk = [];

@@ -1,7 +1,7 @@
-import style from "./Modal.module.css";
+import style from "./ModalPreview.module.css";
 
 //props.visible -> says if modal should appear
-export default function Modal(props) {
+export default function ModalPreview(props) {
   function onModalClose(e) {
     // props.setModalFlag(false);
   }

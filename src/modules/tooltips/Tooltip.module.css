@@ -1,0 +1,19 @@
+.toolTipContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip {
+    position: absolute;
+    height: 20px;
+    top: calc(-100%-50px);
+    transform: translateX(-40%);
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+    font-size: 10px;
+    /* padding: 10px; */
+    border-radius: 4px;
+    z-index: 1;
+    min-width: 50px;
+
+}

@@ -1,0 +1,188 @@
+.imageListBox {
+
+  display: flex;
+  flex-direction: row;
+
+  background-color: black;
+  justify-content: flex-end;
+  align-items: center;
+  height: auto;
+  width: 100%
+}
+
+#imageadded {
+
+  width: 100px;
+  height: 100px;
+  margin: 3px;
+  /* background-color: white; */
+  opacity: 0.4;
+}
+
+#imageadded:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  opacity: 1;
+  cursor: pointer
+}
+
+#imagedisplayed {
+  width: 100px;
+  height: 100px;
+  margin: 3px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  opacity: 1;
+}
+
+#imagedisplayed:hover {
+  cursor: pointer
+}
+
+#imagePreviewed {
+  width: auto;
+  height: 750px;
+  margin: 3px;
+  background-color: white;
+  margin-top: 1px;
+}
+
+/* Next & previous buttons */
+/* #prev,
+#next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -50px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+  -webkit-user-select: none;
+} */
+/* Position the "next button" to the right */
+/* #next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+  } */
+
+/* On hover, add a black background color with a little bit see-through */
+/* #prev:hover,
+#next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+  } */
+/* Number text (1/3 etc) */
+/* .numbertext {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+  } */
+
+/* The Close Button */
+/* #close {
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 25px;
+    font-weight: bold;
+  } */
+
+/* #close:hover,
+#close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+} */
+/* .cursor {
+    cursor: pointer;
+  } */
+.mainbox {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  
+}
+
+.first_column {
+  display: inline-block;
+  width: 200px;
+
+  background-color: blue;
+}
+
+.imagePreviewBox {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+.imageSetingBox {
+  position: -webkit-sticky;
+  position: sticky;
+  /* display: inline-block; */
+left: 1500px;
+  top: 0;
+  padding: 5px;
+  width: 200px;
+  height: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: blue;
+  color: aliceblue;
+
+
+
+}
+
+
+
+.trashIcon,
+.close,
+.saveIcon,
+.editIcon {
+  color: red;
+  position: absolute;
+  width: 20px;
+  top: 20px;
+
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.close {
+  width: 25px;
+  right: 20px;
+  font-size: 30px;
+  display: flex
+}
+
+.editIcon {
+  right: 60px;
+}
+
+.saveIcon {
+  right: 100px;
+}
+
+.trashIcon {
+  right: 140px;
+}
+
+.trashIcon:hover,
+.saveIcon:hover,
+.editIcon:hover,
+.close:hover,
+.close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}

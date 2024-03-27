@@ -1,61 +1,109 @@
+.stepBox,
+.stepIdSet {
+  /* display: flex;
 
-.step,.stepIdSet {
+  justify-content: flex-start; */
+  width: 670px;
+  /* border: 1px grey dotted; */
+  border-radius: 5px;
+  margin-left: 10px;
+  font-size: 14px;
+  background-color: white
+}
+
+.stepBox {
   display: flex;
-  
-  justify-content:flex-start;
-    width: 670px;
-    border: 1px grey dotted;
-    border-radius: 5px;
-    margin-left: 10px;
-    font-size: 14px;
-    background-color: whitesmoke;
+  flex-direction: row;
+}
 
-  }
-  .step{
-    margin-top: 10px;
-  }
-  .stepText{margin:5px 0 5px 0;}
-  .stepId{
-    padding-left: 15px;
-    
-  }
+.stepText {
+  margin: 5px 0 5px 0;
+  /* display: flex;
+
+  justify-content: flex-start; */
+  /* width: 670px; */
+  min-width:670px;
+  min-height: 80px;
+  border: 1px grey dotted;
+  border-radius: 5px;
+
+  font-size: 14px;
+  background-color: whitesmoke;
+}
+
+.stepId {
+  padding-left: 15px;
+
+}
 
 
-  .stepIdSet {
-    width: 50px;
-    height: 30px;
-  margin-bottom: 10px;}
+.stepIdSet {
+  width: 50px;
+  height: 30px;
+  margin-bottom: 10px;
+}
 
 .addedstep {
-    width: 670px;
-    border: 0px white transparent;
-   
-    margin-bottom: 10px;
-    font-size: 16px;
-    
-    
-  }
+  width: 670px;
+  border: 0px white transparent;
 
-.ingredientButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #558113;
-    border: 1px solid;
-    border-color: rgb(233, 229, 229);
-    border-radius: 10px;
-    height: 22px;
-    width: 50px;
-    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
-    color: white;
-    font-size: x-small;
-    padding-left: 0px;
-    margin-top: 5px;
-    margin-left: 10px;
-  }
+  margin-bottom: 10px;
+  font-size: 16px;
 
-  .ingredientButton:hover {
-    background-color: #81c221;
-    cursor: pointer;
-  }
-  .stepIcon{cursor: pointer}
+
+}
+
+.cancelIcon,
+.deleteIcon,
+.newStepIcon,
+.editIcon {
+  cursor: pointer;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  /* background-color: #558113; */
+  border: 1px solid;
+  border-color: rgb(233, 229, 229);
+  /* border-radius: 10px;
+  height: 22px;
+  width: 50px; */
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
+
+  font-size: 20px;
+  padding-left: 0px;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+
+.newStepIcon {
+  color: "#558113";
+}
+
+
+.deleteIcon,
+.cancelIcon {
+  color: grey;
+}
+
+.editIcon:hover,
+.cancelIcon:hover,
+.newStepIcon:hover,
+.deleteIcon:hover {
+
+  color: blue;
+  cursor: pointer;
+}
+
+.stepTextInput,
+.iconBox{
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: flex-start;
+}
+.stepTextInput{
+  display: flex;
+  flex-direction: row;
+}
+

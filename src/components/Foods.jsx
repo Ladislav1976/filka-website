@@ -7,11 +7,13 @@ import FoodItemList from "./FoodItemList";
 import TagInput from "./TagInput";
 import LeftPanelFilter from "./LeftPanelFilter";
 import React from "react";
+import {useQuery} from "@tanstack/react-query"
 import { Link, useNavigate } from "react-router-dom";
 import { useGet, useMutate } from "restful-react";
-import { RestfulProvider, error } from "restful-react";
+// import { RestfulProvider, error } from "restful-react";
 import { render } from "@testing-library/react";
 import axios from "axios";
+
 
 // function Step(props) {
 //   let step = props.stePPp;
@@ -74,55 +76,97 @@ function Ingredient(props) {
 }
 
 function Foods(props) {
-  const base = "https://jsonplaceholder.typicode.com";
-  const { data: rawFoods,
-    refetch: refetchFood,
-    loading: loadingFoods,
-  } = useGet({
-    path: "/foods/",
-  });
+  async function HandleGet(url){
+    return (useQuery({queryKey:[url]}))
+}
+ async function defaultQueryFn ({ queryKey }) {
+  const { data } = await axios.get(
+    `http://127.0.0.1:8000${queryKey[0]}`,
+  )
+  // .then((users) => users.map((user) => user.id))
+  return data
+}
+  // const { data: rawFoods,
+  //   refetch: refetchFood,
+  //   loading: loadingFoods,
+  // } = useGet({
+  //   path: "/foods/",
+  // });
+  const {data: rawFoods,refetch: refetchFood,isLoading: loadingRawFoods, error: errorFoods} = useQuery({ 
+    queryKey: [`/foods/`],
+    queryFn: defaultQueryFn, }) 
+//     if (errorFoods){
+//      console.log("errorFoods")}
+//     if (loadingRawFoods)
+//     { console.log("loadingRawFoods")}
+//   // HandleGet(`/foods/`)
+// console.log("rawFoods",rawFoods)
+  // const { data: rawFoodTags,
+  //   refetch: refetchFoodTags,
+  //   loading: loadingFoodTags,
+  // } = useGet({
+  //   path: "/foodTags/",
+  // });
+  const {data: rawFoodTags, refetch: refetchFoodTags,} = useQuery({ 
+    queryKey: ["/foodTags/"] ,
+    enabled: !!rawFoods,
+    queryFn: defaultQueryFn, }) 
+  // HandleGet("/foodTags/")
 
-  const { data: rawFoodTags,
-    refetch: refetchFoodTags,
-    loading: loadingFoodTags,
-  } = useGet({
-    path: "/foodTags/",
-  });
-  const { data: rawSteps,
-    refetch: refetchSteps,
-    loading: loadingSteps} = useGet({
-    path: "/steps/",
-  });
+  // const { data: rawSteps,
+  //   refetch: refetchSteps,
+  //   loading: loadingSteps} = useGet({
+  //   path: "/steps/",
+  // });
+  const {data: rawSteps,refetch: refetchSteps,} = useQuery({ 
+    queryKey: ["/steps/"] ,
+    enabled: !!rawFoodTags,
+    queryFn: defaultQueryFn, }) 
 
-  const { data: rawIngredients,
-    refetch: refetchIngredients,
-    loading: loadingIngredients} = useGet({
-    path: "/ingredients/",
-  });
+  // const { data: rawIngredients,
+  //   refetch: refetchIngredients,
+  //   loading: loadingIngredients} = useGet({
+  //   path: "/ingredients/",
+  // });
+  const {data: rawIngredients,refetch: refetchIngredients,} = useQuery({ 
+    queryKey: ["/ingredients/"] ,
+    enabled: !!rawSteps,
+    queryFn: defaultQueryFn, }) 
+
   let ingredientLengh = 0;
-  const {
-    data: rawIngredient,
-    refetch: refetchIngredient,
-    loading: loadingIngredient,
-    error,
-  } = useGet({
-    path: "/ingredient/",
-  })
-
-  const { data: rawUnit,
-    refetch: refetchUnit,
-    loading: loadingUnit,
-    error: errorUnit,
-  } = useGet({
-    path: "/unit/",
-  });
-
-  const { data: rawImagefood,
-    refetch: refetchImagefood,
-    loading: loadingImageFood
-  } = useGet({
-    path: "/imagefood/",
-  });
+  // const {
+  //   data: rawIngredient,
+  //   refetch: refetchIngredient,
+  //   loading: loadingIngredient,
+  //   error,
+  // } = useGet({
+  //   path: "/ingredient/",
+  // })
+  const {data: rawIngredient,refetch: refetchIngredient,} = useQuery({ 
+    queryKey: ["/ingredient/"] ,
+    enabled: !!rawIngredients,
+    queryFn: defaultQueryFn, })  
+  // const { data: rawUnit,
+  //   refetch: refetchUnit,
+  //   loading: loadingUnit,
+  //   error: errorUnit,
+  // } = useGet({
+  //   path: "/unit/",
+  // });
+  const {data: rawUnit,refetch: refetchUnit,} = useQuery({ 
+    queryKey: ["/unit/"] ,
+    enabled: !!rawIngredient,
+    queryFn: defaultQueryFn, })  
+  // const { data: rawImagefood,
+  //   refetch: refetchImagefood,
+  //   loading: loadingImageFood
+  // } = useGet({
+  //   path: "/imagefood/",
+  // });
+  const {data: rawImagefood,refetch: refetchImagefood,} = useQuery({ 
+    queryKey: ["/imagefood/"] ,
+    enabled: !!rawUnit,
+    queryFn: defaultQueryFn, })  
   // const { data: rawVolume, refetch: refetchVolume } = useGet({
   //   path: "/volume/",
   // });
@@ -198,7 +242,7 @@ function Foods(props) {
   // }, [rawUnit, refetchUnit, errorUnit]);
   let unit = rawUnit ?? [];
   // let volume = rawVolume ?? [];
-
+let foodTagsBox = []
   let foods = [];
   foodsRaw.forEach((data) => {
     // foodTags
@@ -303,7 +347,7 @@ function Foods(props) {
       IDtimes++;
       IDunit++;
       IDingredient++;
-    });
+    });   
     foods.push({
       id: data.id,
       name: data.name,
@@ -316,7 +360,7 @@ function Foods(props) {
       foodTags: foodTagsList,
       foodTagsID: foodTagsIDList,
       date: data.date,
-    });
+    });foodTagsBox.push(foodTagsList)
   });
 
   const [maxFoodId, setMaxFoodId] = useState(2);
@@ -334,37 +378,37 @@ function Foods(props) {
   // }
   let filterTagListArray = [...filterTagList];
 
-  function handleEditttFoodSave(foodItem) {
-    let current_time = new Date().toLocaleDateString("en-uk", {
-      day: "numeric",
-      year: "numeric",
-      month: "short",
-    });
-    // let newData = data.slice();
-    // let newFoodId = maxFoodId + 1;
-    // setMaxFoodId(newFoodId);
-    // foodItem.id = newFoodId;
-    // foodItem.likes = 0;
-    // foodItem.dislikes = 0;
-    // foodItem.fave = false;
-    // foodItem.date = current_time;
-    console.log("foodItem:", foodItem);
-    fetch("http://localhost:8000/foods/", {
-      method: "POST",
-      body: foodItem,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error))
-      .then(refetchFood);
+  // function handleEditttFoodSave(foodItem) {
+  //   let current_time = new Date().toLocaleDateString("en-uk", {
+  //     day: "numeric",
+  //     year: "numeric",
+  //     month: "short",
+  //   });
+  //   // let newData = data.slice();
+  //   // let newFoodId = maxFoodId + 1;
+  //   // setMaxFoodId(newFoodId);
+  //   // foodItem.id = newFoodId;
+  //   // foodItem.likes = 0;
+  //   // foodItem.dislikes = 0;
+  //   // foodItem.fave = false;
+  //   // foodItem.date = current_time;
+  //   console.log("foodItem:", foodItem);
+  //   fetch("http://localhost:8000/foods/", {
+  //     method: "POST",
+  //     body: foodItem,
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //     },
+  //   })
+  //     .then((res) => console.log(res))
+  //     .catch((error) => console.log(error))
+  //     .then(refetchFood);
 
-    // post(foodItem).then(refetch);
-    // newData.push(foodItem);
-    // setData(newData);
-    setModalNewFlag(false);
-  }
+  //   // post(foodItem).then(refetch);
+  //   // newData.push(foodItem);
+  //   // setData(newData);
+  //   setModalNewFlag(false);
+  // }
 
   function handleNewFoodSave(foodItem) {
     let newData = foodsRaw.filter((d) => d.id != foodItem.id);
@@ -483,6 +527,7 @@ function Foods(props) {
         <LeftPanelFilter
           filterTagListArray={filterTagListArray}
           handleAddToTagList={handleAddToTagList}
+          foodTagsBox={foodTagsBox}
         />
         {/* <div className={style.foodtypesbox}>
           <div className={style.food}>
@@ -918,9 +963,8 @@ function Foods(props) {
             ingredientRaw,
             refetchIngredient,
             postIngredient,
-            loadingIngredient,
-            error,
-          ]}
+           
+                  ]}
           ingredientLengh={ingredientLengh}
           unit={[rawUnit, refetchUnit, postUnit]}
         // volume={[rawVolume, refetchVolume, postVolume]}

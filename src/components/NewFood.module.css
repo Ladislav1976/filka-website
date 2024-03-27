@@ -2,6 +2,7 @@ body {
   font-family: black, "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
+
 .header {
   background-color: rgb(63, 64, 73);
   display: flex;
@@ -16,9 +17,11 @@ body {
 .fooodbox {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .main {
+
   background-color: white;
   height: auto;
   width: auto
@@ -31,7 +34,8 @@ body {
   border-top-left-radius: 50% 50%;
   border-top-right-radius: 50% 50%;
   border-bottom-right-radius: 50% 50%;
-  border-bottom-left-radius: 50% 50%;}
+  border-bottom-left-radius: 50% 50%;
+}
 
 
 
@@ -43,26 +47,33 @@ body {
   /* background-color: rgb(245, 214, 173); */
   width: 150px;
 }
+
 .food {
   margin: 0px 0px 10px 20px;
 }
-.foodMaso{  margin: 0px 0px 10px 40px;}
+
+.foodMaso {
+  margin: 0px 0px 10px 40px;
+}
 
 .food:hover {
   text-decoration: underline;
 }
-.checkboxInput:checked + .label {
+
+.checkboxInput:checked+.label {
   font-weight: bold;
   text-decoration: underline;
   font-size: 12px;
   color: orange;
-  
+
 }
+
 .inputlabel {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .label {
   font-size: 12px;
   font-weight: bold;
@@ -73,8 +84,10 @@ body {
 .label:hover {
   text-decoration: underline;
   font-size: 12px;
-  color: orange;font-weight: bold;
+  color: orange;
+  font-weight: bold;
 }
+
 #display-image {
   width: 400px;
   height: 225px;
@@ -84,50 +97,59 @@ body {
 }
 
 .ingredientsImageBox {
-  background-color: rgb(255, 255, 255);;
+  background-color: rgb(255, 255, 255);
+  ;
   display: flex;
   flex-direction: column;
   width: 350px;
   margin-left: 10px;
 }
+
 .foodimage {
-  
+
   width: 300px;
   height: 300px;
   margin: 15px 0 10px 5px;
 }
-.imageinput{
+
+.imageinput {
   margin: 10px 0 10px 0;
   cursor: pointer;
-  
+
 }
-input[type="file"]{display:none}
-.imagePreview{
-  width:300px;
+
+input[type="file"] {
+  display: none
+}
+
+.imagePreview {
+  width: 300px;
   height: 300px;
-  min-height: 100px;min-width: 100px;
-  border:2px solid #dddddd ;
+  min-height: 100px;
+  min-width: 100px;
+  border: 2px solid #dddddd;
   margin: 15px;
-  
-  display:flex;
+
+  display: flex;
   justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
   font-weight: bold;
-  gap:10px;
-  color:#cccccc;
+  gap: 10px;
+  color: #cccccc;
   background-position: center;
   background-size: cover;
   flex-wrap: wrap;
 
 }
 
-#images{
-  width:300px;
+#images {
+  width: 300px;
   height: 300px;
-  min-height: 100px;min-width: 100px;
-  position:relative;
-  margin:auto;
+  min-height: 100px;
+  min-width: 100px;
+  position: relative;
+  margin: auto;
   display: flex;
   justify-content: space-evenly;
   gap: 5px;
@@ -135,18 +157,20 @@ input[type="file"]{display:none}
 
 }
 
-figure{
+figure {
   width: 45%;
 }
 
-img{
+img {
   width: 100%;
 }
-.numOfFiles{
+
+.numOfFiles {
   text-align: center;
-  margin:5px 0 5px 0;
+  margin: 5px 0 5px 0;
   font-size: smaller;
 }
+
 /* .imagePreview{
   width:300px;
   height: 300px;
@@ -166,9 +190,11 @@ img{
 } */
 
 .procedureBox {
-  background-color: rgb(255, 255, 255);;
+  background-color: rgb(255, 255, 255);
+  ;
   width: 700px;
 }
+
 .foodname,
 .procedure {
   width: 670px;
@@ -183,13 +209,15 @@ img{
   height: 100px;
   background-color: whitesmoke;
 }
-.foodname{
+
+.foodname {
   font-size: 20px;
 }
 
-p{
- margin: 10px;
+p {
+  margin: 10px;
 }
+
 /* .timesIngredientBox{
 
 .timesIngredientBoxs{  display: flex;
@@ -197,10 +225,133 @@ p{
   justify-content:flex-start;
    margin-left: 5px;}
 } */
-.timesIngredient{
+.timesIngredient {
   box-sizing: border-box;
   text-align: right;
   width: 50px;
-  }
-.unitIngredient{width: 55px;padding-left:5px ;}
-.ingIngredient{width: 110px;}
+}
+
+.unitIngredient {
+  width: 55px;
+  padding-left: 5px;
+}
+
+.ingIngredient {
+  width: 110px;
+}
+
+.loadingIcon {
+  /* width:100;
+  margin-left: 100px; */
+  font-size: 100px;
+
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  /* background-color: black; */
+  color: grey;
+}
+
+
+.loadingContainer {
+  width: auto;
+  height: 100vh;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .close {
+  color: white;
+  position: absolute;
+  width: 25px;
+  top: 20px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.trashIcon,
+.close ,
+.saveIcon,
+.editIcon{
+  color: white;
+  position: absolute;
+  width: 20px;
+  top: 20px;
+
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.close {
+  width: 25px;
+  right: 20px;
+  font-size: 30px;
+  display: flex
+}
+
+.editIcon{  right: 60px;}
+.saveIcon{  right: 100px;}
+.trashIcon{  right: 140px;}
+
+.trashIcon:hover,
+.saveIcon:hover,
+.editIcon:hover,
+.close:hover,
+.close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+} */
+
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -50px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  transition: 0.6s ease;
+  /* border-radius: 50%; */
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: 0 3px 3px 0;
+
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover,
+.next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+.imagebox{
+  display: flex;
+  justify-content: center;
+}
+.imageblock {
+  position: relative;
+  display: inline-block;
+
+}
+
+.materialSymbolsOutlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}

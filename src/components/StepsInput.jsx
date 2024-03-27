@@ -1,52 +1,74 @@
 import { useState, useEffect } from "react";
 import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+
+import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark ,faQuestion,faFloppyDisk} from "@fortawesome/free-solid-svg-icons";
 
 function Step(props) {
   const [step, setStep] = useState(props.step);
-
-  let stepID = props.stepID;
-
-let stepIDPosition = props.stepIDPosition
-
-  if (stepID == null) { stepID = 0 }
-  console.log("stepID", stepID)
-  // if (stepIDPosition != null) {
-  //   position = stepIDPosition
-  // } else {position = "" }
  
-  // console.log("position AAA", position)
+  const [stepID, setStepID] = useState(props.stepID)
 
+  const [stepDefault, setStepDefault] = useState("");
+ 
   function handleUpdateStep(event) {
-    setStep(event.target.value);
+    if (stepDefault == "") {
+      setStepDefault(step)
+      setStep(event.target.value);
+    } else {
+      setStep(event.target.value);
+    }
+    // setStep(event.target.value);
+  }
+  function handleCancelStep(){
+    if (stepDefault!=""){
+    setStep(stepDefault);
+    setStepDefault("")}
+  }
+
+  function handleAddStepToTagList(){
+    props.addStepToTagList(step, stepID)
+    setStepDefault("")
   }
 
   return (
     <>
       <div className={style.stepID}>{props.stID}</div>{" "}
-      <div className={style.step}>
-        <FontAwesomeIcon
-          className={style.stepIcon}
-          icon={faTrash}
-          onClick={props.onTagDelete}
-        ></FontAwesomeIcon>{" "}
+      <div className={style.stepBox}>
+
         {/* <div className={style.stepText}>{props.step}</div> */}
-        {/* <div></div> */}
+       
         <textarea
-          className={style.step}
+          className={style.stepText}
           type="text"
           rows="2"
           value={step}
           onChange={handleUpdateStep}
         />
-        <div
-          className={style.ingredientButton}
-          onClick={() => props.addStepToTagList(step, stepID, stepIDPosition)}
-        >
-          Pridať
+        <div className={style.iconBox}>
+          <FontAwesomeIcon 
+            color={stepDefault == "" ? "#558113": "#fd0000" }
+            className={style.editIcon}
+            icon={stepDefault == ""? faCheck : faFloppyDisk} 
+            onClick={() => handleAddStepToTagList()}
+            />
+          <FontAwesomeIcon
+            className={style.cancelIcon}
+            icon={faXmark} 
+            onClick={()=>handleCancelStep()}/>
+          <FontAwesomeIcon
+            className={style.deleteIcon}
+            icon={faTrash}
+            onClick={()=>props.stepDelete(step, stepID)}
+            />
         </div>
+        {/* <div
+          className={style.ingredientButton}
+          onClick={() => props.addStepToTagList(step, stepID)}
+        >
+          Opravit
+        </div> */}
+
       </div>
     </>
   );
@@ -55,23 +77,15 @@ let stepIDPosition = props.stepIDPosition
 export default function StepsInput(props) {
   const stepsSet = props.stepsSetState;
   const stepsSetID = props.stepsSetIDState;
-  const [stepIdSet, setStepIdSet] = useState("");
+  // const [stepIdSet, setStepIdSet] = useState("");
   const [addedStep, setAddedStep] = useState("");
-  const [stepIdCounter, setStepIdCounter] = useState(1);
 
-  // const stepsSet = props.stepsSetState;
-  // const stepsSetID = props.stepsSetIDState;
+  // console.log("stepListBulk", stepListBulk);
+  // console.log("stepsSetID", stepsSetID);
   let stepsList = [...stepsSet];
   let stepsListID = [...stepsSetID];
   let stepListBulk = [];
-  // console.log("setStepsSet 3", stepsSet);
-  // console.log("stepsSetID 3", stepsSetID);
 
-  // if (stepsList.length != stepsListID.length) {
-
-  // } else {
-
-  // }
 
   for (let i of stepsList) {
 
@@ -90,16 +104,15 @@ export default function StepsInput(props) {
 
   function handleChangeStep(event) {
     setAddedStep(event.target.value);
-    // console.log("addedStep", addedStep);
   }
 
   // function handleUpdateStep(event) {
   //   setUpdatedStep(event.target.value);
   // }
 
-  function handleChangeStepId(event) {
-    setStepIdSet(event.target.value);
-  }
+  // function handleChangeStepId(event) {
+  //   setStepIdSet(event.target.value);
+  // }
 
   function getPosition(elementToFind, arrayElements) {
     var i;
@@ -111,68 +124,40 @@ export default function StepsInput(props) {
     return null; //not found
   }
 
-  function addStepToTagList(step, stepID, stepPosition) {
+  function addStepToTagList(step, stepID) {
 
-    // let stepPosition = "";
-    // if (stepIdSet == "" || stepIdSet == 0) {
-    //   // console.log("stepIdSetAAAA",stepIdSet)
-    //   stepPosition = stepIdSet;
-    // } else {
-    //   stepPosition = stepIDPosition-1;
-    // }
-    // if ( stepIdSet == 0) {
-    //   // console.log("stepIdSetAAAA",stepIdSet)
-    //   stepPosition = stepIdSet;
-    // } else {
-    //   stepPosition = stepIDPosition-1;
-    // }
-    // let ID = stepIdSet -1 ;
-    // console.log("ID: ", ID);
-    // if (stepIdSet > 1) {
-    //   stepID = stepIdSet - 1;
-    // } else {
-    //   stepID = stepIdSet;
-    // }
-    console.log("step, stepID, stepPosition", step, stepID, stepPosition)
-    props.addToStepsList(step, stepID, stepPosition);
+
+    if (step == "") return
+    let stepIDPosition = "newposition"
+    if (stepID != "newStep") { stepIDPosition = getPosition(stepID, stepsList) }
+
+    // console.log("step, stepID, stepPosition", step, stepID, stepIDPosition)
+    props.stepsCheckPost(stepID, step, stepIDPosition);
     setAddedStep("");
-    setStepIdSet("");
+    // setStepIdSet("");
   }
 
-  // function updateStepToTagList(stepID) {
-  //   // let ID = "";
-  //   // if (stepIdSet == "" || stepIdSet == 0) {
-  //   //   ID = stepIdSet;
-  //   // } else {
-  //   //   ID = stepIdSet - 1;
-  //   // }
-
-  //   props.addToStepsList(updatedStep, stepID);
-  //   setStepsSet("");
-  //   setStepIdSet("");
-  // }
-
   function handleStepDelete(step, stepID) {
-    props.removeFromStepsList(step, stepID);
+
+    let stepObj = ({ id: stepID, step: step });
+    props.deleteStep(stepObj)
   }
 
   const proceduteListRender = [];
   let Id = 1;
 
   for (const step of stepListBulk) {
-    // console.log("Id :", Id ,"step.step", step.step,"step.id", step.id)
-    let stepIDPosition = getPosition(step.id, stepsList);
-    // console.log("stepIDPosition 1:", stepIDPosition, "step.step", step.step)
-    // console.log("POSITION", stepIDPosition)
     proceduteListRender.push(
       <Step
         step={step.step}
         stepID={step.id}
-        stepIDPosition={stepIDPosition}
+        // stepIDPosition={stepIDPosition}
         stID={Id}
         key={Id}
-        addStepToTagList={addStepToTagList}
-        onTagDelete={() => handleStepDelete(step, stepIDPosition)}
+        addStepToTagList={ addStepToTagList}
+        stepDelete={handleStepDelete}
+        // addStepToTagList={() => addStepToTagList(step.step, step.id)}
+        // onTagDelete={() => handleStepDelete(step.step, step.id)}
       />
     );
     Id++;
@@ -181,24 +166,31 @@ export default function StepsInput(props) {
 
   return (
     <>
-      <input
+      {/* <input
         className={style.stepIdSet}
         stepidset={stepIdSet}
         type="text"
         onChange={handleChangeStepId}
-      />
+      /> */}
+      <div className={style.stepBox}>
       <textarea
-        className={style.step}
+        className={style.stepText}
         rows="5"
         value={addedStep}
         onChange={handleChangeStep}
       />
-      <div
+      <FontAwesomeIcon
+        className={style.newStepIcon}
+        icon={faFloppyDisk}
+        onClick={() => addStepToTagList(addedStep, "newStep")}
+      ></FontAwesomeIcon>{" "}
+      </div>
+      {/* <div
         className={style.ingredientButton}
-        onClick={() => addStepToTagList(addedStep, 0)}
+        onClick={() => addStepToTagList(addedStep, "newStep")}
       >
         Pridať
-      </div>
+      </div> */}
       <div className={style.addedstep}>{proceduteListRender}</div>
       {/* <input
         className={style.addedstep}

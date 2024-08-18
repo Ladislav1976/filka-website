@@ -14,6 +14,13 @@ body {
   color: bisque;
 }
 
+.buttonBox{
+
+  display: flex;
+  flex-direction: row;
+  align-items:center;
+  justify-content:flex-end;
+}
 .fooodbox {
   display: flex;
   flex-direction: row;
@@ -102,7 +109,8 @@ body {
   display: flex;
   flex-direction: column;
   width: 350px;
-  margin-left: 10px;
+  margin:50px 20px 0 20px;
+  /* margin-left: 10px; */
 }
 
 .foodimage {
@@ -195,8 +203,8 @@ img {
   width: 700px;
 }
 
-.foodname,
-.procedure {
+.foodname
+{
   width: 670px;
   border: 1px grey dotted;
   background-color: whitesmoke;
@@ -204,11 +212,15 @@ img {
   margin-left: 10px;
   height: 30px;
 }
+.foodnameView{
 
-.procedure {
+  font-size:30px;
+  margin-left: 10px;
+}
+/* .procedure {
   height: 100px;
   background-color: whitesmoke;
-}
+} */
 
 .foodname {
   font-size: 20px;
@@ -262,7 +274,89 @@ p {
   justify-content: center;
   align-items: center;
 }
+.date{
+  display: flex;
+  flex-direction: row;
+  font-size: 0.7rem;
+  margin: 10px;
+  margin-bottom: 30px;
+}
 
+.foodButton{  
+  font-family: rgb(95, 93, 93), "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  /* font-weight: bold; */
+  margin-left: 10px;
+  font-size: 16px;
+  padding: 5px 20px 5px 0px;
+  cursor: pointer;
+}
+
+.imageIcon:hover,
+.foodButton:hover{color: orange;}
+
+
+
+.imageIcon {
+
+  position: relative;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  border-color: rgb(233, 229, 229);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
+  font-size: 20px;
+  margin-left: 10px;
+  /* margin-top: 2px; */
+  color: grey;
+  cursor: pointer;
+}
+
+
+.imageIcon::before,
+.imageIcon::after {
+  --scale: 0;
+  position: absolute;
+  font-size: .7rem;
+  top: 0.1rem;
+  left: 3rem;
+  transform: translateX(-50%)scale(var(--scale));
+  transition: 150ms tranform;
+
+}
+
+
+.imageIcon::before {
+  content: attr(datatooltip);
+  padding: .3rem;
+  margin-left: 30px;
+  /* text-align: center; */
+  /* width: max-content; */
+  /* max-width: 100px; */
+  color: rgb(68, 68, 68);
+  background-color: white;
+  font-weight: bold;
+  border-radius: .3rem;
+
+}
+
+
+.imageIcon:hover:before {
+  --scale: 1;
+}
+.Content_Flex{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: flex-start;
+}
+.messagebox{
+color:red
+}
+.ingreProcedureBox{
+  display: flex;
+  flex-direction: row;
+
+}
 /* .close {
   color: white;
   position: absolute;
@@ -307,51 +401,14 @@ p {
   cursor: pointer;
 } */
 
-.prev,
-.next {
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  width: auto;
-  padding: 16px;
-  margin-top: -50px;
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-  transition: 0.6s ease;
-  /* border-radius: 50%; */
-  user-select: none;
-  -webkit-user-select: none;
-  border-radius: 0 3px 3px 0;
 
-}
 
-/* Position the "next button" to the right */
-.next {
-  right: 0;
-  border-radius: 3px 0 0 3px;
-}
-
-/* On hover, add a black background color with a little bit see-through */
-.prev:hover,
-.next:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  cursor: pointer;
-}
-.imagebox{
-  display: flex;
-  justify-content: center;
-}
-.imageblock {
-  position: relative;
-  display: inline-block;
-
-}
-
-.materialSymbolsOutlined {
+/* .materialSymbolsOutlined {
   font-variation-settings:
   'FILL' 0,
   'wght' 400,
   'GRAD' 0,
   'opsz' 24
-}
+} */
+
+

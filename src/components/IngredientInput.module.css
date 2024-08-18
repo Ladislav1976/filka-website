@@ -4,7 +4,8 @@ body {
 }
 .times,
 .unit {
-  height: 22px;
+  height: 25px;
+
   border: 1px grey dotted;
   border-radius: 5px;
   background-color: whitesmoke;
@@ -12,18 +13,19 @@ body {
 
 .times {
  
-  width: 30px;
-  height: 22px;
+  width: 50px;
+
   margin-left: 5px;
   margin-right: 5px;
 }
 .ingredientInput {
   background-color: whitesmoke;
   width: 200px;
-  height: 22px;
+  min-width: 120px;
+  height: 25px;
   border: 1px grey dotted;
   border-radius: 5px;
-  font-size: 16px;
+  /* font-size: 16px; */
   margin-top: 5px;
   margin-left: 5px;
 }
@@ -54,12 +56,9 @@ body {
   box-sizing: border-box;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-size: 16px;
-  color: green;
-  padding: 10px;
-
-
-  
+  /* font-size: 16px; */
+  /* color: green; */
+  padding: 5px;
 }
 
 .firstline{  color: green;
@@ -72,12 +71,71 @@ body {
   align-items: center;
   justify-content: left;
   flex-direction: row;
-  color: green;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  color: rgb(68, 68, 68);
+  margin-top:5px;
+  margin-bottom: 5px;
   border-bottom: 1px solid grey;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
 }
 
-.ingredientIcon{  color: rgba(0, 128, 0);
+.ingredientIcon{  
+  color: rgb(68, 68, 68);
   cursor: pointer;}
+
+  .ingredientIcon:hover {
+    color: orange;
+  }
+
+  .ingredientsList{
+    font-size: 0.8rem;
+  }
+
+  .up,
+.down {
+  transform: rotate(-90deg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  color: rgb(68, 68, 68);
+  /* padding-top: 5px;
+  padding-bottom: 5px; */
+  /* padding: 5px; */
+  /* transition: 0.6s ease; */
+  /* border-radius: .3rem; */
+  border-radius: 50%;
+  /* user-select: none;
+  -webkit-user-select: none; */
+  font-size: 20px;
+  width: 25px;
+  height: 25px;
+  margin: 5px 0 5px 0;
+
+}
+
+.up:hover,
+.down:hover {
+  background-color: rgba(187, 185, 185, 0.8);
+  color: orange;
+  cursor: pointer;
+}
+
+.timesIngredient,.unitIngredient,.ingIngredient  {color: rgb(68, 68, 68);}
+.timesIngredient {
+  box-sizing: border-box;
+  text-align: right;
+  width: 35px;
+  
+}
+
+.unitIngredient {
+  width: 55px;
+  padding-left: 5px;
+}
+
+.ingIngredient {
+  width: 110px;
+}

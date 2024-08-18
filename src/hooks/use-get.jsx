@@ -3,43 +3,50 @@ import axios from "axios"
 
 export async function defaultQueryFn({ queryKey }) {
     const { data } = await axios.get(
-      `http://127.0.0.1:8000${queryKey[0]}`,
+      `http://127.0.0.1:8000${queryKey}`,
     )
     return data
-  }
-export async function queryFnFoodTagName({ queryKey }) {
-    const { data } = await axios.get(
-      `http://127.0.0.1:8000${queryKey[0]}`,
-    )
-    // .then((users) => users.map((user) => user.id))
-    return data.foodTag
-  }
-  export async function queryFnFoodTagId({ queryKey }) {
-    const { data } = await axios.get(
-      `http://127.0.0.1:8000${queryKey[0]}`
-    )
+}
+// queryFn: () => { if (filterTagList) { searchFoodsPageFn(filterTagList) } else { getFoodsPageFn(page) } },
+export async function searchFoodsPageFn(search) {
 
-    return data
-  }
+    return (await axios.get(`http://127.0.0.1:8000/foods/${search} `, {
+    }
+    ).then((res) => res.data))  
+}
+
+export async function getFoodsPageFn(pageNumber) {
+  console.log("getFoodsPageFn", pageNumber)
+  return (await axios.get(`http://127.0.0.1:8000/foods/?page=${pageNumber} `, {
+  }    
+  ).then((res) => res.data))}
+    
+  // export async function queryFnFoodTagId({ queryKey }) {
+  //   const { data } = await axios.get(
+  //     `http://127.0.0.1:8000${queryKey[0]}`
+  //   )
+
+  //   return data
+  // }
 
 
-  export function queryFnFoodTagToId( data ) {
-    console.log("data",data);
-    //   return data.id
-  }
+  // export function queryFnFoodTagToId( data ) {
+  //   console.log("data",data);
+  //   //   return data.id
+  // }
 
-  export async function queryFnFoodStep({ queryKey }) {
-    const { data } = await axios.get(
-      `http://127.0.0.1:8000${queryKey[0]}`,
-    )
-    // .then((users) => users.map((user) => user.id))
-    return data.step
-  }
+  // export async function queryFnFoodStep({ queryKey }) {
+  //   const { data } = await axios.get(
+  //     `http://127.0.0.1:8000${queryKey[0]}`,
+  //   )
+  //   // .then((users) => users.map((user) => user.id))
+  //   return data.step
+  // }
 
-  export async function queryFnFoodIngredient({ queryKey }) {
-    const { data } = await axios.get(
-      `http://127.0.0.1:8000${queryKey[0]}`,
-    )
-    // .then((users) => users.map((user) => user.id))
-    return data.ingredient
-  }
+  // export async function queryFnFoodIngredient({ queryKey }) {
+  //   const { data } = await axios.get(
+  //     `http://127.0.0.1:8000${queryKey[0]}`,
+  //   )
+  //   // .then((users) => users.map((user) => user.id))
+  //   return data.ingredient
+  // }

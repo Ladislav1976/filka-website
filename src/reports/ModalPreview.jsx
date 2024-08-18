@@ -1,4 +1,4 @@
-import style from "./ModalPreview.module.css";
+import style from "../reports/ModalPreview.module.css";
 
 //props.visible -> says if modal should appear
 export default function ModalPreview(props) {

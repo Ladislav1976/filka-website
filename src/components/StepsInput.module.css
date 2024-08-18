@@ -17,23 +17,25 @@
 }
 
 .stepText {
-  margin: 5px 0 5px 0;
+  margin: 0 0 25px 0;
   /* display: flex;
 
   justify-content: flex-start; */
   /* width: 670px; */
-  min-width:670px;
+  min-width: 670px;
   min-height: 80px;
   border: 1px grey dotted;
   border-radius: 5px;
-
+padding-left: 10px;
   font-size: 14px;
   background-color: whitesmoke;
 }
-
-.stepId {
-  padding-left: 15px;
-
+.stepTextView{
+  margin: 5px 0 25px 0;
+  padding: 0 10px 0 10px;
+}
+.stepid {
+  margin: 0  5px 0 10px;
 }
 
 
@@ -53,57 +55,136 @@
 
 }
 
+.OKIcon,
+.cancelIcon,
+.deleteIcon,
+.newStepIcon,
+.editIcon {
+
+  position: relative;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  border-color: rgb(233, 229, 229);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
+  font-size: 20px;
+  padding-left: 0px;
+  margin-top: 2px;
+  margin-left: 10px;
+}
+
 .cancelIcon,
 .deleteIcon,
 .newStepIcon,
 .editIcon {
   cursor: pointer;
-  /* display: flex;
-  align-items: center; */
-  justify-content: center;
-  /* background-color: #558113; */
-  border: 1px solid;
-  border-color: rgb(233, 229, 229);
-  /* border-radius: 10px;
-  height: 22px;
-  width: 50px; */
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
-
-  font-size: 20px;
-  padding-left: 0px;
-  margin-top: 5px;
-  margin-left: 10px;
 }
 
-
-.newStepIcon {
-  color: "#558113";
-}
-
-
+.newStepIcon,
 .deleteIcon,
 .cancelIcon {
-  color: grey;
+  /* color: grey; */
+  color: rgb(68, 68, 68);
 }
 
 .editIcon:hover,
 .cancelIcon:hover,
 .newStepIcon:hover,
 .deleteIcon:hover {
-
-  color: blue;
-  cursor: pointer;
+  color: orange;
 }
 
-.stepTextInput,
-.iconBox{
+/* .stepTextInput, */
+.iconBox {
   display: flex;
   flex-direction: column;
   /* align-items: center; */
   justify-content: flex-start;
-}
-.stepTextInput{
-  display: flex;
-  flex-direction: row;
+
 }
 
+/* .stepTextInput {
+  display: flex;
+  flex-direction: row;
+} */
+
+
+.cancelIcon::before,
+.cancelIcon::after,
+.deleteIcon::before,
+.deleteIcon::after,
+.newStepIcon::before,
+.newStepIcon::after,
+.editIcon::before,
+.editIcon::after {
+  --scale: 0;
+  position: absolute;
+  font-size: .7rem;
+  top: 0.1rem;
+  left: 3rem;
+  transform: translateX(-50%)scale(var(--scale));
+  transition: 150ms tranform;
+
+}
+
+.cancelIcon::before,
+.deleteIcon::before,
+.newStepIcon::before,
+.editIcon::before {
+  content: attr(datatooltip);
+  padding: .3rem;
+  text-align: center;
+  /* width: max-content; */
+  max-width: 60px;
+  color: rgb(68, 68, 68);
+  background-color: white;
+  font-weight: bold;
+  border-radius: .3rem;
+
+}
+
+
+.cancelIcon:hover:before,
+.deleteIcon:hover:before,
+.newStepIcon:hover:before,
+.editIcon:hover:before {
+  --scale: 1;
+}
+
+.upddownbox {
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.up,
+.down {
+  transform: rotate(-90deg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  color: rgb(68, 68, 68);
+  /* padding-top: 5px;
+  padding-bottom: 5px; */
+  /* padding: 5px; */
+  /* transition: 0.6s ease; */
+  /* border-radius: .3rem; */
+  border-radius: 50%;
+  /* user-select: none;
+  -webkit-user-select: none; */
+  font-size: 20px;
+  width: 25px;
+  height: 25px;
+  margin: 5px 0 5px 0;
+
+}
+
+.up:hover,
+.down:hover {
+  background-color: rgba(187, 185, 185, 0.8);
+  color: orange;
+  cursor: pointer;
+}

@@ -6,7 +6,6 @@ import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
 import ImageDeleteError from "../reports/ImageDeleteError";
 import SaveError from "../reports/SaveError";
-import SaveErrorMissing from "../reports/SaveErrorMissing";
 import Lightbox from "./Lightbox";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
@@ -59,17 +58,17 @@ function Ingredient(props) {
 
 
 
-function NewFood(props) {
+function ViewFood(props) {
     const queryClient = useQueryClient();
-    const component = "editcomponent"
+    const component = "viewcomponent"
     const navigate = useNavigate()
     const [foodID, setFoodID] = useState()
     const [name, setName] = useState("")
     const [nameTagSet, setNameTagSet] = useState()
     const [ingredientsSet, setIngredientsSet] = useState(new Set());
     const [ingredientsSetID, setIngredientsSetID] = useState(new Set());
-    const [stepsList, setStepsList] = useState([]);
-    const [stepsListID, setStepsListID] = useState([]);
+    const [stepsSet, setStepsSet] = useState([]);
+    const [stepsSetID, setStepsSetID] = useState([]);
 
     const [foodTagSet, setFoodTagSet] = useState(new Set());
     const [foodTagSetID, setFoodTagSetID] = useState(new Set())
@@ -86,13 +85,14 @@ function NewFood(props) {
     const [imagePreview, setImagePreview] = useState([]);
     const [imageURLs, setImageURLs] = useState([])
     const [imageURLsList, setImageURLsList] = useState([])
+
     const [imageFlag, setImageFlag] = useState(true);
     const [imageURLsPost, setImageURLsPost] = useState([])
+
+
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
-    const [modalSaveErrorMissingFlag, setModalSaveErrorMissingFlag] = useState(false);
-    const [modalMessage, setModalMessage] = useState("");
     const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] = useState(false);
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
     const [imageDispley, setImageDispley] = useState([])
@@ -106,34 +106,23 @@ function NewFood(props) {
 
 
     const id = useParams()
+   
     let ID = parseInt(id.id)
 
-    // const { status: statusFood, data: dataFoods, refetch: refetchFood, isLoading: loadingFood, error: errorFoods } = useQuery({
-    //     queryKey: [`/foods/${id.id}/`],
-    //     enabled: !!id,
-    //     queryFn: defaultQueryFn,
-    // })
+    const { status: statusFood, data: dataFoods, refetch: refetchFood, isLoading: loadingFood, error: errorFoods } = useQuery({
+        queryKey: [`/foods/${id.id}/`],
+        enabled: !!id,
+        queryFn: defaultQueryFn,
 
+    })
+   
     const { status: statusPostFood, error: errorPostFood, mutate: postFood } = useMutation({
         mutationFn: createPostFood,
         onError: error => { console.log("Error Post Food :", error) },
-        onSuccess: (foodCreated, image) => {
+        onSuccess: (foodCreated, oldFoodTag) => {
             console.log("Food :", foodCreated, "sucsesfully created!")
-            //   queryClient.invalidateQueries([`/foods/${foodCreated.id}/`], foodCreated)//"/steps/",newPost.id],newPost)
-            const imageFoodPosted = image?.image.map((res, index) => {
-                if (res.id == 0) {
-                    let formdata = new FormData();
-                    formdata.append("name", res.name);
-                    formdata.append("image", res.image);
-                    formdata.append("date", res.date);
-                    formdata.append("food", res.food);
-                    formdata.append("imgposition", index + 1);
-                    postImagefood({ formdata })
-                }
-            })
-            Promise.allSettled(imageFoodPosted).then(() => {
-                handlerSetModalSave()
-            })
+            queryClient.invalidateQueries([`/foods/${foodCreated.id}/`], foodCreated)//"/steps/",newPost.id],newPost)
+            // addTofoodTagList(foodCreated)
         }
     })
 
@@ -165,7 +154,7 @@ function NewFood(props) {
 
     const { status: statusImagefood, data: dataImagefood, refetch: refetchImagefood, isLoading: loadingImageFood, error: errorImagefood } = useQuery({
         queryKey: ["/imagefood/"],
-        // enabled: !!dataFoods,
+        enabled: !!dataFoods,
         queryFn: defaultQueryFn,
     })
 
@@ -193,7 +182,7 @@ function NewFood(props) {
         onSuccess: (response) => {
             console.log("Imagefood :", response, "sucsesfully deleted!")
             if (response == 204) {
-
+                console.log("response:", response)
                 pageReload()
                 closeModal();
 
@@ -317,8 +306,225 @@ function NewFood(props) {
     })
 
 
-    function handleFoodSave() {
-        handleNewFoodSave(makeFoodRecord());
+
+    useEffect(() => {
+        let food = ""
+        if (statusFood === 'success') {
+            if (statusImagefood === 'success') {
+                if (statusFoodTags === 'success') {
+                    if (statusSteps === 'success') {
+                        if (statusIngredients === 'success') {
+                            if (statusIngredient === 'success') {
+                                if (statusUnit === 'success') {
+
+                                    food = handleFood()
+                                    setFoodID(food.id);
+                                    setName(food.name);
+                                    setNameTagSet(food.nameTags);
+                                    setFoodTagSet(food.foodTags);
+                                    setFoodTagSetID(food.foodTagsID);
+                                    setStepsSet(food.steps);
+                                    setStepsSetID(food.stepsID);
+                                    setIngredientsSet(food.ingredients);
+                                    setIngredientsSetID(food.ingredientsID);
+                                    setDate(food.date);
+                                    setImageURLs(food.image);
+                                    setImageURLsList(food.image);
+                                    setImageURLsPost(food.image);
+                                } else {
+                                }
+                            } else {
+                            }
+                        } else {
+                        }
+                    } else {
+                    }
+                } else {
+                }
+
+            } else {
+            }
+        } else {
+        }
+
+    }, [statusFood, statusImagefood, statusFoodTags, statusSteps, statusIngredients, statusIngredient, statusUnit,
+    ])//, dataImagefood, dataFoodTags, dataSteps, dataIngredients, dataIngredient, dataUnit])
+
+
+    // async function defaultQueryFnFoodTagId({ queryKey }) {
+    //   const { data } = await axios.get(
+    //     `http://127.0.0.1:8000${queryKey[0]}`,
+    //   )
+
+    //   return data.id
+    // }
+
+    // const foods_FoodTagsName = useQueries({
+    //   enabled: !!dataFoods,
+    //   queries: dataFoods
+    //     ? dataFoods.foodTags.map((id) => {
+    //       return {
+    //         queryKey: [`/foodTags/${id}/`],
+    //         queryFn: queryFnFoodTagName
+    //       }
+    //     }) : [],
+    // })
+
+
+
+    // const foods_Steps = useQueries({
+    //   enabled: !!dataFoods,
+    //   queries: dataFoods
+    //     ? dataFoods.steps.map((id) => {
+    //       return {
+    //         queryKey: [`/steps/${id}/`],
+    //         queryFn: queryFnFoodStep
+    //       }
+    //     }) : [],
+    // })
+
+    // const foods_Ingredients = useQueries({
+    //   enabled: !!dataFoods,
+    //   queries: dataFoods
+    //     ? dataFoods.ingredients.map((id) => {
+    //       return {
+    //         queryKey: [`/ingredients/${id}/`],
+    //         queryFn: defaultQueryFn
+    //       }
+    //     }) : [],
+    // })
+
+
+    let foodTagsIDList = [];
+    function handleFood() {
+        let backEndFood = dataFoods;
+        let backEndFoodTags = dataFoodTags;
+        let backEndSteps = dataSteps;
+        let backEndImagefood = dataImagefood;
+        let backEndIngredients = dataIngredients;
+        let backEndIngredient = dataIngredient;
+        let backEndUnit = dataUnit;
+
+
+        backEndFood.foodTags.forEach((datatags) => {
+            backEndFoodTags.map((e) => {
+                if (e.id === datatags) {
+                    foodTagsList.push(e.foodTag);
+                    foodTagsIDList.push(e.id);
+                }
+            });
+        });
+
+        // imageFood
+
+        let imageFoodList = [];
+        backEndImagefood.map((e) => {
+            if (e.food === backEndFood.id) {
+                imageFoodList.push(e);
+            }
+        });
+
+        //sorting of imageFoodList from 1 to 999
+        imageFoodList.sort(function (a, b) {
+            return a.imgposition - b.imgposition;
+        });
+
+        // Steps
+        let stepsList = [];
+        let stepsIDList = [];
+
+        backEndFood.steps.forEach((datatags) => {
+            backEndSteps.map((e) => {
+                let stepId = 0;
+                if (e.id == datatags) {
+                    let a = e.step;
+                    stepsList.push(e);
+                    stepsIDList.push(e.id);
+                }
+                stepId++;
+            });
+        });
+
+        //sorting of steps from 1 to 999
+        stepsList.sort(function (a, b) {
+            return a.stposition - b.stposition;
+        });
+        // Ingredients
+        let ingredientsList = new Set();
+        let ingredientsIDList = [];
+        let ingredientsListNotDiv = [];
+        backEndFood.ingredients.forEach((datatags) => {
+            let ingredientsTemp = [];
+            let ingredientVolume = "";
+            let ingredientUnit = "";
+            let ingredientIngredient = "";
+            let ingredientUnitID = "";
+            let ingredientIngredientID = "";
+
+            backEndIngredients.map((e) => {
+                if (e.id === datatags) {
+                    ingredientsTemp.push(e);
+                }
+                ingredientsTemp.forEach((r) => {
+                    ingredientVolume = r.volume;
+                    // unit
+                    backEndUnit.map((u) => {
+                        if (u.id == r.units) {
+                            ingredientUnit = u.unit;
+                            ingredientUnitID = u.id;
+                        }
+                    });
+                    // Ingredient
+                    backEndIngredient.map((i) => {
+                        if (i.id == r.ingredientName) {
+                            ingredientIngredient = i.ingredient;
+                            ingredientIngredientID = i.id;
+                        }
+                    });
+                });
+            });
+            let IDid = 1;
+            let IDtimes = 10;
+            let IDunit = 100;
+            let IDingredient = 1000;
+
+
+            ingredientsList.add({ id: datatags ,times: ingredientVolume,unit: ingredientUnit, ing:ingredientIngredient}
+
+            );
+            ingredientsListNotDiv.push({
+                id: datatags,
+                times: ingredientVolume,
+                unit: ingredientUnit,
+                ing: ingredientIngredient,
+            });
+            ingredientsIDList.push(datatags);
+
+            IDid++;
+            IDtimes++;
+            IDunit++;
+            IDingredient++;
+        });
+
+
+        return ({
+            id: backEndFood.id,
+            name: backEndFood.name,
+            image: imageFoodList,
+            ingredients: ingredientsList,
+            ingredientsID: ingredientsIDList,
+            ingredientsNotDiv: ingredientsListNotDiv,
+            steps: stepsList,
+            stepsID: stepsIDList,
+            foodTags: foodTagsList,
+            foodTagsID: foodTagsIDList,
+            date: backEndFood.date,
+        })
+    }
+
+
+    function handleNavigateToFoodEdit() {
+        navigate(`/recepty/uprava/${id.id}/`)
     }
 
     function handleAddToNameTagList() {
@@ -332,11 +538,11 @@ function NewFood(props) {
 
 
     function foodTagListCheck(tag) {
-        if (foodTagSetArray.includes(tag)) {
-            removeFromFoodTagList(tag);
-        } else {
-            handleAddToFoodTagList(tag);
-        }
+        // if (foodTagSetArray.includes(tag)) {
+        //     removeFromFoodTagList(tag);
+        // } else {
+        //     handleAddToFoodTagList(tag);
+        // }
     }
 
 
@@ -393,52 +599,20 @@ function NewFood(props) {
     }
 
 
-    function addToIngredientList(times, unit, ing) {
-        let IDtimes = 0;
-        let IDunit = 100;
-        let IDingredient = 1000;
-        let newIngredientList = [...ingredientsSet];
-        if (ing === "") {
-            return;
-        }
-        newIngredientList.push(
-            <>
-                <Times times={times} key={IDtimes} />
-                <Unit unit={unit} key={IDunit} />
-                {"   "}
-                <Ingredient ing={ing} key={IDingredient} />
-            </>
-        );
-        IDtimes++;
-        IDunit++;
-        IDingredient++;
-        ingredientsCheckPost(times, unit, ing);
-        setIngredientsSet(newIngredientList);
-    }
-
-    function removeFromIngredientList(ingID, ing) {
-        let newIngredientsSet = new Set(ingredientsSet); // slice for sets
-        let newIngredientsIDSet = new Set(ingredientsSetID); // slice for sets
-        newIngredientsSet.delete(ing); // push for set
-        newIngredientsIDSet.delete(ingID);
-        setIngredientsSetID(newIngredientsIDSet);
-        setIngredientsSet(newIngredientsSet);
-    }
-
     function makeSteptoDelete(oldID, step, stposition) {
-        let stepIDPosition = getPosition(oldID, stepsList);
-        let newStepsList = stepsList.slice();
-        let newStepsIDList = stepsListID.slice();
+        let stepIDPosition = getPosition(oldID, stepsSet);
+        let newStepsList = stepsSet.slice();
+        let newStepsIDList = stepsSetID.slice();
         newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step, stposition: "delete" })
         newStepsIDList.splice(stepIDPosition, 1, { id: oldID })
-        setStepsList(newStepsList);
-        setStepsListID(newStepsIDList)
+        setStepsSet(newStepsList);
+        setStepsSetID(newStepsIDList)
     }
     function updateStepInTagList(oldID, newID, step) {
-        let stepIDPosition = getPosition(oldID, stepsList);
+        let stepIDPosition = getPosition(oldID, stepsSet);
 
-        let newStepsList = stepsList.slice();
-        let newStepsIDList = stepsListID.slice();
+        let newStepsList = stepsSet.slice();
+        let newStepsIDList = stepsSetID.slice();
         if (Number.isInteger(oldID)) {
             newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step })
             newStepsIDList.splice(stepIDPosition, 1, oldID)
@@ -452,28 +626,28 @@ function NewFood(props) {
                 newStepsIDList.splice(stepIDPosition, 1, newID)
             }
         }
-        setStepsList(newStepsList);
-        setStepsListID(newStepsIDList)
+        setStepsSet(newStepsList);
+        setStepsSetID(newStepsIDList)
     }
     function addStepToTagList(id, step) {
         if (step == "") return
-        let newStepsList = stepsList.slice();
-        let newStepsIDList = stepsListID.slice();
+        let newStepsList = stepsSet.slice();
+        let newStepsIDList = stepsSetID.slice();
         newStepsList.push({ id: id, step: step })
-        setStepsList(newStepsList);
+        setStepsSet(newStepsList);
         newStepsIDList.push(id)
-        setStepsListID(newStepsIDList)
+        setStepsSetID(newStepsIDList)
     }
 
     function removeFromStepsList(step) {
-        let stepsSetPosition = getPosition(step.id, stepsList)
-        let stepsSetIDPosition = getPosition(step.id, stepsListID)
-        let newStepsSet = stepsList.slice();
-        let newStepsIDSet = stepsListID.slice();
+        let stepsSetPosition = getPosition(step.id, stepsSet)
+        let stepsSetIDPosition = getPosition(step.id, stepsSetID)
+        let newStepsSet = stepsSet.slice();
+        let newStepsIDSet = stepsSetID.slice();
         newStepsSet.splice(stepsSetPosition, 1);
         newStepsIDSet.splice(stepsSetIDPosition, 1);
-        setStepsListID(newStepsIDSet);
-        setStepsList(newStepsSet);
+        setStepsSetID(newStepsIDSet);
+        setStepsSet(newStepsSet);
     }
 
     function handleAddToFoodTagList(foodTag) {
@@ -503,50 +677,48 @@ function NewFood(props) {
 
     function makeFoodRecord() {
         if (
-            name == "" &&
-            ingredientSetArray.length === 0 &&
-            foodTagSetArray.length === 0 &&
-            stepsList.length === 0
+            name === "" &&
+            ingredientSetArray === "" &&
+            foodTagSet === "" &&
+            stepsSet === ""
         ) {
-            // handlerSetModalErrorMissing(["Doplň chýbajúce informácie:", "Nazov jedla", "Suroviny", "Druj jedla", "Postup"])
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov jedla, Suroviny, Druj jedla, Postup")
-
-        }
-        else if (
-            ingredientSetArray.length === 0 &&
-            foodTagSetArray.length === 0 &&
-            stepsList.length === 0
+            alert("Nazov , Suroviny, Druj jedla, Postup nie se uvedene");
+        } else if (
+            ingredientSetArray === "" &&
+            foodTagSet === "" &&
+            stepsSet === ""
         ) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: , Suroviny, Druj jedla, Postup");
-        } else if (name === "" && foodTagSetArray.length === 0 && stepsList.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov , Druj jedla, Postup");
-        } else if (name === "" && ingredientSetArray.length === 0 && stepsList.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov, Suroviny, Postup");
-        } else if (name === "" && ingredientSetArray.length === 0 && foodTagSetArray.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov, Suroviny, Druj jedla");
-        } else if (name === "" && ingredientSetArray.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov,Suroviny");
-        } else if (name === "" && foodTagSetArray.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: ,Nazov, Druj jedla");
-        } else if (name === "" && stepsList.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov, Postup");
-        } else if (ingredientSetArray.length === 0 && foodTagSetArray.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Suroviny,Druj jedla");
-        } else if (ingredientSetArray.length === 0 && stepsList.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Suroviny,Postup");
+            alert("Suroviny, Druj jedla, Postup nie se uvedene");
+        } else if (name === "" && foodTagSet === "" && stepsSet === "") {
+            alert("Nazov , Druj jedla, Postup nie se uvedene");
+        } else if (name === "" && ingredientSetArray === "" && stepsSet === "") {
+            alert("Nazov , Suroviny, Postup nie se uvedene");
+        } else if (name === "" && ingredientSetArray === "" && foodTagSet === "") {
+            alert("Nazov , Suroviny, Druj jedla nie se uvedene");
+        } else if (name === "" && ingredientSetArray === "") {
+            alert("Nazov, Suroviny nie se uvedene");
+        } else if (name === "" && foodTagSet === "") {
+            alert("Nazov, Druj jedla nie se uvedene");
+        } else if (name === "" && stepsSet === "") {
+            alert("Nazov, Postup nie se uvedene");
+        } else if (ingredientSetArray === "" && foodTagSet === "") {
+            alert("Suroviny, Druj jedla nie se uvedene");
+        } else if (ingredientSetArray === "" && stepsSet === "") {
+            alert("Suroviny, Postup nie se uvedene");
         } else if (name === "") {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov");
-        } else if (ingredientSetArray.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Suroviny");
-        } else if (foodTagSetArray.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Druj jedla");
-        } else if (stepsList.length === 0) {
-            handlerSetModalErrorMissing("Doplň chýbajúce informácie: Postup");
-        }
-        else return ({
-            //   id: foodID,
+            alert("Nazov nie je uvedeny");
+        } else if (ingredientSetArray === "") {
+            alert("Suroviny nie je uvedeny");
+        } else if (foodTagSet === "") {
+            alert("Druj jedla, Postup nie je uvedeny");
+        } else if (foodTagSet === "") {
+            alert("Druj jedla nie je uvedeny");
+        } else if (foodTagSet === "") {
+            alert("Postup nie je uvedeny");
+        } else return ({
+            id: foodID,
             name: name,
-            date: new Date().toISOString().substring(0, 10),
+            date: date,
             ingredients: [...ingredientsSetID],
             // steps: [...stepsSetID],
             foodTags: [...foodTagSetID],
@@ -555,8 +727,8 @@ function NewFood(props) {
         })
     }
 
-    function handleNewFoodSave(food) {
-        const stepsForPost = stepsList?.map((res, index) => {
+    function handleEditFoodSave(food) {
+        const stepsForPost = stepsSet?.map((res, index) => {
             let newStep = {
                 id: res.id,
                 step: res.step,
@@ -581,7 +753,7 @@ function NewFood(props) {
         Promise.allSettled(stepsForPost).then((results) => {
             let array = []
             results.map((result) => { if (result.value !== undefined) { array.push(result.value.id) } })
-            postFood({
+            putFood({
                 ...food,
                 steps: array
             })
@@ -589,20 +761,20 @@ function NewFood(props) {
     }
 
     function stepMove(move, step) {
-        let position = getPosition(step.id, stepsList)
-        let newStepsSet = stepsList.slice()
+        let position = getPosition(step.id, stepsSet)
+        let newStepsSet = stepsSet.slice()
         if (move > 0) {
-            if (position < (-1 + stepsList.length)) {
+            if (position < (-1 + stepsSet.length)) {
                 newStepsSet.splice(position, 1);
                 newStepsSet.splice(position + move, 0, step);
-                setStepsList(newStepsSet)
+                setStepsSet(newStepsSet)
             }
         }
         if (move < 0) {
             if (position > 0) {
                 newStepsSet.splice(position, 1);
                 newStepsSet.splice(position - 1, 0, step);
-                setStepsList(newStepsSet)
+                setStepsSet(newStepsSet)
             }
         }
     }
@@ -622,13 +794,6 @@ function NewFood(props) {
         setTimeout(() => {
             setModalErrorFlag(false)
         }, 3000)
-    }
-    function handlerSetModalErrorMissing(message) {
-        setModalMessage(message)
-        // setModalSaveErrorMissingFlag(true)
-        // setTimeout(() => {
-        //     setModalSaveErrorMissingFlag(false)
-        // }, 3000)
     }
     function handlerSetModalImageDeleteError() {
         setModalImageDeleteErrorFlag(true)
@@ -658,7 +823,7 @@ function NewFood(props) {
     const [imagePosition, setImagePosition] = useState()
     function handlerImage(imageToAdd) {
         let imagePosition = (getPosition(imageToAdd.id, imageURLsList))
-
+        console.log("imagePosition 1: ", imagePosition)
         setImagePosition(imagePosition)
     }
 
@@ -673,10 +838,12 @@ function NewFood(props) {
         if (images.length < 1) return;
         let pisitionPost = imageURLsPost.length + 1
         let pisitionUrls = imageURLsPost.length + 1
-
+        console.log("imageURLsPost.length", imageURLsPost.length)
+        console.log("pisition", pisitionPost)
+        console.log("pisition", typeof (pisitionPost))
         images.forEach(
             (image) => {
-
+                console.log("pisition", pisitionPost);
                 newImageUrlsPost.push({
                     id: 0,
                     name: name,
@@ -711,7 +878,7 @@ function NewFood(props) {
     }
 
 
-    if (loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood)
+    if (loadingFood || loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood)
         return <label htmlFor="inpFile">
             <div className={style.loadingContainer}>
                 <FontAwesomeIcon
@@ -721,8 +888,8 @@ function NewFood(props) {
                     spin ></FontAwesomeIcon>
             </div>
         </label>//<h1>Loading...</h1> 
-    //   if (statusFood === 'error') return <h1>{JSON.stringify(errorFoods)}</h1>
-    //   if (statusImagefood === 'error') return <h1>{JSON.stringify(errorImagefood)}</h1>
+    if (statusFood === 'error') return <h1>{JSON.stringify(errorFoods)}</h1>
+    if (statusImagefood === 'error') return <h1>{JSON.stringify(errorImagefood)}</h1>
     if (statusFoodTags === 'error') return <h1>{JSON.stringify(errorFoodTags)}</h1>
     if (statusSteps === 'error') return <h1>{JSON.stringify(errorSteps)}</h1>
     if (statusIngredients === 'error') return <h1>{JSON.stringify(errorIngredients)}</h1>
@@ -734,11 +901,11 @@ function NewFood(props) {
         <div className={style.main}>
             <div className={style.header}>RECEPT</div>
             <div className={style.buttonBox} >
-                <div className={style.foodButton} onClick={handleFoodSave}>
-                    ULOŽIŤ
+                <div className={style.foodButton} onClick={handleNavigateToFoodEdit}>
+                    UPRAVIŤ
                 </div>
                 <div className={style.foodButton} onClick={handlerFoodSaveClose}>
-                    ZRUŠIŤ
+                    SPÄŤ
                 </div>
             </div>
             <div className={style.fooodbox} id="fooodbox">
@@ -746,87 +913,82 @@ function NewFood(props) {
                     filterTagListArray={foodTagSetArray}
                     handleAddToTagList={foodTagListCheck}
                     foodTagsBox={null}
+                    component={component}
+
                 />
 
-                <div class={style.Content_Flex}>
-                    <div className={style.messagebox}>
-                        {modalMessage} </div>
-
-                    <div className={style.ingreProcedureBox}>
-                        <div className={style.ingredientsImageBox}>
-                            <div>
-                                <p>Suroviny:</p>
-                                <IngredientInput
-                                    addToIngredientList={addToIngredientList}
-                                    ingredientsList={ingredientsSet}
-                                    ingredientsIDList={ingredientsSetID}
-                                    removeFromIngredientList={removeFromIngredientList}
-                                    component={component}
-                                ></IngredientInput>
-                            </div>
-                            {/* <div className={style.images} id="imagePreview">
-                        {imagePreview}
-                        <span className={style.imagePreview__defaultText}>
-                        Image Preview
-                        </span>
-                     </div> */}
-
-                            <input
-                                // className={style.imageinput}
-                                className={style.imageinput}
-                                type="file"
-                                multiple
-                                accept="image/jpeg,image/png,image/gif"
-                                id="inpFile"
-                                // id="image-input"
-                                onChange={onImageChange}
-                                display="none"
-                            />
-                            <label htmlFor="inpFile" className={style.imageIcon}
-                                datatooltip="Pridať fotografiu">
-                                <FontAwesomeIcon
-
-                                    icon={faCircleArrowUp}
-                                    // onClick={props.onTagDelete}
-                                    id="inpFileIcon"
-                                ></FontAwesomeIcon>
-                            </label>
-                            {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
-                                No Files chosen
-                            </p>}
-                            <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage}></Image>
-
-                        </div>
-                        <div className={style.procedureBox}>
-                            <div>
-                                <p>Nazov:</p>
-                            </div>
-                            <input
-                                className={style.foodname}
-                                value={name}
-                                type="text"
-                                maxLength="25"
-                                onChange={handleNameChange}
-                                onClick={handleAddToNameTagList}
-                            />
-                            <div className={style.date}>
-                                {/* Vytvoreny:{newdate} */}
-                            </div>
-                            <div>
-                                <p>Postup:</p>
-                            </div>
-                            <StepsInput
-                                stepMove={stepMove}
-                                addStepToTagList={addStepToTagList}
-                                updateStepInTagList={updateStepInTagList}
-                                stepsSet={stepsList}
-                                stepsSetIDState={stepsListID}
-                                deleteStep={makeSteptoDelete}
-                                component={component}
-                            ></StepsInput>
-
-                        </div>
+                <div className={style.ingredientsImageBox}>
+                    <div>
+                        <p>Suroviny:</p>
+                        <IngredientInput
+                           
+                            ingredientsList={ingredientsSet}
+                            ingredientsIDList={ingredientsSetID}
+                            
+                            component={component}
+                        ></IngredientInput>
                     </div>
+                    {/* <div className={style.images} id="imagePreview">
+            {imagePreview}
+            <span className={style.imagePreview__defaultText}>
+              Image Preview
+            </span>
+          </div> */}
+
+                    {component == "editcomponent" && <input
+                        // className={style.imageinput}
+                        className={style.imageinput}
+                        type="file"
+                        multiple
+                        accept="image/jpeg,image/png,image/gif"
+                        id="inpFile"
+                        // id="image-input"
+                        onChange={onImageChange}
+                        display="none"
+                    />}
+                    {component == "editcomponent" && <label htmlFor="inpFile" className={style.imageIcon}
+                        datatooltip="Pridať fotografiu">
+                        <FontAwesomeIcon
+
+                            icon={faCircleArrowUp}
+                            // onClick={props.onTagDelete}
+                            id="inpFileIcon"
+                        ></FontAwesomeIcon>
+                    </label>}
+                    {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
+                        No Files chosen
+                    </p>}
+                    <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} ></Image>
+
+                </div>
+                <div className={style.procedureBox}>
+                    {/* <div>
+                        <p>Nazov:</p>
+                    </div> */}
+                    <div className={style.foodnameView}>{name}</div>
+                    {/* <input
+                        className={style.foodname}
+                        value={name}
+                        type="text"
+                        maxlength="25"
+                        onChange={handleNameChange}
+                        onClick={handleAddToNameTagList}
+                    /> */}
+                    <div className={style.date}>
+                        Vytvorené: {newdate}
+                    </div>
+                    <div>
+                        <p>Postup:</p>
+                    </div>
+                    <StepsInput
+                        stepMove={stepMove}
+                        addStepToTagList={addStepToTagList}
+                        updateStepInTagList={updateStepInTagList}
+                        stepsSet={stepsSet}
+                        stepsSetIDState={stepsSetID}
+                        deleteStep={makeSteptoDelete}
+                        component={component}
+                    ></StepsInput>
                 </div>
             </div>
 
@@ -843,11 +1005,6 @@ function NewFood(props) {
             <SaveError
             ></SaveError>
         </Modal>
-        <Modal visible={modalSaveErrorMissingFlag} setModalFlag={setModalSaveErrorMissingFlag}>
-            <SaveErrorMissing
-                modalMessage={modalMessage} />
-
-        </Modal>
         <ModalPreview visible={modalLightboxFlag} setModalFlag={setModalLightboxFlag}>
             <Lightbox
                 imageURLsList={imageURLsList}
@@ -863,6 +1020,7 @@ function NewFood(props) {
                 imagePosition={[imagePosition, setImagePosition]}
                 putImagefood={putImagefood}
                 pageReload={pageReload}
+                component={component}
             >
             </Lightbox>
         </ModalPreview>
@@ -870,4 +1028,4 @@ function NewFood(props) {
     </>
     )
 }
-export default NewFood;
+export default ViewFood;

@@ -4,8 +4,8 @@
     flex-direction: column;
     background-color: whitesmoke;
     /* background-color: rgb(245, 214, 173); */
-    width: 170px;
     min-width: 170px;
+
 }
 
 .food {
@@ -25,23 +25,22 @@
 .checkboxInput:checked+.label {
     font-weight: bold;
     text-decoration: underline;
-    font-size: 12px;
+    font-size: 10px;
     color: orange;
     font-weight: bold;
 
 }
 
 .label {
-   
     font-size: 10px;
     font-weight: bold;
     vertical-align: baseline;
     cursor: pointer;
-    
-    width: 110px;
+    min-width: 100px;
     display: inline-block;
 }
 
+.label:hover {color: orange;}
 .foodMaso {
     margin: 0px 0px 10px 40px;
 }

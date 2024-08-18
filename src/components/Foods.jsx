@@ -1,50 +1,26 @@
 import style from "./Foods.module.css";
 import { useState, useEffect } from "react";
-import Modal from "./Modal";
+import Modal from "../reports/Modal";
 import NewFood from "./NewFood";
 import EditFood from "./EditFood";
 import FoodItemList from "./FoodItemList";
 import TagInput from "./TagInput";
 import LeftPanelFilter from "./LeftPanelFilter";
+import PageButton from "./PageButton"
 import React from "react";
-import {useQuery} from "@tanstack/react-query"
-import { Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query"
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useGet, useMutate } from "restful-react";
 // import { RestfulProvider, error } from "restful-react";
 import { render } from "@testing-library/react";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { defaultQueryFn, getFoodsPageFn, searchFoodsPageFn } from "../hooks/use-get";
 
 
-// function Step(props) {
-//   let step = props.stePPp;
-//   console.log("STEP", step);
-//   return (
-//     <>
-//       <div className={style.timesIngredient}>{step}</div>
-//       {/* <textarea
-//         className={style.step}
-//         rows="5"
-//         value={step}
-//         // onChange={handleUpdateStep} */}
-//       {/* /> */}
-//       {/* <div
-//         className={style.ingredientButton}
-//         // onClick={() => props.addStepToTagList(step, stepID)}
-//       >
-//         Pridať
-//       </div> */}
-//       {/* <textarea className={style.ingIngredient}>{props.step}/> */}
-//     </>
-//   );
-// }
-function Prepol(props) {
-  console.log("AAAAA");
-  return (
-    <>
-      <div className={style.unitIngredient}>{props.step}</div>
-    </>
-  );
-}
+
 function IngrID(props) {
   return (
     <>
@@ -76,151 +52,242 @@ function Ingredient(props) {
 }
 
 function Foods(props) {
-  async function HandleGet(url){
-    return (useQuery({queryKey:[url]}))
-}
- async function defaultQueryFn ({ queryKey }) {
-  const { data } = await axios.get(
-    `http://127.0.0.1:8000${queryKey[0]}`,
-  )
-  // .then((users) => users.map((user) => user.id))
-  return data
-}
-  // const { data: rawFoods,
-  //   refetch: refetchFood,
-  //   loading: loadingFoods,
-  // } = useGet({
-  //   path: "/foods/",
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(2)
+  const location = useLocation()
+  const [loc, setLoc] = useState(location)
+  useEffect(() => {
+    setLoc(location)
+  }, [location])
+
+  const current_time = new Date().toDateString()
+  // const currentDate = new Date().toLocaleDateString('sk-SK')
+  // let current_time = new Date().toLocaleDateString("en-ca", {
+  //   year: "numeric",
+  //   month: "numeric",
+  //   day: "numeric",
+  //   hour: "numeric",
+  //   minute: "numeric",
   // });
-  const {data: rawFoods,refetch: refetchFood,isLoading: loadingRawFoods, error: errorFoods} = useQuery({ 
-    queryKey: [`/foods/`],
-    queryFn: defaultQueryFn, }) 
-//     if (errorFoods){
-//      console.log("errorFoods")}
-//     if (loadingRawFoods)
-//     { console.log("loadingRawFoods")}
-//   // HandleGet(`/foods/`)
-// console.log("rawFoods",rawFoods)
+
+  const [getTodo, setTodo] = useState("");
+
+  var apiKey = "6de9bfb3c9bb1f5bb3f71b73e0e0dc0d";
+  var city = "Bratislava";
+  let clock = 0;
+  //fetchSelectedData()
+  function fetchSelectedData() {
+    let current_time = new Date().toLocaleDateString("en-ca", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    });
+    let request = fetch(
+      "https://api.openweathermap.org/data/2.5/weather?q=" +
+      city +
+      "&appid=" +
+      apiKey +
+      "&units=metric"
+    )
+      .then((data) => {
+        return data.json();
+      })
+      .then((parsedData) => {
+        // console.log(parsedData);
+        setTodo(parsedData);
+        console.log(
+          "clock:",
+          clock,
+          "temp: ",
+          parsedData.main.temp,
+          "time",
+          current_time
+        );
+      });
+    setTimeout(fetchSelectedData, 60000);
+    clock++;
+  }
+
+  function getKeyValuePairs(json_object) {
+    let array = ["", ""];
+
+    for (var value in json_object) {
+      let pair = value + " : " + json_object[value] + "  ";
+      // console.log("Array", array);
+      let newArray = array.slice();
+      // console.log("New Array", newArray);
+      newArray.push(pair);
+      array = newArray;
+      // console.log("Full Chabang", pair, array, newArray);
+    }
+    return array;
+  }
+  function getTargetData(getTodo) {
+    if (getTodo == "") {
+      return "";
+    }
+    return (
+      <div>
+        <h2>
+          testing Pressure<br></br>
+          Pressure: {getTodo.main.pressure}
+          <br></br>
+          Temp: {getTodo.main.temp}
+          <br></br>
+          Humidity: {getTodo.main.humidity}
+          <br></br>
+          Wind: {getTodo.wind.speed}
+          <br></br>
+          Wind direction: {getTodo.wind.deg}
+          <br></br>
+          Coord: {getTodo.coord.lon}, {getTodo.coord.lat}
+          <br></br>
+          <img
+            src={
+              "https://openweathermap.org/img/wn/" +
+              getTodo.weather[0].icon +
+              "@2x.png"
+            }
+          ></img>
+          <br></br>
+          Weather: {getTodo.weather[0].description}
+          <br></br>
+          Weather: {getTodo.weather[0].id}, {getTodo.weather[0].main}
+          <br></br>
+          Cloud: {getTodo.clouds.all}
+          <br></br>
+        </h2>
+        <img
+          src={
+            "https://tile.openweathermap.org/map/clouds_new/10/560/355.png?appid=" +
+            apiKey
+          }
+        ></img>
+      </div>
+    );
+  }
+
+  function getDate() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    const hour = today.getHours();
+    const minute = today.getMinutes();
+    const second = today.getSeconds();
+
+    return `${month}/${date}/${year},  ${hour}:${minute}/${second}`;
+  }
+
+  const [currentDate, setCurrentDate] = useState(getDate());
+  // console.log("itemsNum",itemsNum)
+
+  // async function defaultQueryFn({ queryKey }) {
+  //   const { data } = await axios.get(
+  //     `http://127.0.0.1:8000${queryKey[0]}`,
+  //   )
+  //   // .then((users) => users.map((user) => user.id))
+  //   return data
+  // }
+
+  // async function infiniteQueryFn({ queryKey }) {
+  //   const { data } = await axios.get(
+  //     `http://127.0.0.1:8000${queryKey[0]}`,
+  //     {
+  //       params: {
+  //         _page: pageParam,
+  //         _limit: 4,
+  //       },
+  //     })
+  //     .then((res) => res.data)
+  //   // .then((users) => users.map((user) => user.id))
+  //   return data
+  // }
+
+  // const fetchPost = async (page) => {
+  //   await new Promise((resolve) => setTimeout(resolve, 1000))
+  //   return post.slice((page - 1) * 2, page * 2)
+  // }
+
+  // const { data: rawFoods, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+  //   queryFn: ( pageParam = 1)=>getUsersPageFn(pageParam),
+  //   getNextPageParam:(lastPage, allPages)=> {
+  //     return lastPage.length > 0 ? allPages.length + 1 : undefined;
+  //   },
+  // })
+  const [filterTagList, setFilterTagList] = useState(new Set([]));
+
+  const { data: rawFoods, isFetching: isFetchingFoods, isLoading: loadingRawFoods, error: errorFoods, isError: isErrorFoods, isPreviousData: isPreviousDataFoods } = useQuery({
+    queryKey: ["/foods/", location],
+    queryFn: () => {
+      if (location?.search != null) {
+        return searchFoodsPageFn(location.search)
+        // if (page > 1) { return searchFoodsPageFn(location.search, page) }
+        // if (page < 1) { return searchFoodsPageFn(location.search) }
+      } else { return getFoodsPageFn(page) }
+    }
+
+    // keepPreviousData: true
+  })
+
+
+  //     if (errorFoods){
+  //      console.log("errorFoods")}
+  //     if (loadingRawFoods)
+  //     { console.log("loadingRawFoods")}
+  //   // HandleGet(`/foods/`)
+  // console.log("rawFoods",rawFoods)
   // const { data: rawFoodTags,
   //   refetch: refetchFoodTags,
   //   loading: loadingFoodTags,
   // } = useGet({
   //   path: "/foodTags/",
   // });
-  const {data: rawFoodTags, refetch: refetchFoodTags,} = useQuery({ 
-    queryKey: ["/foodTags/"] ,
-    enabled: !!rawFoods,
-    queryFn: defaultQueryFn, }) 
-  // HandleGet("/foodTags/")
+  const { data: rawFoodTags, isFetching: isFetchingFoodTags, error: errorFoodTags, isLoading: loadingFoodTags, isError: isErrorFoodTags } = useQuery({
+    queryKey: ["/foodTags/"],
+    enabled: rawFoods?.results != null,
+    queryFn: defaultQueryFn,
+  })
 
-  // const { data: rawSteps,
-  //   refetch: refetchSteps,
-  //   loading: loadingSteps} = useGet({
-  //   path: "/steps/",
-  // });
-  const {data: rawSteps,refetch: refetchSteps,} = useQuery({ 
-    queryKey: ["/steps/"] ,
+  const { data: rawSteps, isFetching: isFetchingSteps, error: errorSteps, isLoading: loadingSteps, isError: isErrorSteps } = useQuery({
+    queryKey: ["/steps/"],
     enabled: !!rawFoodTags,
-    queryFn: defaultQueryFn, }) 
+    queryFn: defaultQueryFn,
+  })
 
-  // const { data: rawIngredients,
-  //   refetch: refetchIngredients,
-  //   loading: loadingIngredients} = useGet({
-  //   path: "/ingredients/",
-  // });
-  const {data: rawIngredients,refetch: refetchIngredients,} = useQuery({ 
-    queryKey: ["/ingredients/"] ,
+
+  const { data: rawIngredients, isFetching: isFetchingIngredients, error: errorIngredients, isLoading: loadingIngredients, isError: isErrorIngredients } = useQuery({
+    queryKey: ["/ingredients/"],
     enabled: !!rawSteps,
-    queryFn: defaultQueryFn, }) 
+    queryFn: defaultQueryFn,
+  })
 
   let ingredientLengh = 0;
-  // const {
-  //   data: rawIngredient,
-  //   refetch: refetchIngredient,
-  //   loading: loadingIngredient,
-  //   error,
-  // } = useGet({
-  //   path: "/ingredient/",
-  // })
-  const {data: rawIngredient,refetch: refetchIngredient,} = useQuery({ 
-    queryKey: ["/ingredient/"] ,
+
+  const { data: rawIngredient, isFetching: isFetchingIngredient, error: errorIngredient, isLoading: loadingIngredient, isError: isErrorIngredient } = useQuery({
+    queryKey: ["/ingredient/"],
     enabled: !!rawIngredients,
-    queryFn: defaultQueryFn, })  
-  // const { data: rawUnit,
-  //   refetch: refetchUnit,
-  //   loading: loadingUnit,
-  //   error: errorUnit,
-  // } = useGet({
-  //   path: "/unit/",
-  // });
-  const {data: rawUnit,refetch: refetchUnit,} = useQuery({ 
-    queryKey: ["/unit/"] ,
+    queryFn: defaultQueryFn,
+  })
+
+  const { data: rawUnit, isFetching: isFetchingUnit, error: errorUnit, isLoading: loadingUnit, isError: isErrorUnit } = useQuery({
+    queryKey: ["/unit/"],
     enabled: !!rawIngredient,
-    queryFn: defaultQueryFn, })  
-  // const { data: rawImagefood,
-  //   refetch: refetchImagefood,
-  //   loading: loadingImageFood
-  // } = useGet({
-  //   path: "/imagefood/",
-  // });
-  const {data: rawImagefood,refetch: refetchImagefood,} = useQuery({ 
-    queryKey: ["/imagefood/"] ,
+    queryFn: defaultQueryFn,
+  })
+
+  const { data: rawImagefood, isFetching: isFetchingImagefood, error: errorImagefood, isLoading: loadingImagefood, isError: isErrorImagefood, } = useQuery({
+    queryKey: ["/imagefood/"],
     enabled: !!rawUnit,
-    queryFn: defaultQueryFn, })  
-  // const { data: rawVolume, refetch: refetchVolume } = useGet({
-  //   path: "/volume/",
-  // });
+    queryFn: defaultQueryFn,
+  })
 
-  const { mutate: postFood } = useMutate({
-    verb: "POST",
-    path: "/foods/",
-  });
 
-  const { mutate: put } = useMutate({
-    verb: "PUT",
-    path: (id) => `/foods/${id}/`,
-  });
+  let foodsComplete = rawFoods ?? [];
 
-  const { mutate: postFoodTag } = useMutate({
-    verb: "POST",
-    path: "/foodTags/",
-  });
-  const { mutate: postImageFood } = useMutate({
-    verb: "POST",
-    path: "/imagefood/",
-  });
-
-  const { mutate: postStep } = useMutate({
-    verb: "POST",
-    path: "/steps/",
-  });
-
-  const { mutate: putStep } = useMutate({
-    verb: "PUT",
-    path: (id) => `/steps/${id}/`,
-  });
-
-  const { mutate: postVolume } = useMutate({
-    verb: "POST",
-    path: "/volume/",
-  });
-
-  const { mutate: postUnit } = useMutate({
-    verb: "POST",
-    path: "/unit/",
-  });
-
-  const { mutate: postIngredient } = useMutate({
-    verb: "POST",
-    path: "/ingredient/",
-  });
-
-  const { mutate: postIngredients } = useMutate({
-    verb: "POST",
-    path: "/ingredients/",
-  });
-
-  let foodsRaw = rawFoods ?? [];
   let tagsBackEnd = rawFoodTags ?? [];
   let steps = rawSteps ?? [];
   let ingredients = rawIngredients ?? [];
@@ -230,25 +297,23 @@ function Foods(props) {
   let ingredient = [];
 
 
+  let foodsRaw = foodsComplete.results
+  let foodsTags_list = foodsComplete.tags_list
 
-  // useEffect(() => {
-  //   if (!rawUnit) {
-  //     const timerId = window.setTimeout(() => refetchUnit().then((response) => console.log(response.data))
-  //       .catch((error) => console.log(error)), 1000);
-  //     return () => window.clearTimeout(timerId);
-  //   } else {
-  //     return;
-  //   }
-  // }, [rawUnit, refetchUnit, errorUnit]);
   let unit = rawUnit ?? [];
-  // let volume = rawVolume ?? [];
-let foodTagsBox = []
+
+  let foodTagsContainer = []
   let foods = [];
-  foodsRaw.forEach((data) => {
-    // foodTags
+
+
+  foodsRaw?.forEach((data) => {
+
     let foodTagsList = [];
     let foodTagsIDList = [];
+
+
     data.foodTags.forEach((datatags) => {
+      //console.log("datatags", datatags)
       tagsBackEnd.map((e) => {
         if (e.id === datatags) {
           foodTagsList.push(e.foodTag);
@@ -274,11 +339,9 @@ let foodTagsBox = []
         let stepId = 0;
         if (e.id == datatags) {
           let a = e.step;
-          // console.log("e.step", e);
-          // stepsList.push(<div className={style.unitIngredient}>{e.step}</div>);
           stepsList.push(e);
           stepsIDList.push(e.id);
-          // console.log("e.step", e.step, "e.id", e.id);
+
         }
         stepId++;
       });
@@ -288,7 +351,7 @@ let foodTagsBox = []
     let ingredientsList = new Set();
     let ingredientsIDList = [];
     let ingredientsListNotDiv = [];
-    data.ingredients.forEach((datatags) => {
+    data?.ingredients?.forEach((datatags) => {
       let ingredientsTemp = [];
       let ingredientVolume = "";
       let ingredientUnit = "";
@@ -323,10 +386,6 @@ let foodTagsBox = []
       let IDunit = 100;
       let IDingredient = 1000;
 
-      // console.log("datatags", datatags);
-      // console.log("ingredientVolume", ingredientVolume);
-      // console.log("ingredientUnit", ingredientUnit);
-      // console.log("ingredientIngredient", ingredientIngredient);
       ingredientsList.add(
         <>
           <IngrID id={datatags} key={IDid} />
@@ -347,7 +406,9 @@ let foodTagsBox = []
       IDtimes++;
       IDunit++;
       IDingredient++;
-    });   
+    });
+
+
     foods.push({
       id: data.id,
       name: data.name,
@@ -360,104 +421,61 @@ let foodTagsBox = []
       foodTags: foodTagsList,
       foodTagsID: foodTagsIDList,
       date: data.date,
-    });foodTagsBox.push(foodTagsList)
-  });
+    });
+    foodTagsContainer.push(foodTagsList)
+  }
+  )
 
-  const [maxFoodId, setMaxFoodId] = useState(2);
-  const [filterTagList, setFilterTagList] = useState(new Set([]));
   const [modalNewFlag, setModalNewFlag] = useState(false);
   const [modalEditFlag, setModalEditFlag] = useState(false);
-  const navigate = useNavigate();
-  // const [ingredientSet, setIngredientSet] = useState(new Set([]));
-  // const [stepsSet, setStepsSet] = useState(new Set([]));
-  // const [nameTagSet, setNameTagSet] = useState(new Set());
-  // const [foodTagSet, setFoodTagSet] = useState(new Set());
+
   const [foodItemEditRender, setFoodItemEditRender] = ("")
-  // function handleFoodItemEditRender() { 
-  //   return foodItemEditRender
-  // }
+
   let filterTagListArray = [...filterTagList];
 
-  // function handleEditttFoodSave(foodItem) {
-  //   let current_time = new Date().toLocaleDateString("en-uk", {
-  //     day: "numeric",
-  //     year: "numeric",
-  //     month: "short",
-  //   });
-  //   // let newData = data.slice();
-  //   // let newFoodId = maxFoodId + 1;
-  //   // setMaxFoodId(newFoodId);
-  //   // foodItem.id = newFoodId;
-  //   // foodItem.likes = 0;
-  //   // foodItem.dislikes = 0;
-  //   // foodItem.fave = false;
-  //   // foodItem.date = current_time;
-  //   console.log("foodItem:", foodItem);
-  //   fetch("http://localhost:8000/foods/", {
-  //     method: "POST",
-  //     body: foodItem,
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //   })
-  //     .then((res) => console.log(res))
-  //     .catch((error) => console.log(error))
-  //     .then(refetchFood);
+  function handleSetPage(page) {
+    setPage(page)
+    const contentNext = foodsComplete.next;
+    const contentPrevious = foodsComplete.previous;
+    const ra = /(\?.+)/
+    //  const re = /(\?|&)(page=)(\d+)(\?|&)(page_size=)(\d+)/
+    //const rs = /(\?)(.+)(\?|&)(page=)(\d+)(\?|&)(page_size=)(\d+)/
+    const rb = /(\?)(.*\w*)(&*)(page=)(\d+)(\&)(page_size=)(\d+)/
 
-  //   // post(foodItem).then(refetch);
-  //   // newData.push(foodItem);
-  //   // setData(newData);
-  //   setModalNewFlag(false);
-  // }
-
-  function handleNewFoodSave(foodItem) {
-    let newData = foodsRaw.filter((d) => d.id != foodItem.id);
-    newData.push(foodItem);
-    newData.sort((a, b) => a.id - b.id);
-    postFood(foodItem).then(refetchFood);
-    // setData(newData);
-    setModalEditFlag(false);
-  }
-
-  function handleEditFoodSave(foodItem) {
-    console.log("foodItem", foodItem);
-    console.log("imageFoodItem", foodItem.imageFoodItem);
-    put(
-      foodItem.foodItem,
-      { pathParams: foodItem.foodItem.id }
-      // {
-      //   headers: {
-      //     "content-type": "multipart/form-data",
-      //   },
-      // ).then(refetchFood);
-    ).then(res=>console.log("res",res)).then(refetchFood).then(imgageFoodCheckPost(foodItem.imageFoodItem)).then(
-    setModalEditFlag(false))
-    
-  }
-
-  function imgageFoodCheckPost(image) {
-    console.log("imageFoodRaw", imageFoodRaw);
-    image.image.forEach((e) => {
-      let a = [];
-      a = imageFoodRaw.filter((element) => element.id == e.id);
-      if (a == "") {
-        let formdata = new FormData();
-        formdata.append("name", e.name);
-        formdata.append("image", e.image);
-        formdata.append("date", e.date);
-        formdata.append("food", e.food);
-        console.log("Posting formdata", formdata);
-        // fetch("http://127.0.0.1:8000/imagefood/", {
-        //   method: "POST",
-        //   body: formdata,
-        //   headers: {'X-CSRFToken': 'csrftoken'},
-        // })
-        postImageFood(formdata).then(refetchImagefood);
+    let matchColplete;
+    let match;
+    if (contentNext != null) {
+      if (matchColplete = ra.exec(contentNext)) {
+        if (match = rb.exec(matchColplete[0])) {
+          console.log("match", match)
+          if (page > 1) {
+            navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${match[3]}${match[4]}${page}${match[6]}${match[7]}${pageSize}`)}`)
+            // navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${page}${match[4]}${match[5]}${pageSize}`)}`)
+          }
+          else {
+            navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${match[6]}${match[7]}${pageSize}`)}`)
+          }
+        }
       }
-    });
+    } else {
+      if (matchColplete = ra.exec(contentPrevious)) {
+        if (match = rb.exec(matchColplete[0])) {
+          if (page > 1) {
+            navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${match[3]}${match[4]}${page}${match[6]}${match[7]}${pageSize}`)}`)
+          }
+          else {
+            navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${match[6]}${match[7]}${pageSize}`)}`)
+          }
+        }
+        else {
+          navigate(`/recepty/${matchColplete[0]}`)
+        }
+      }
+    }
   }
 
   function addToTagList(tag) {
+    setPage(1)
     let filterTagListArray = [...filterTagList];
     let tagListLowerCase = filterTagListArray.map((str) => str.toLowerCase());
     let newTagListSet = new Set(tagListLowerCase);
@@ -468,13 +486,42 @@ let foodTagsBox = []
     }
 
     let newTagList = new Set(filterTagList);
-    newTagList.add(tag);
+    const re = /(\?search=)/
+    const contentCurrent = foodsComplete.current;
+    let match;
+    if (contentCurrent != null) {
+      match = re.exec(contentCurrent)
+      if (match) {
+        newTagList = [tag];
+      } else {
+        newTagList.add(tag);
+      }
+    }
+    filterTagListArray = [...newTagList]
+    let filter = (`?foodTags__foodTag=${filterTagListArray.join("&")}&page_size=${pageSize}`)
+    navigate(`/recepty/${filter}`)
     setFilterTagList(newTagList);
+  }
+
+  function searchAddToTagList(tag) {
+    let search = (`?search=${tag}`)
+    navigate(`/recepty/${search}`)
+    let newTagList = [tag];
+    setFilterTagList(newTagList);
+
   }
 
   function removeFromTagList(tag) {
     let newTagList = new Set(filterTagList); // slice for sets
     newTagList.delete(tag); // push for set
+    filterTagListArray = [...newTagList]
+    if (filterTagListArray == "") {
+      navigate(`/recepty/?page_size=${pageSize}`)
+    }
+    else {
+      let filter = (`?foodTags__foodTag=${filterTagListArray.join("&")}`)
+      navigate(`/recepty/${filter}`)
+    }
     setFilterTagList(newTagList);
   }
 
@@ -487,430 +534,96 @@ let foodTagsBox = []
   }
 
   function handleAddToTagList(tag) {
-    console.log("typeof tag: ", typeof tag);
+
     if (filterTagListArray && Array.isArray(filterTagListArray)) {
       if (filterTagListArray.includes(tag)) {
         //console.log("included", val);
         removeFromTagList(tag);
-        console.log("removeFromTagList_1", tag);
+        //console.log("removeFromTagList_1", tag);
         //  uncheckTag(tag);
       } else {
-        console.log("not included", tag);
-        console.log("newTagListArray", filterTagListArray);
+        // console.log("not included", tag);
+        //console.log("newTagListArray", filterTagListArray);
         addToTagList(tag);
       }
     }
   }
+  function handleNavigateToNovyRecept() {
+    navigate(`/recepty/novy_recept/`)
+  }
+  function handlePageSize(event) {
+    setPageSize(event.target.value);
+    setPage(1)
+
+  }
+
+  useEffect(() => {
+    handleSetPage(page)
+  }, [pageSize])
+
+  const pagesArray = Array(foodsComplete.TotalNumOfPages).fill().map((_, index) => index + 1)
+  const nav = (<>
+
+  </>)
+
+  if (loadingRawFoods || loadingFoodTags || loadingSteps || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImagefood)
+    return <label htmlFor="inpFile">
+      <div className={style.loadingContainer}>
+        <FontAwesomeIcon
+          className={style.loadingIcon}
+          icon={faSpinner}
+          id="inpFileIcon"
+          spin ></FontAwesomeIcon>
+      </div>
+    </label>//<h1>Loading...</h1> 
+  if (isErrorFoods) return <h1>foods: {JSON.stringify(errorFoods.message)}</h1>
+  if (isErrorImagefood) return <h1>Image: {JSON.stringify(errorImagefood.message)}</h1>
+  if (isErrorFoodTags) return <h1>TAGS: {JSON.stringify(errorFoodTags.message)}</h1>
+  if (isErrorSteps) return <h1>{JSON.stringify(errorSteps.message)}</h1>
+  if (isErrorIngredients) return <h1>{JSON.stringify(errorIngredients.message)}</h1>
+  if (isErrorIngredient) return <h1>{JSON.stringify(errorIngredient.message)}</h1>
+  if (isErrorUnit) return <h1>{JSON.stringify(errorUnit.message)}</h1>
+
+  // const pagesArray = Array(rawFoods.TotalNumOfPages).fill().map((_, index) => index + 1)
+
+  // console.log("pagesArray", pagesArray)
+  // const nav = (
+  //   <nav className="nav-ex2">
+  //     <button onClick={prevPage} disabled={isPreviousDataFoods || page === 1}>&lt;&lt;</button>
+  //     {/* Removed isPreviousData from PageButton to keep button focus color instead */}
+  //     {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page}  setPage={setPage} />)}
+  //     <button onClick={nextPage} disabled={isPreviousDataFoods || page === rawFoods.TotalNumOfPages}>&gt;&gt;</button>
+  //   </nav>)
 
   return (
     <>
       <header className={style.Appheader}>RECEPTY</header>
       <div className={style.droplist}>
-        <div className={style.newFoodButton} onClick={setModalNewFlagTrue}>
-          {/* <div
-          className={style.newFoodButton}
-          onClick={() => {
-            navigate("/newfood");
-          }}
-        > */}
-          NOVY RECEPT
-        </div>
+        {/* <div style={{ color: "orange" }}>{getTodo.name}</div> */}
+        {/* <div>          Temp: {getKeyValuePairs(getTodo.main)} */}
+        {/* {getKeyValuePairs(Math.ceil(getTodo.temp))}</div> */}
+        <div>{getTargetData(getTodo)}</div>
+        <div>{current_time}</div>
+
+
         <main className={style.Appmain}>
           <TagInput
             filterTagListState={[filterTagList, setFilterTagList]}
-            addToTagList={addToTagList}
+            searchAddToTagList={searchAddToTagList}
             removeFromTagList={removeFromTagList}
           />
         </main>
+        <div className={style.foodButton} onClick={handleNavigateToNovyRecept}>
+          NOVY RECEPT
+        </div>
       </div>
       <div className={style.main}>
         <LeftPanelFilter
           filterTagListArray={filterTagListArray}
           handleAddToTagList={handleAddToTagList}
-          foodTagsBox={foodTagsBox}
+          foodTagsContainer={foodsTags_list}
         />
-        {/* <div className={style.foodtypesbox}>
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTszKfZHLLDSg5p19IXvQ9I8-XQbORjp8BTw&usqp=CAU"
-              alt="POLIEVKY"
-              // onClick={() => handleAddToFoodTagList("POLIEVKY")}
-              //checked={foodTagSetArray.includes("POLIEVKY")}
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("polievky")}
-                className={style.checkboxInput}
-                name="POLIEVKY"
-                id="POLIEVKY"
-                key="POLIEVKY"
-                onChange={() => handleAddToTagList("POLIEVKY")}
-                // onChange={() => handleAddToFoodTagList("POLIEVKY")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("POLIEVKY")}
-              >
-                POLIEVKY
-              </label>
-            </div>
-          </div>
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://www.gyron.sk/storage/article_images/f_2011020010.png"
-              alt="MASO A HYDINA"
-              // onClick={() => handleAddToFoodTagList("MASO A HYDINA")}
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("maso a hydina")}
-                name="MASO A HYDINA"
-                className={style.checkboxInput}
-                id="MASO A HYDINA"
-                key="MASO A HYDINA"
-                onChange={() => handleAddToTagList("MASO A HYDINA")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("MASO A HYDINA")}
-              >
-                MASO A HYDINA
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("hovadzie")}
-                name="HOVADZIE"
-                className={style.checkboxInput}
-                id="HOVADZIE"
-                key="HOVADZIE"
-                onChange={() => handleAddToTagList("HOVADZIE")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("HOVADZIE")}
-              >
-                HOVADZIE
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("bravcove")}
-                name="BRAVCOVE"
-                className={style.checkboxInput}
-                id="BRAVCOVE"
-                key="BRAVCOVE"
-                onChange={() => handleAddToTagList("BRAVCOVE")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("BRAVCOVE")}
-              >
-                BRAVCOVE
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("kuracie")}
-                name="KURACIE"
-                className={style.checkboxInput}
-                id="KURACIE"
-                key="KURACIE"
-                onChange={() => handleAddToTagList("KURACIE")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("KURACIE")}
-              >
-                KURACIE
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("kacacie")}
-                name="KACACIE"
-                className={style.checkboxInput}
-                id="KACACIE"
-                key="KACACIE"
-                onChange={() => handleAddToTagList("KACACIE")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("KACACIE")}
-              >
-                KACACIE
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("kralik")}
-                name="KRALIK"
-                className={style.checkboxInput}
-                id="KRALIK"
-                key="KRALIK"
-                onChange={() => handleAddToTagList("KRALIK")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("KRALIK")}
-              >
-                KRALIK
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("jahna")}
-                name="JAHNA"
-                className={style.checkboxInput}
-                id="JAHNA"
-                key="JAHNA"
-                onChange={() => handleAddToTagList("JAHNA")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("JAHNA")}
-              >
-                JAHNA
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("ryba")}
-                name="RYBA"
-                className={style.checkboxInput}
-                id="RYBA"
-                key="RYBA"
-                onChange={() => handleAddToTagList("RYBA")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("RYBA")}
-              >
-                RYBA
-              </label>
-            </div>
-          </div>
-          <div className={style.foodMaso}>
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("ine")}
-                name="INE"
-                className={style.checkboxInput}
-                id="INE"
-                key="INE"
-                onChange={() => handleAddToTagList("INE")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("INE")}
-              >
-                INE
-              </label>
-            </div>
-          </div>
-
-          <div className={style.food}>
-            <img
-              className={style.image}
-              // src="https://img.mimibazar.sk/s/bs/9/220205/19/i60958.jpg"
-              src="https://img.aktuality.sk/foto/MHgyODk6NTQ4MngzMzY5LzkyMHg1MTgvc21hcnQvaW1n/gjmMQVO2Q6uwVmy_2PHuUA.jpg?st=EH4nQQprrhExfzBoAJeTaJ60jCANc_0ab4UHfYAVh8U&ts=1531738202&e=0"
-              alt="BEZMASITE JEDLA"
-              //onClick={() => handleAddToFoodTagList("BEZMASITE JEDLA")}
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("bezmasite jedla")}
-                name="BEZMASITE JEDLA"
-                className={style.checkboxInput}
-                id="BEZMASITE JEDLA"
-                key="BEZMASITE JEDLA"
-                onChange={() => handleAddToTagList("BEZMASITE JEDLA")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("BEZMASITE JEDLA")}
-              >
-                BEZMASITE JEDLA
-              </label>
-            </div>
-          </div>
-
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://www.dennikrelax.sk/include/crop.php?h=480&w=720&f=../photos/amarant.jpg"
-              alt="PRILOHY"
-              //onClick={() => handleAddToFoodTagList("PRILOHY")}
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("prilohy")}
-                name="PRILOHY"
-                className={style.checkboxInput}
-                id="PRILOHY"
-                key="PRILOHY"
-                onChange={() => handleAddToTagList("PRILOHY")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("PRILOHY")}
-              >
-                PRILOHY
-              </label>
-            </div>
-          </div>
-
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGGE2i7To_F9Sl2qbNG6Fv38hZ0MAilY4l-phNS4mpieX6znGVYrl5K8C48pdjWCWbx-s&usqp=CAU"
-              alt="KOLACE A DEZERTY"
-              //onClick={() => handleAddToFoodTagList("KOLACE A DEZERTY")}
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("kolace a dezerty")}
-                name="KOLACE A DEZERTY"
-                className={style.checkboxInput}
-                id="KOLACE A DEZERTY"
-                key="KOLACE A DEZERTY"
-                onChange={() => handleAddToTagList("KOLACE A DEZERTY")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("KOLACE A DEZERTY")}
-              >
-                KOLACE A DEZERTY
-              </label>
-            </div>
-          </div>
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZVgjDPFoecZAoqQkNrjFaKaF1M7Iy2K4daQ&usqp=CAU"
-              alt="CESTOVINY"
-              //onClick={() => handleAddToFoodTagList("CESTOVINY")}
-            />
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("cestoviny")}
-                name="CESTOVINY"
-                className={style.checkboxInput}
-                id="CESTOVINY"
-                key="CESTOVINY"
-                onChange={() => handleAddToTagList("CESTOVINY")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("CESTOVINY")}
-              >
-                CESTOVINY
-              </label>
-            </div>
-          </div>
-          <div className={style.food}>
-            <img
-              className={style.image}
-              src="https://img.aktuality.sk/foto/MHg1MTk6NDg1MHgzMjM1LzkyMHg3NjAvc21hcnQvaW1n/mS3qqABtQ1vf_Yi8XVL5Cw.jpg?st=7ygkC0k_nRu6IarjLFo0TL4_jSQ6j_LWctMX2-SUBoQ&ts=1600752583&e=0"
-              alt="NATIERKY"
-              //onClick={() => handleAddToFoodTagList("NATIERKY")}
-            />
-
-            <div>
-              <input
-                type="checkbox"
-                checked={filterTagListArray
-                  .map((str) => str.toLowerCase())
-                  .includes("natierky")}
-                name="NATIERKY"
-                className={style.checkboxInput}
-                id="NATIERKY"
-                key="NATIERKY"
-                onChange={() => handleAddToTagList("NATIERKY")}
-              />
-              <label
-                className={style.label}
-                htmlFor="tag"
-                onClick={() => handleAddToTagList("NATIERKY")}
-              >
-                NATIERKY
-              </label>
-            </div>
-          </div>
-        </div> */}
-        <div className={style.FoodItemList}>
+        <div  >
           <FoodItemList
             food={foods}
             filterTagList={filterTagList}
@@ -919,57 +632,137 @@ let foodTagsBox = []
               foodItemEditRender,
               setFoodItemEditRender,
             ]}
+            page={[page, setPage]}
+            pageSize={[pageSize, setPageSize]}
+            handleSetPage={handleSetPage}
+            isPreviousDataFoods={isPreviousDataFoods}
+            rawFoods={rawFoods}
           ></FoodItemList>
+          <div className={style.paginationBox}>
+            <nav className={style.navigationbar}>
+              <button className={style.button} onClick={() => handleSetPage(page - 1)} disabled={isPreviousDataFoods || page === 1} id={isPreviousDataFoods || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
+              {/* Removed isPreviousData from PageButton to keep button focus color instead */}
+              {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page} handleSetPage={handleSetPage} />)}
+              <button className={style.button} onClick={() => handleSetPage(page + 1)} disabled={isPreviousDataFoods || page === foodsComplete.TotalNumOfPages} id={isPreviousDataFoods || page === foodsComplete.TotalNumOfPages ? style["buttondisabled"] : style["buttonenabled"]}>&gt;&gt;</button>
+
+
+            </nav>
+            <div className={style.navdisplay}>({foodsComplete.FirstItemsOnPage} - {foodsComplete.LastItemsOnPage})  z  {foodsComplete.TotalItems}
+
+              <select
+                className={style.unit}
+                onChange={handlePageSize}
+                value={pageSize}
+              >
+                <option>2</option>
+                <option>4</option>
+                <option>6</option>
+                <option>8</option>
+                <option>10</option>
+
+              </select>
+            </div>
+          </div>
+          <div>
+            <input type="button" value="Fetch data!" onClick={fetchSelectedData} />
+            <h2 style={{ color: "orange" }}>Mesto{getTodo.name}</h2>
+            <h3 style={{ color: "red" }}>
+              {" "}
+              <b>Temperature:</b>
+              <br></br>
+              {getKeyValuePairs(getTodo.main)}
+            </h3>
+            <h3 style={{ color: "yellow" }}>
+              {" "}
+              <b>Wind Speed:</b>
+              <br></br>
+              {getKeyValuePairs(getTodo.wind)}
+            </h3>
+            <h3>{getTargetData(getTodo)}</h3>
+            {/* <h3>{getTodo.main.temp}</h3> */}
+          </div>
+          let tem
+          <div>
+            <h2>
+              testing Pressure<br></br>
+              Pressure: {getKeyValuePairs(getTodo.main)}
+              {getKeyValuePairs(getTodo.pressure)}
+              <br></br>
+              Temp: {getKeyValuePairs(getTodo.main)}
+              {getKeyValuePairs(Math.ceil(getTodo.temp))}
+              <br></br>
+              Humidity: {getKeyValuePairs(getTodo.main)}
+              {getKeyValuePairs(getTodo.humidity)}
+              <br></br>
+              Wind: {getKeyValuePairs(getTodo.wind)}
+              {getKeyValuePairs(getTodo.speed)}
+              <br></br>
+              Wind direction: {getKeyValuePairs(getTodo.wind)}
+              {getKeyValuePairs(getTodo.deg)}
+              <br></br>
+              Coord: {getKeyValuePairs(getTodo.coord)}
+              {getKeyValuePairs(getTodo.lon)}, {getKeyValuePairs(getTodo.coord)}
+              {getKeyValuePairs(getTodo.lat)}
+              <br></br>
+              Weather: {getKeyValuePairs(getTodo.weather)}
+              {getKeyValuePairs(getTodo.description)}
+              <br></br>
+              Weather: {getKeyValuePairs(getTodo.weather)}
+              {getKeyValuePairs(getTodo.id)}, {getKeyValuePairs(getTodo.weather)}
+              {getKeyValuePairs(getTodo.main)}
+              <br></br>
+              Cloud: {getKeyValuePairs(getTodo.clouds)}
+              {getKeyValuePairs(getTodo.all)}
+              <br></br>
+            </h2>
+          </div>
+          {/* <span>Current Page: {page + 1}</span>
+      <button
+        onClick={() => setPage(old => Math.max(old - 1, 0))}
+        disabled={page === 0}
+      >
+        Previous Page
+      </button>{' '}
+      <button
+        onClick={() => {
+          if (!isPreviousDataFoods && rawFoods.hasMore) {
+            setPage(old => old + 1)
+          }
+        }}
+        // Disable the Next Page button until we know a next page is available
+        disabled={isPreviousDataFoods || !rawFoods?.hasMore}
+      >
+        Next Page
+      </button> */}
+          {/* { nav}
+      {isFetchingFoods ? <span> Loading...</span> : null}{' '} */}
+
         </div>
+        {/* <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+      </button> */}
       </div>
-      <Modal visible={modalNewFlag} setModalFlag={setModalNewFlag}>
+      {/* <Modal visible={modalNewFlag} setModalFlag={setModalNewFlag}>
         <NewFood
-          // addToIngredientList={addToIngredientList}
-          // ingredientSet={ingredientSet}
-          // removeFromIngredientList={removeFromIngredientList}
-          // addToStepsList={addToStepsList}
-          // stepsSet={stepsSet}
-          // removeFromStepsList={removeFromStepsList}
-          // foodTagSetState={[foodTagSet, setFoodTagSet]}
-          // addToFoodTagList={addToFoodTagList}
-          // removeFromFoodTagList={removeFromFoodTagList}
-          // nameTagSet={nameTagSet}
-          // addToNameTagList={addToNameTagList}
           onFoodSave={handleNewFoodSave}
         ></NewFood>
       </Modal>
       <Modal visible={modalEditFlag} setModalFlag={setModalEditFlag}>
         <EditFood
-          // addToIngredientList={addToIngredientList}
-          // ingredientSet={ingredientSet}
-          // removeFromIngredientList={removeFromIngredientList}
-          // addToStepsList={addToStepsList}
-          // stepsSet={stepsSet}
-          // removeFromStepsList={removeFromStepsList}
-          // foodTagSetState={[foodTagSet, setFoodTagSet]}
-          // addToFoodTagList={addToFoodTagList}
-          // removeFromFoodTagList={removeFromFoodTagList}
-          // nameTagSet={nameTagSet}
-          // addToNameTagList={addToNameTagList}
           onFoodSave={handleEditFoodSave}
-          // handleFoodItemEditRender={ handleFoodItemEditRender}
           foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
           foodTags={[postFoodTag]}
-          // foodTags={[rawFoodTags, refetchFoodTags, postFoodTag,loadingFoodTags]}
           steps={[rawSteps, refetchSteps, postStep, putStep]}
-          // ingredientHandler={ingredientHandler}
           ingredients={[rawIngredients, refetchIngredients, postIngredients]}
           ingredient={[
             ingredientRaw,
             refetchIngredient,
             postIngredient,
-           
                   ]}
           ingredientLengh={ingredientLengh}
           unit={[rawUnit, refetchUnit, postUnit]}
         // volume={[rawVolume, refetchVolume, postVolume]}
         ></EditFood>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

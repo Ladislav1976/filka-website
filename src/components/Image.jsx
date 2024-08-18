@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 //props.visible -> says if modal should appear
 export default function Image(props) {
   const newImageUrlsRender = [];
-
   const imageURLs = props.imageURLs;
 
   function uploader(image) {

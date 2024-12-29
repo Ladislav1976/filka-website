@@ -7,8 +7,8 @@ export default  function SaveSaved(props) {
 
     return(   <>
     <div></div>
-   <div className={style.loadingBox}>
-    <div className={style.loadingIcon}>
+   <div className={style.box}>
+    <div className={style.icon}>
     <FontAwesomeIcon
       className={style.saveIcon}
       icon={faCheck}
@@ -16,7 +16,7 @@ export default  function SaveSaved(props) {
       id="inpFileIcon"
       />
   </div>
-  <h3>Uložené!</h3>
+  {/* <h3>Uložené!</h3> */}
   </div>
     </>
     )

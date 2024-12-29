@@ -12,62 +12,33 @@ import IngredientInput from "./IngredientInput";
 import LeftPanelFilter from "./LeftPanelFilter";
 import React, { Component } from "react";
 import Image from "./Image";
+import UrlInput from "./Url";
 import Modal from "../reports/Modal";
 import ModalPreview from "../reports/ModalPreview";
 import { useGet, useMutate } from "restful-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCircleArrowUp, faSpinner, faFloppyDisk, faPenToSquare, faBackward } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { useQueries, useQuery, useQueryClient, useMutation, } from "@tanstack/react-query"
 import { createPostStep, createPutStep, createDeleteStep, createPostUnit, createPostIngredient, createPostIngredients, createPostFoodTag, createPostFood, createPutFood, createPostImagefood, createDeleteImagefood, createPutImagefood } from "../hooks/use-post";
 // import { postStepMutation } from "../hooks/use-mutate";
 import PostStepMutation from "../hooks/use-mutate";
-import { defaultQueryFn, queryFnFoodTagName, queryFnFoodTagId, queryFnFoodTagToId, queryFnFoodStep } from "../hooks/use-get";
-import axios from "axios";
-import useFetch from "use-fetch-hook";
+import { getUrl, getFood, getIngredients, getIngredient, getUnit, getImageFood, getImage, getSteps, getStep, getFoodTags, queryFnFoodTagName, queryFnFoodTagId, queryFnFoodTagToId, queryFnFoodStep } from "../hooks/use-get";
+import { checkUrlImage } from "../hooks/checkUrlImage";
 
-
-
-function IngrID(props) {
-    return (
-        <>
-            <div className="dd" id="dd"></div>
-        </>
-    );
-}
-
-function Times(props) {
-    return (
-        <>
-            <div className={style.timesIngredient}>{props.times}</div>
-        </>
-    );
-}
-
-function Unit(props) {
-    return (
-        <>
-            <div className={style.unitIngredient}>{props.unit}</div>
-        </>
-    );
-}
-
-function Ingredient(props) {
-    return <div className={style.ingIngredient}>{props.ing}</div>;
-}
 
 
 
 function ViewFood(props) {
-    const queryClient = useQueryClient();
+    // const queryClient = useQueryClient();
     const component = "viewcomponent"
     const navigate = useNavigate()
     const [foodID, setFoodID] = useState()
     const [name, setName] = useState("")
     const [nameTagSet, setNameTagSet] = useState()
-    const [ingredientsSet, setIngredientsSet] = useState(new Set());
+    const [ingredientsSet, setIngredientsSet] = useState([]);
     const [ingredientsSetID, setIngredientsSetID] = useState(new Set());
-    const [stepsSet, setStepsSet] = useState([]);
+    const [stepsList, setStepsList] = useState([]);
     const [stepsSetID, setStepsSetID] = useState([]);
 
     const [foodTagSet, setFoodTagSet] = useState(new Set());
@@ -85,7 +56,7 @@ function ViewFood(props) {
     const [imagePreview, setImagePreview] = useState([]);
     const [imageURLs, setImageURLs] = useState([])
     const [imageURLsList, setImageURLsList] = useState([])
-
+    const [urlList, setUrlList] = useState([])
     const [imageFlag, setImageFlag] = useState(true);
     const [imageURLsPost, setImageURLsPost] = useState([])
 
@@ -100,237 +71,139 @@ function ViewFood(props) {
     const [currentImageID, setCurrentImageID] = useState("")
     const [isVisibleEdit, setIsVisibleEdit] = useState(false)
 
-    let foodTagSetArray = [...foodTagSet];
-    let ingredientSetArray = [...ingredientsSet];
-    let foodTagsList = [];
-
 
     const id = useParams()
-   
+
     let ID = parseInt(id.id)
 
-    const { status: statusFood, data: dataFoods, refetch: refetchFood, isLoading: loadingFood, error: errorFoods } = useQuery({
-        queryKey: [`/foods/${id.id}/`],
+    const dataFoods = useQuery({
+        queryKey: ["foods", ID],
         enabled: !!id,
-        queryFn: defaultQueryFn,
+        queryFn: () => getFood(ID),
 
     })
-   
-    const { status: statusPostFood, error: errorPostFood, mutate: postFood } = useMutation({
-        mutationFn: createPostFood,
-        onError: error => { console.log("Error Post Food :", error) },
-        onSuccess: (foodCreated, oldFoodTag) => {
-            console.log("Food :", foodCreated, "sucsesfully created!")
-            queryClient.invalidateQueries([`/foods/${foodCreated.id}/`], foodCreated)//"/steps/",newPost.id],newPost)
-            // addTofoodTagList(foodCreated)
-        }
-    })
 
-    const { data: DataPutFood, status: statusPutFood, error: errorPutFood, mutate: putFood } = useMutation({
-        // queryKey: (id) => [`/steps/${id}/`],
-        mutationFn: createPutFood,
-        onError: error => { console.log("Error Put Food :", error); handlerSetModalError() },
-        onSuccess: (foodUpdated, image) => {
-            console.log("Food :", foodUpdated, "sucsesfully updated!");
-            // queryClient.invalidateQueries([`/foods/${foodUpdated.id}/`], foodUpdated).then();
-
-            const imageFoodPosted = image?.image.map((res, index) => {
-                if (res.id == 0) {
-                    let formdata = new FormData();
-                    formdata.append("name", res.name);
-                    formdata.append("image", res.image);
-                    formdata.append("date", res.date);
-                    formdata.append("food", res.food);
-                    formdata.append("imgposition", index + 1);
-                    postImagefood({ formdata })
-                }
+    const dataFoodsImage = useQueries({
+        queries: dataFoods.isLoading == false
+            // && dataFoodsStIngre.data.ingredients.ingredientName!=undefined
+            ? dataFoods?.data?.images?.map((id) => ({
+                queryKey: ["imagefood", id],
+                queryFn: () => getImage(id),
+                staleTime: Infinity,
             })
-            Promise.allSettled(imageFoodPosted).then(() => {
-                handlerSetModalSave()
-            })
-        }
-    })
+            ) : [],
 
-
-    const { status: statusImagefood, data: dataImagefood, refetch: refetchImagefood, isLoading: loadingImageFood, error: errorImagefood } = useQuery({
-        queryKey: ["/imagefood/"],
-        enabled: !!dataFoods,
-        queryFn: defaultQueryFn,
-    })
-
-    const { status: statusPostImagefood, error: errorPostImagefood, mutate: postImagefood } = useMutation({
-        mutationFn: createPostImagefood,
-        onError: error => { console.log("Error Post Imagefood :", error); handlerSetModalError() },
-        onSuccess: (ImagefoodCreated, oldImagefood) => {
-            console.log("Imagefood :", ImagefoodCreated, "sucsesfully created!")
-            queryClient.invalidateQueries([`/imagefood/${ImagefoodCreated.id}/`], ImagefoodCreated)//"/steps/",newPost.id],newPost)
-        }
-    })
-
-    const { status: statusPutImagefood, error: errorPutImagefood, mutate: putImagefood } = useMutation({
-        mutationFn: createPutImagefood,
-        onError: error => { console.log("Error Put Imagefood :", error); handlerSetModalError(); return },
-        onSuccess: (ImagefoodUpdated, oldImagefood) => {
-            console.log("Imagefood :", ImagefoodUpdated, "sucsesfully updated!")
-            queryClient.invalidateQueries([`/imagefood/${ImagefoodUpdated.id}/`], ImagefoodUpdated)//"/steps/",newPost.id],newPost)
-        }
-    })
-
-    const { status: statusDeleteImagefood, error: errorDeleteImagefood, mutate: deleteImagefood } = useMutation({
-        mutationFn: createDeleteImagefood,
-        onError: error => { console.log("Error Delete Imagefood :", error); handlerSetModalImageDeleteError() },
-        onSuccess: (response) => {
-            console.log("Imagefood :", response, "sucsesfully deleted!")
-            if (response == 204) {
-                console.log("response:", response)
-                pageReload()
-                closeModal();
-
+        combine: (results) => {
+            if (!results) return
+            return {
+                data: results.map((result) => result.data),
+                isPending: results.some((result) => result.isPending),
+                isLoading: results.some((result) => result.isLoading),
+                isSuccess: results.some((result) => result.isSuccess),
+                status: results.some((result) => result.status),
+                isFetched: results.some((result) => result.isFetched),
+                fetchStatus: results.some((result) => result.fetchStatus),
             }
-            else {
-                handlerSetModalImageDeleteError()
+        },
+    })
+
+    const dataFoodTags = useQuery({
+        queryKey: ["foodTags"],
+        // enabled: !!dataImagefood,
+        queryFn: getFoodTags,
+    })
+
+    const dataSteps = useQueries({
+
+        queries: dataFoods.isLoading == false
+
+            ? dataFoods?.data?.steps?.map((id) => ({
+                queryKey: ["steps", id],
+                queryFn: () => getStep(id),
+                staleTime: Infinity,
+
+            })) : [],
+        combine: (results) => {
+            if (!results) return
+            return {
+                data: results?.map((result) => result.data)
+                    .sort(function (a, b) {
+                        return a.position - b.position;
+                    })
+                ,
+                isPending: results.some((result) => result.isPending),
+                isLoading: results.some((result) => result.isLoading),
+                isSuccess: results.some((result) => result.isSuccess),
+                status: results.some((result) => result.status),
+                isFetched: results.some((result) => result.isFetched),
             }
-            // queryClient.invalidateQueries([`/imagefood/${ImagefoodCreated.id}/`], ImagefoodCreated)//"/steps/",newPost.id],newPost)
-        }
+        },
     })
 
-    const { status: statusFoodTags, data: dataFoodTags, refetch: refetchFoodTags, isLoading: loadingFoodTags, error: errorFoodTags } = useQuery({
-        queryKey: ["/foodTags/"],
-        enabled: !!dataImagefood,
-        queryFn: defaultQueryFn,
-    })
-    const { status: statusPostFoodTag, error: errorPostFoodTag, mutate: postFoodTag } = useMutation({
-        mutationFn: createPostFoodTag,
-        onError: error => { console.log("Error Post FoodTag :", error) },
-        onSuccess: (foodTagCreated, oldFoodTag) => {
-            console.log("FoodTag :", foodTagCreated, "sucsesfully created!")
-            queryClient.invalidateQueries([`/foodTags/${foodTagCreated.id}/`], foodTagCreated)//"/steps/",newPost.id],newPost)
-            addTofoodTagList(foodTagCreated)
+    const dataUrl = useQueries({
 
-        }
-    })
+        queries: dataFoods.isLoading == false
 
-    const { status: statusSteps, data: dataSteps, refetch, refetch: refetchSteps, isLoading: loadingSteps, error: errorSteps } = useQuery({
-        queryKey: ["/steps/"],
-        enabled: !!dataFoodTags,
-        queryFn: defaultQueryFn,
-    })
+            ? dataFoods?.data?.urls?.map((id) => ({
+                queryKey: ["url", id],
+                queryFn: () => getUrl(id),
+                staleTime: Infinity,
 
-    const { status: statusPostStep, error: errorPostStep, mutate: postStep, mutateAsync: postStepAsync } = useMutation({
-        mutationFn: createPostStep,
-        onError: error => { console.log("Error Post Step :", error) },
-        onSuccess: (stepCreated, oldStep) => {
-            console.log("Step :", stepCreated, "sucsesfully created!", oldStep)
-            queryClient.invalidateQueries([`/steps/${stepCreated.id}/`], stepCreated)
-            // return oldStep.id
-            // queryClient.setQueryData(["/steps/"], oldPost => [...oldPost, newPost])
-            // updateStepInTagList(oldStep.id, stepCreated.id, stepCreated.step)
-
-        }
+            })) : [],
+        combine: (results) => {
+            if (!results) return
+            return {
+                data: results?.map((result) => result.data),
+                isPending: results.some((result) => result.isPending),
+                isLoading: results.some((result) => result.isLoading),
+                isSuccess: results.some((result) => result.isSuccess),
+                status: results.some((result) => result.status),
+                isFetched: results.some((result) => result.isFetched),
+            }
+        },
     })
 
 
-    const { status: statusPutStep, error: errorPutStep, mutate: putStep, mutateAsync: putStepAsync } = useMutation({
-        // queryKey: (id) => [`/steps/${id}/`],
-        mutationFn: createPutStep,
-        onError: error => { console.log("Error Put Step :", error) },
-        onSuccess: (StepUpdated) => {
-            console.log("Step :", StepUpdated, "sucsesfully updated!",)
-            queryClient.invalidateQueries([`/steps/${StepUpdated.id}/`], StepUpdated)
-            // return StepUpdated
-            // updateStepInTagList(oldID, StepUpdated.id, StepUpdated.step)
-        }
+    const dataIngredients = useQuery({
+        queryKey: ["ingredients"],
+        // enabled: !!dataSteps.data,
+        queryFn: getIngredients,
     })
 
-    const { status: statusDeleteStep, error: errorDeleteStep, mutate: deleteStep } = useMutation({
-        // queryKey: (id) => [`/steps/${id}/`],
-        mutationFn: (step) => createDeleteStep(step),
-        onError: error => { console.log("Error Delete Step :", error) },
-        onSuccess: (id, step) => {
-            console.log("Step :", step, "sucsesfully deleted!")
-            // queryClient.removeQueries({ queryKey: [`/steps/${id.id}/`], exact: true })//, oldPost => [...oldPost, newPost])
-            // queryClient.invalidateQueries([`/steps/${id.id}/`], id)//, oldPost => [...oldPost, newPost])
-            removeFromStepsList(step)
-        }
+    const dataIngredient = useQuery({
+        queryKey: ["ingredient"],
+        // enabled: !!dataIngredients,
+        queryFn: getIngredient,
     })
 
-
-
-    const { status: statusIngredients, data: dataIngredients, refetch: refetchIngredients, isLoading: loadingIngredients, error: errorIngredients } = useQuery({
-        queryKey: ["/ingredients/"],
-        enabled: !!dataSteps,
-        queryFn: defaultQueryFn,
+    const dataUnit = useQuery({
+        queryKey: ["unit"],
+        // enabled: !!dataIngredient,
+        queryFn: getUnit,
     })
-
-    const { status: statusPostIngredients, error: errorPostIngredients, mutate: postIngredients } = useMutation({
-        mutationFn: createPostIngredients,
-        onError: error => { console.log("Error Post Ingredients :", error) },
-        onSuccess: (ingredientsCreated, ingredient) => {
-            console.log("Ingredients :", ingredientsCreated, "sucsesfully created!")
-            queryClient.invalidateQueries([`/ingredients/${ingredientsCreated.id}/`], ingredientsCreated)
-            addToIngredientsIDList(ingredientsCreated)
-        }
-    })
-
-
-    const { status: statusIngredient, data: dataIngredient, refetch: refetchIngredient, isLoading: loadingIngredient, error: errorIngredient } = useQuery({
-        queryKey: ["/ingredient/"],
-        enabled: !!dataIngredients,
-        queryFn: defaultQueryFn,
-    })
-
-    const { status: statusPostIngredient, error: errorPostIngredient, mutate: postIngredient } = useMutation({
-        mutationFn: createPostIngredient,
-        onError: error => { console.log("Error Post Ingredient :", error) },
-        onSuccess: (ingredientCreated, ingredient) => {
-            console.log("Ingredient :", ingredientCreated, "sucsesfully created!")
-            queryClient.invalidateQueries([`/ingredient/${ingredientCreated.id}/`], ingredientCreated)
-            ingredientsPost(ingredient.times, ingredient.unit, ingredientCreated)
-        }
-    })
-
-    const { status: statusUnit, data: dataUnit, refetch: refetchUnit, isLoading: loadingUnit, error: errorUnit } = useQuery({
-        queryKey: ["/unit/"],
-        enabled: !!dataIngredient,
-        queryFn: defaultQueryFn,
-    })
-
-    const { status: statusPostUnit, error: errorPostUnit, mutate: postUnit } = useMutation({
-        mutationFn: createPostUnit,
-        onError: error => { console.log("Error Post Unit :", error) },
-        onSuccess: (unitCreated, unit) => {
-            console.log("Unit :", unitCreated, "sucsesfully created!")
-            queryClient.invalidateQueries([`/unit/${unitCreated.id}/`], unitCreated)
-            ingredientCheckPost(unit.times, unitCreated, unit.ingredient)
-        }
-    })
-
-
 
     useEffect(() => {
         let food = ""
-        if (statusFood === 'success') {
-            if (statusImagefood === 'success') {
-                if (statusFoodTags === 'success') {
-                    if (statusSteps === 'success') {
-                        if (statusIngredients === 'success') {
-                            if (statusIngredient === 'success') {
-                                if (statusUnit === 'success') {
+        if (dataFoods.isLoading == false) {
+            if (dataFoodsImage.isLoading == false) {
+                if (dataFoodTags.isLoading == false) {
+                    if (dataSteps.isLoading == false) {
+                        if (dataIngredients.isLoading == false) {
+                            if (dataIngredient.isLoading == false) {
+                                if (dataUnit.isLoading == false) {
+                                    if (dataUrl.isLoading == false) {
 
-                                    food = handleFood()
-                                    setFoodID(food.id);
-                                    setName(food.name);
-                                    setNameTagSet(food.nameTags);
-                                    setFoodTagSet(food.foodTags);
-                                    setFoodTagSetID(food.foodTagsID);
-                                    setStepsSet(food.steps);
-                                    setStepsSetID(food.stepsID);
-                                    setIngredientsSet(food.ingredients);
-                                    setIngredientsSetID(food.ingredientsID);
-                                    setDate(food.date);
-                                    setImageURLs(food.image);
-                                    setImageURLsList(food.image);
-                                    setImageURLsPost(food.image);
+                                        food = handleFood()
+                                        setFoodID(food.id);
+                                        setName(food.name);
+                                        setFoodTagSet(food.foodTags);
+                                        setStepsList(food.steps);
+                                        setIngredientsSet(food.ingredients);
+                                        setUrlList(food.urls)
+                                        setDate(food.date);
+                                        setImageURLsList(food.images);
+                                    } else {
+                                    }
                                 } else {
                                 }
                             } else {
@@ -347,177 +220,87 @@ function ViewFood(props) {
         } else {
         }
 
-    }, [statusFood, statusImagefood, statusFoodTags, statusSteps, statusIngredients, statusIngredient, statusUnit,
-    ])//, dataImagefood, dataFoodTags, dataSteps, dataIngredients, dataIngredient, dataUnit])
+    }, [dataFoods.data, dataFoodsImage.data, dataFoodTags.data, dataSteps.data, dataIngredients.data, dataIngredient.data, dataUnit.data, dataUrl.data
+    ])
 
 
-    // async function defaultQueryFnFoodTagId({ queryKey }) {
-    //   const { data } = await axios.get(
-    //     `http://127.0.0.1:8000${queryKey[0]}`,
-    //   )
-
-    //   return data.id
-    // }
-
-    // const foods_FoodTagsName = useQueries({
-    //   enabled: !!dataFoods,
-    //   queries: dataFoods
-    //     ? dataFoods.foodTags.map((id) => {
-    //       return {
-    //         queryKey: [`/foodTags/${id}/`],
-    //         queryFn: queryFnFoodTagName
-    //       }
-    //     }) : [],
-    // })
+    const backEndFood = dataFoods.data ?? [];
+    const backEndFoodTags = dataFoodTags.data ?? [];
+    const backEndSteps = dataSteps.data ?? [];
+    const backEndUrls = dataUrl.data ?? [];
+    const backEndImagefood = dataFoodsImage.data ?? [];
+    const backEndIngredients = dataIngredients.data ?? [];
+    const backEndIngredient = dataIngredient.data ?? [];
+    const backEndUnit = dataUnit.data ?? [];
 
 
-
-    // const foods_Steps = useQueries({
-    //   enabled: !!dataFoods,
-    //   queries: dataFoods
-    //     ? dataFoods.steps.map((id) => {
-    //       return {
-    //         queryKey: [`/steps/${id}/`],
-    //         queryFn: queryFnFoodStep
-    //       }
-    //     }) : [],
-    // })
-
-    // const foods_Ingredients = useQueries({
-    //   enabled: !!dataFoods,
-    //   queries: dataFoods
-    //     ? dataFoods.ingredients.map((id) => {
-    //       return {
-    //         queryKey: [`/ingredients/${id}/`],
-    //         queryFn: defaultQueryFn
-    //       }
-    //     }) : [],
-    // })
-
-
-    let foodTagsIDList = [];
     function handleFood() {
-        let backEndFood = dataFoods;
-        let backEndFoodTags = dataFoodTags;
-        let backEndSteps = dataSteps;
-        let backEndImagefood = dataImagefood;
-        let backEndIngredients = dataIngredients;
-        let backEndIngredient = dataIngredient;
-        let backEndUnit = dataUnit;
 
 
-        backEndFood.foodTags.forEach((datatags) => {
-            backEndFoodTags.map((e) => {
-                if (e.id === datatags) {
-                    foodTagsList.push(e.foodTag);
-                    foodTagsIDList.push(e.id);
-                }
-            });
-        });
 
-        // imageFood
-
-        let imageFoodList = [];
-        backEndImagefood.map((e) => {
-            if (e.food === backEndFood.id) {
-                imageFoodList.push(e);
-            }
-        });
-
-        //sorting of imageFoodList from 1 to 999
-        imageFoodList.sort(function (a, b) {
-            return a.imgposition - b.imgposition;
-        });
-
-        // Steps
-        let stepsList = [];
-        let stepsIDList = [];
-
-        backEndFood.steps.forEach((datatags) => {
-            backEndSteps.map((e) => {
-                let stepId = 0;
-                if (e.id == datatags) {
-                    let a = e.step;
-                    stepsList.push(e);
-                    stepsIDList.push(e.id);
-                }
-                stepId++;
-            });
-        });
-
-        //sorting of steps from 1 to 999
-        stepsList.sort(function (a, b) {
-            return a.stposition - b.stposition;
-        });
-        // Ingredients
-        let ingredientsList = new Set();
-        let ingredientsIDList = [];
-        let ingredientsListNotDiv = [];
-        backEndFood.ingredients.forEach((datatags) => {
-            let ingredientsTemp = [];
-            let ingredientVolume = "";
-            let ingredientUnit = "";
-            let ingredientIngredient = "";
-            let ingredientUnitID = "";
-            let ingredientIngredientID = "";
-
-            backEndIngredients.map((e) => {
-                if (e.id === datatags) {
-                    ingredientsTemp.push(e);
-                }
-                ingredientsTemp.forEach((r) => {
-                    ingredientVolume = r.volume;
-                    // unit
-                    backEndUnit.map((u) => {
-                        if (u.id == r.units) {
-                            ingredientUnit = u.unit;
-                            ingredientUnitID = u.id;
-                        }
-                    });
-                    // Ingredient
-                    backEndIngredient.map((i) => {
-                        if (i.id == r.ingredientName) {
-                            ingredientIngredient = i.ingredient;
-                            ingredientIngredientID = i.id;
-                        }
-                    });
+        function itemListDownl(backEndFood, backEndItems, sorting) {
+            let returnList = []
+            backEndFood?.forEach((f) => {
+                backEndItems?.map((e) => {
+                    if (e.id === f) {
+                        returnList.push({
+                            ...e,
+                            statusDelete: false
+                        });
+                        ;
+                    }
                 });
             });
-            let IDid = 1;
-            let IDtimes = 10;
-            let IDunit = 100;
-            let IDingredient = 1000;
+            //sorting of items from 1 to 999
+            if (sorting) {
+                returnList.sort(function (a, b) {
+                    return a.position - b.position;
+                }
+                )
+            };
+            return returnList
+        }
 
+        function ingredientsListDownl() {
+            let ingredients = []
+            backEndFood.ingredients.map((datatags) => {
+                backEndIngredients.map((e) => {
+                    if (e.id == datatags) {
+                        backEndUnit.map((u) => {
+                            if (u.id == e.units) {
+                                backEndIngredient?.map((i) => {
+                                    if (i.id == e.ingredientName) {
+                                        ingredients.push({
+                                            id: e.id,
+                                            quantity: e.quantity,
+                                            unit: [u],
+                                            ingredient: [i],
+                                            position: e.position,
+                                            statusDelete: false
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                }
+                )
+            })
+            ingredients.sort(function (a, b) {
+                return a.position - b.position;
+            })
 
-            ingredientsList.add({ id: datatags ,times: ingredientVolume,unit: ingredientUnit, ing:ingredientIngredient}
-
-            );
-            ingredientsListNotDiv.push({
-                id: datatags,
-                times: ingredientVolume,
-                unit: ingredientUnit,
-                ing: ingredientIngredient,
-            });
-            ingredientsIDList.push(datatags);
-
-            IDid++;
-            IDtimes++;
-            IDunit++;
-            IDingredient++;
-        });
-
+            return ingredients
+        }
 
         return ({
             id: backEndFood.id,
             name: backEndFood.name,
-            image: imageFoodList,
-            ingredients: ingredientsList,
-            ingredientsID: ingredientsIDList,
-            ingredientsNotDiv: ingredientsListNotDiv,
-            steps: stepsList,
-            stepsID: stepsIDList,
-            foodTags: foodTagsList,
-            foodTagsID: foodTagsIDList,
+            images: itemListDownl(backEndFood.images, backEndImagefood, "yes"),
+            ingredients: ingredientsListDownl(),
+            steps: itemListDownl(backEndFood.steps, backEndSteps, "yes"),
+            urls: itemListDownl(backEndFood.urls, backEndUrls, "no"),
+            foodTags: itemListDownl(backEndFood.foodTags, backEndFoodTags, "no"),
             date: backEndFood.date,
         })
     }
@@ -527,14 +310,14 @@ function ViewFood(props) {
         navigate(`/recepty/uprava/${id.id}/`)
     }
 
-    function handleAddToNameTagList() {
-        let nameSplit = name?.split(" ");
-        addToNameTagList(nameSplit);
-    }
+    // function handleAddToNameTagList() {
+    //     let nameSplit = name?.split(" ");
+    //     addToNameTagList(nameSplit);
+    // }
 
-    function handleNameChange(event) {
-        setName(event.target.value);
-    }
+    // function handleNameChange(event) {
+    //     setName(event.target.value);
+    // }
 
 
     function foodTagListCheck(tag) {
@@ -546,23 +329,23 @@ function ViewFood(props) {
     }
 
 
-    function ingredientsCheckPost(times, unit, ingredient) {
-        let unitFilter = dataUnit.find((element) => (element.unit == unit))
-        if (unitFilter == null) {
-            postUnit({ unit: unit, times: times, ingredient: ingredient })
-        } else {
-            ingredientCheckPost(times, unitFilter, ingredient)
-        }
-    }
+    // function ingredientsCheckPost(times, unit, ingredient) {
+    //     let unitFilter = dataUnit.find((element) => (element.unit == unit))
+    //     if (unitFilter == null) {
+    //         postUnit({ unit: unit, times: times, ingredient: ingredient })
+    //     } else {
+    //         ingredientCheckPost(times, unitFilter, ingredient)
+    //     }
+    // }
 
-    function ingredientCheckPost(times, unit, ingredient) {
-        let ingredientFilter = dataIngredient.find((element) => element.ingredient == ingredient)
-        if (ingredientFilter == null) {
-            postIngredient({ unit, times: times, ingredient: ingredient })
-        } else {
-            ingredientsPost(times, unit, ingredientFilter)
-        }
-    }
+    // function ingredientCheckPost(times, unit, ingredient) {
+    //     let ingredientFilter = dataIngredient.find((element) => element.ingredient == ingredient)
+    //     if (ingredientFilter == null) {
+    //         postIngredient({ unit, times: times, ingredient: ingredient })
+    //     } else {
+    //         ingredientsPost(times, unit, ingredientFilter)
+    //     }
+    // }
 
     function addTofoodTagList(foodTag) {
         let newfoodTagIDList = new Set(foodTagSetID);
@@ -580,38 +363,38 @@ function ViewFood(props) {
     }
 
 
-    function ingredientsPost(times, unitChecked, ingredientChecked) {
-        let ingredientFilter = dataIngredients.find(
-            (element) =>
-                element.volume == times &&
-                element.units[0] == unitChecked.id &&
-                element.ingredientName[0] == ingredientChecked.id
-        )
+    // function ingredientsPost(times, unitChecked, ingredientChecked) {
+    //     let ingredientFilter = dataIngredients.find(
+    //         (element) =>
+    //             element.volume == times &&
+    //             element.units[0] == unitChecked.id &&
+    //             element.ingredientName[0] == ingredientChecked.id
+    //     )
 
-        if (ingredientFilter == null) {
-            postIngredients({
-                volume: times,
-                units: [unitChecked.id],
-                ingredientName: [ingredientChecked.id],
-            })
-        }
-        else { addToIngredientsIDList(ingredientFilter) }
-    }
+    //     if (ingredientFilter == null) {
+    //         postIngredients({
+    //             volume: times,
+    //             units: [unitChecked.id],
+    //             ingredientName: [ingredientChecked.id],
+    //         })
+    //     }
+    //     else { addToIngredientsIDList(ingredientFilter) }
+    // }
 
 
-    function makeSteptoDelete(oldID, step, stposition) {
-        let stepIDPosition = getPosition(oldID, stepsSet);
-        let newStepsList = stepsSet.slice();
-        let newStepsIDList = stepsSetID.slice();
-        newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step, stposition: "delete" })
-        newStepsIDList.splice(stepIDPosition, 1, { id: oldID })
-        setStepsSet(newStepsList);
-        setStepsSetID(newStepsIDList)
-    }
+    // function makeSteptoDelete(oldID, step, stposition) {
+    //     let stepIDPosition = getPosition(oldID, stepsSet);
+    //     let newStepsList = stepsSet.slice();
+    //     let newStepsIDList = stepsSetID.slice();
+    //     newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step, stposition: "delete" })
+    //     newStepsIDList.splice(stepIDPosition, 1, { id: oldID })
+    //     setStepsSet(newStepsList);
+    //     setStepsSetID(newStepsIDList)
+    // }
     function updateStepInTagList(oldID, newID, step) {
-        let stepIDPosition = getPosition(oldID, stepsSet);
+        let stepIDPosition = getPosition(oldID, stepsList);
 
-        let newStepsList = stepsSet.slice();
+        let newStepsList = stepsList.slice();
         let newStepsIDList = stepsSetID.slice();
         if (Number.isInteger(oldID)) {
             newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step })
@@ -626,161 +409,106 @@ function ViewFood(props) {
                 newStepsIDList.splice(stepIDPosition, 1, newID)
             }
         }
-        setStepsSet(newStepsList);
+        setStepsList(newStepsList);
         setStepsSetID(newStepsIDList)
     }
     function addStepToTagList(id, step) {
         if (step == "") return
-        let newStepsList = stepsSet.slice();
+        let newStepsList = stepsList.slice();
         let newStepsIDList = stepsSetID.slice();
         newStepsList.push({ id: id, step: step })
-        setStepsSet(newStepsList);
+        setStepsList(newStepsList);
         newStepsIDList.push(id)
         setStepsSetID(newStepsIDList)
     }
 
     function removeFromStepsList(step) {
-        let stepsSetPosition = getPosition(step.id, stepsSet)
+        let stepsSetPosition = getPosition(step.id, stepsList)
         let stepsSetIDPosition = getPosition(step.id, stepsSetID)
-        let newStepsSet = stepsSet.slice();
+        let newStepsSet = stepsList.slice();
         let newStepsIDSet = stepsSetID.slice();
         newStepsSet.splice(stepsSetPosition, 1);
         newStepsIDSet.splice(stepsSetIDPosition, 1);
         setStepsSetID(newStepsIDSet);
-        setStepsSet(newStepsSet);
+        setStepsList(newStepsSet);
     }
 
-    function handleAddToFoodTagList(foodTag) {
-        let filterFoodTag = dataFoodTags.filter((element) => element.foodTag == foodTag);
-        if (filterFoodTag == "") {
-            postFoodTag({ foodTag: foodTag })
-        } else { addTofoodTagList(filterFoodTag[0]) }
-    }
+    // function handleAddToFoodTagList(foodTag) {
+    //     let filterFoodTag = dataFoodTags.filter((element) => element.foodTag == foodTag);
+    //     if (filterFoodTag == "") {
+    //         postFoodTag({ foodTag: foodTag })
+    //     } else { addTofoodTagList(filterFoodTag[0]) }
+    // }
 
-    function removeFromFoodTagList(tag) {
-        let newFoodTagSet = new Set(foodTagSet);
-        let newFoodTagIDSet = new Set(foodTagSetID);
-        let filterfoodTag = dataFoodTags.filter(
-            (element) => element.foodTag == tag
-        );
-        newFoodTagIDSet.delete(filterfoodTag[0].id);
-        newFoodTagSet.delete(filterfoodTag[0].foodTag);
-        setFoodTagSetID(newFoodTagIDSet);
-        setFoodTagSet(newFoodTagSet);
-    }
+    // function removeFromFoodTagList(tag) {
+    //     let newFoodTagSet = new Set(foodTagSet);
+    //     let newFoodTagIDSet = new Set(foodTagSetID);
+    //     let filterfoodTag = dataFoodTags.filter(
+    //         (element) => element.foodTag == tag
+    //     );
+    //     newFoodTagIDSet.delete(filterfoodTag[0].id);
+    //     newFoodTagSet.delete(filterfoodTag[0].foodTag);
+    //     setFoodTagSetID(newFoodTagIDSet);
+    //     setFoodTagSet(newFoodTagSet);
+    // }
 
-    function addToNameTagList(tag) {
-        let newNameTagSet = new Set(nameTagSet);
-        newNameTagSet.add(tag);
-        setNameTagSet(newNameTagSet);
-    }
 
-    function makeFoodRecord() {
-        if (
-            name === "" &&
-            ingredientSetArray === "" &&
-            foodTagSet === "" &&
-            stepsSet === ""
-        ) {
-            alert("Nazov , Suroviny, Druj jedla, Postup nie se uvedene");
-        } else if (
-            ingredientSetArray === "" &&
-            foodTagSet === "" &&
-            stepsSet === ""
-        ) {
-            alert("Suroviny, Druj jedla, Postup nie se uvedene");
-        } else if (name === "" && foodTagSet === "" && stepsSet === "") {
-            alert("Nazov , Druj jedla, Postup nie se uvedene");
-        } else if (name === "" && ingredientSetArray === "" && stepsSet === "") {
-            alert("Nazov , Suroviny, Postup nie se uvedene");
-        } else if (name === "" && ingredientSetArray === "" && foodTagSet === "") {
-            alert("Nazov , Suroviny, Druj jedla nie se uvedene");
-        } else if (name === "" && ingredientSetArray === "") {
-            alert("Nazov, Suroviny nie se uvedene");
-        } else if (name === "" && foodTagSet === "") {
-            alert("Nazov, Druj jedla nie se uvedene");
-        } else if (name === "" && stepsSet === "") {
-            alert("Nazov, Postup nie se uvedene");
-        } else if (ingredientSetArray === "" && foodTagSet === "") {
-            alert("Suroviny, Druj jedla nie se uvedene");
-        } else if (ingredientSetArray === "" && stepsSet === "") {
-            alert("Suroviny, Postup nie se uvedene");
-        } else if (name === "") {
-            alert("Nazov nie je uvedeny");
-        } else if (ingredientSetArray === "") {
-            alert("Suroviny nie je uvedeny");
-        } else if (foodTagSet === "") {
-            alert("Druj jedla, Postup nie je uvedeny");
-        } else if (foodTagSet === "") {
-            alert("Druj jedla nie je uvedeny");
-        } else if (foodTagSet === "") {
-            alert("Postup nie je uvedeny");
-        } else return ({
-            id: foodID,
-            name: name,
-            date: date,
-            ingredients: [...ingredientsSetID],
-            // steps: [...stepsSetID],
-            foodTags: [...foodTagSetID],
-            image: [...imageURLsPost]
 
-        })
-    }
 
-    function handleEditFoodSave(food) {
-        const stepsForPost = stepsSet?.map((res, index) => {
-            let newStep = {
-                id: res.id,
-                step: res.step,
-                stposition: index + 1,
-            }
-            let stepDelete = {
-                id: res.id,
-                step: res.step,
-                stposition: res.stposition,
-            }
-            if (res.stposition == "delete") {
-                return deleteStep(stepDelete)
-            }
-            if (Number.isInteger(res.id)) {
-                return putStepAsync(newStep)
-            }
-            else {
-                return postStepAsync(newStep,)
-            }
+    // function handleEditFoodSave(food) {
+    //     const stepsForPost = stepsSet?.map((res, index) => {
+    //         let newStep = {
+    //             id: res.id,
+    //             step: res.step,
+    //             stposition: index + 1,
+    //         }
+    //         let stepDelete = {
+    //             id: res.id,
+    //             step: res.step,
+    //             stposition: res.stposition,
+    //         }
+    //         if (res.stposition == "delete") {
+    //             return deleteStep(stepDelete)
+    //         }
+    //         if (Number.isInteger(res.id)) {
+    //             return putStepAsync(newStep)
+    //         }
+    //         else {
+    //             return postStepAsync(newStep,)
+    //         }
 
-        });
-        Promise.allSettled(stepsForPost).then((results) => {
-            let array = []
-            results.map((result) => { if (result.value !== undefined) { array.push(result.value.id) } })
-            putFood({
-                ...food,
-                steps: array
-            })
-        })
-    }
+    //     });
+    //     Promise.allSettled(stepsForPost).then((results) => {
+    //         let array = []
+    //         results.map((result) => { if (result.value !== undefined) { array.push(result.value.id) } })
+    //         putFood({
+    //             ...food,
+    //             steps: array
+    //         })
+    //     })
+    // }
 
-    function stepMove(move, step) {
-        let position = getPosition(step.id, stepsSet)
-        let newStepsSet = stepsSet.slice()
-        if (move > 0) {
-            if (position < (-1 + stepsSet.length)) {
-                newStepsSet.splice(position, 1);
-                newStepsSet.splice(position + move, 0, step);
-                setStepsSet(newStepsSet)
-            }
-        }
-        if (move < 0) {
-            if (position > 0) {
-                newStepsSet.splice(position, 1);
-                newStepsSet.splice(position - 1, 0, step);
-                setStepsSet(newStepsSet)
-            }
-        }
-    }
+    // function stepMove(move, step) {
+    //     let position = getPosition(step.id, stepsSet)
+    //     let newStepsSet = stepsSet.slice()
+    //     if (move > 0) {
+    //         if (position < (-1 + stepsSet.length)) {
+    //             newStepsSet.splice(position, 1);
+    //             newStepsSet.splice(position + move, 0, step);
+    //             setStepsSet(newStepsSet)
+    //         }
+    //     }
+    //     if (move < 0) {
+    //         if (position > 0) {
+    //             newStepsSet.splice(position, 1);
+    //             newStepsSet.splice(position - 1, 0, step);
+    //             setStepsSet(newStepsSet)
+    //         }
+    //     }
+    // }
 
     function handlerFoodSaveClose() {
-        navigate(`/recepty/?page_size=${2}`);
+        navigate(`/recepty/?page_size=${20}`);
     }
 
     function handlerSetModalSave() {
@@ -829,46 +557,21 @@ function ViewFood(props) {
 
     // images for Posting
     useEffect(() => {
-        let newImageUrlsPost = imageURLsPost.slice()
-        let ID = 0;
-        let newImageURL = [];
-        let newImagePreview = [];
-        let newImageUrls = imageURLs;
+        let newImageUrlsPost = imageURLsList.slice()
+        let uniqueID = new Date().toISOString()
 
         if (images.length < 1) return;
-        let pisitionPost = imageURLsPost.length + 1
-        let pisitionUrls = imageURLsPost.length + 1
-        console.log("imageURLsPost.length", imageURLsPost.length)
-        console.log("pisition", pisitionPost)
-        console.log("pisition", typeof (pisitionPost))
+        let position = imageURLsList.length + 1
         images.forEach(
-            (image) => {
-                console.log("pisition", pisitionPost);
+            (image, index) => {
                 newImageUrlsPost.push({
-                    id: 0,
-                    name: name,
-                    image: image,
-                    date: date,
-                    food: foodID,
-                    position: pisitionPost,
-                }); pisitionPost++
-            }, setImageURLsPost(newImageUrlsPost)
-        )
-
-        images.forEach(
-            (image) => {
-                newImageUrls.push({
-                    id: 0,
-                    name: name,
+                    id: `${uniqueID}${index}`,
                     image: URL.createObjectURL(image),
-                    date: date,
-                    food: foodID,
-                    position: pisitionUrls,
-                }); pisitionUrls++
-            },
-            setImageURLsList(newImageUrls)
-        );
-        ID++;
+                    imageForBackEnd: image,
+                    position: position,
+                }); position++
+            }, setImageURLsList(newImageUrlsPost)
+        )
 
     }, [images]);
 
@@ -878,7 +581,7 @@ function ViewFood(props) {
     }
 
 
-    if (loadingFood || loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood)
+    if (dataFoods.isLoading || dataFoodTags.isLoading || dataSteps.isLoading || dataIngredients.isLoading || dataIngredient.isLoading || dataUnit.isLoading || dataFoodsImage.isLoading)
         return <label htmlFor="inpFile">
             <div className={style.loadingContainer}>
                 <FontAwesomeIcon
@@ -888,43 +591,64 @@ function ViewFood(props) {
                     spin ></FontAwesomeIcon>
             </div>
         </label>//<h1>Loading...</h1> 
-    if (statusFood === 'error') return <h1>{JSON.stringify(errorFoods)}</h1>
-    if (statusImagefood === 'error') return <h1>{JSON.stringify(errorImagefood)}</h1>
-    if (statusFoodTags === 'error') return <h1>{JSON.stringify(errorFoodTags)}</h1>
-    if (statusSteps === 'error') return <h1>{JSON.stringify(errorSteps)}</h1>
-    if (statusIngredients === 'error') return <h1>{JSON.stringify(errorIngredients)}</h1>
-    if (statusIngredient === 'error') return <h1>{JSON.stringify(errorIngredient)}</h1>
-    if (statusUnit === 'error') return <h1>{JSON.stringify(errorUnit)}</h1>
+    if (dataFoods.status === 'error' || dataFoodsImage.status === 'error' || dataFoodTags.status === 'error' || dataSteps.status === 'error' || dataIngredients.status === 'error' || dataIngredient.status === 'error' || dataUnit.status === 'error') navigate("/recepty/?page_size=30");
+    // if (statusFood === 'error') return <h1>{JSON.stringify(errorFoods)}</h1>
+    // if (statusImagefood === 'error') return <h1>{JSON.stringify(errorImagefood)}</h1>
+    // if (statusFoodTags === 'error') return <h1>{JSON.stringify(errorFoodTags)}</h1>
+    // if (statusSteps === 'error') return <h1>{JSON.stringify(errorSteps)}</h1>
+    // if (statusIngredients === 'error') return <h1>{JSON.stringify(errorIngredients)}</h1>
+    // if (statusIngredient === 'error') return <h1>{JSON.stringify(errorIngredient)}</h1>
+    // if (statusUnit === 'error') return <h1>{JSON.stringify(errorUnit)}</h1>
     // if (loadingFood || loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood) return <h1>return Loading...</h1>
     return (<>
 
         <div className={style.main}>
             <div className={style.header}>RECEPT</div>
+            <div className={style.boxcontainer}>
+        <div className={style.messagebox}>
+          </div>
             <div className={style.buttonBox} >
-                <div className={style.foodButton} onClick={handleNavigateToFoodEdit}>
+                <div className={style.foodButton}>
+                    {/* datatooltip="Upraviť" */}
+                    <FontAwesomeIcon
+                        onClick={handleNavigateToFoodEdit}
+                        icon={faPenToSquare}
+
+                    />
+                </div>
+                {/* <div className={style.foodButton} onClick={handleNavigateToFoodEdit}>
                     UPRAVIŤ
+                </div> */}
+                <div className={style.foodButton} >
+                    {/* datatooltip="Upraviť" */}
+                    <FontAwesomeIcon
+                        onClick={handlerFoodSaveClose}
+                        icon={faBackward}
+
+                    />
                 </div>
-                <div className={style.foodButton} onClick={handlerFoodSaveClose}>
+                {/* <div className={style.foodButton} onClick={handlerFoodSaveClose}>
                     SPÄŤ
-                </div>
+                </div> */}
             </div>
-            <div className={style.fooodbox} id="fooodbox">
+            </div>
+            <div className={style.fooodbox} >
                 <LeftPanelFilter
-                    filterTagListArray={foodTagSetArray}
-                    handleAddToTagList={foodTagListCheck}
+                    onFoodTagSet={foodTagSet}
+                    handleAddTagToFoodTagsList={foodTagListCheck}
                     foodTagsBox={null}
                     component={component}
 
                 />
 
-                <div className={style.ingredientsImageBox}>
-                    <div>
+                <div className={style.secondColumn}>
+                    <div className={style.ingredients}>
                         <p>Suroviny:</p>
                         <IngredientInput
-                           
+
                             ingredientsList={ingredientsSet}
                             ingredientsIDList={ingredientsSetID}
-                            
+
                             component={component}
                         ></IngredientInput>
                     </div>
@@ -935,7 +659,7 @@ function ViewFood(props) {
             </span>
           </div> */}
 
-                    {component == "editcomponent" && <input
+                    {component === "editcomponent" && <input
                         // className={style.imageinput}
                         className={style.imageinput}
                         type="file"
@@ -946,7 +670,7 @@ function ViewFood(props) {
                         onChange={onImageChange}
                         display="none"
                     />}
-                    {component == "editcomponent" && <label htmlFor="inpFile" className={style.imageIcon}
+                    {component === "editcomponent" && <label htmlFor="inpFile" className={style.imageIcon}
                         datatooltip="Pridať fotografiu">
                         <FontAwesomeIcon
 
@@ -958,14 +682,15 @@ function ViewFood(props) {
                     {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
                         No Files chosen
                     </p>}
-                    <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} ></Image>
-
+                    <div className={style.imagebox}>
+                        <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} ></Image>
+                    </div>
                 </div>
-                <div className={style.procedureBox}>
+                <div className={style.thirdColumn}>
                     {/* <div>
                         <p>Nazov:</p>
                     </div> */}
-                    <div className={style.foodnameView}>{name}</div>
+                    {/* <div className={style.foodnameView}>{name}</div> */}
                     {/* <input
                         className={style.foodname}
                         value={name}
@@ -974,21 +699,40 @@ function ViewFood(props) {
                         onChange={handleNameChange}
                         onClick={handleAddToNameTagList}
                     /> */}
-                    <div className={style.date}>
-                        Vytvorené: {newdate}
+
+                    <div className={style.date}></div>
+
+                    <div className={style.urlName}>
+                        <p>URL :</p>
                     </div>
-                    <div>
-                        <p>Postup:</p>
+
+                    <UrlInput
+                        urlList={urlList}
+                        component={component}
+                    >
+                    </UrlInput>
+                    {/* URL: 
+                    </div>
+                    <div><a className={style.foodurlView}  href="https://www.w3schools.com/cssref/atrule_import.php" target="_blank">
+                     {"Link 1"}
+                    </a> */}
+
+                    <div className={style.urlName}>
+                        <p>Postup :</p>
                     </div>
                     <StepsInput
-                        stepMove={stepMove}
-                        addStepToTagList={addStepToTagList}
-                        updateStepInTagList={updateStepInTagList}
-                        stepsSet={stepsSet}
+                        // stepMove={stepMove}
+                        // addStepToTagList={addStepToTagList}
+                        // updateStepInTagList={updateStepInTagList}
+                        stepsList={stepsList}
                         stepsSetIDState={stepsSetID}
-                        deleteStep={makeSteptoDelete}
+                        // deleteStep={makeSteptoDelete}
                         component={component}
                     ></StepsInput>
+                </div>
+                <div className={style.foodnameView}>{name}</div>
+                <div className={style.date}>
+                    Vytvorené: {newdate}
                 </div>
             </div>
 
@@ -1007,18 +751,18 @@ function ViewFood(props) {
         </Modal>
         <ModalPreview visible={modalLightboxFlag} setModalFlag={setModalLightboxFlag}>
             <Lightbox
-                imageURLsList={imageURLsList}
+                imageURLsList={[imageURLsList, setImageURLsList]}
                 closeModal={closeModal}
                 handlerImage={handlerImage}
                 getPosition={getPosition}
                 imageDispley={imageDispley}
                 currentImageID={currentImageID}
-                deleteImagefood={deleteImagefood}
+
                 imageToDelete={imageToDelete}
                 modalImageDeleteErrorFlag={modalImageDeleteErrorFlag}
                 isVisibleEdit={[isVisibleEdit, setIsVisibleEdit]}
                 imagePosition={[imagePosition, setImagePosition]}
-                putImagefood={putImagefood}
+                // putImagefood={putImagefood}
                 pageReload={pageReload}
                 component={component}
             >

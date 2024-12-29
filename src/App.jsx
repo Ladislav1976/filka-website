@@ -8,6 +8,7 @@ import EditFood from "./components/EditFood";
 import ViewFood from "./components/ViewFood";
 
 import Home from "./components/Home";
+import NotFound from "./components/NotFound";
 
 function App() {
 
@@ -16,7 +17,8 @@ function App() {
       <Router>
         <nav>
           <Link to="/">Home</Link>
-          <Link to="/recepty/?page_size=2">Recepty</Link>
+          {/* <Link to="/recepty/">Recepty</Link> */}
+          <Link to="/recepty/?page_size=40">Recepty</Link>
 
 
         </nav>
@@ -27,8 +29,8 @@ function App() {
           <Route path="/recepty/search/:search/" element={<Foods />}></Route>
           <Route path="/recepty/:id/" element={< ViewFood />}></Route>
           <Route path="/recepty/uprava/:id/" element={<EditFood />}></Route>
-
           <Route path="/recepty/novy_recept/" element={<NewFood />}></Route>
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </Router>
   

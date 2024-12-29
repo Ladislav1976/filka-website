@@ -15,7 +15,7 @@ export function Home() {
           navigate("/newfood");
         }}
       > */}
-                    NOVY RECEPT
+            
                 </div>
 
             </div>

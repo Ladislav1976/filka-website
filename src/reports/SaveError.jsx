@@ -6,9 +6,9 @@ export default  function SaveError(props) {
 
 
     return(   <>
-    <div></div>
-   <div className={style.loadingBox}>
-    <div className={style.loadingIcon}>
+    {/* <div></div> */}
+   <div className={style.box}>
+    <div className={style.icon}>
     <FontAwesomeIcon className={style.errorIcon} icon={faCircleExclamation}  id="inpFileIcon"/>
   </div>
   <h3>Chyba pri ukladani!</h3>

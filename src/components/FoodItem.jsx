@@ -18,7 +18,9 @@ export default function FoodItem(props) {
     navigate(`/recepty/${id}/`)
   }
 let foodRender = []
-  for (let f of food.image){ 
+
+  for (let f of food.images){ 
+ 
       foodRender.push(f.image)}
   return (
     <>

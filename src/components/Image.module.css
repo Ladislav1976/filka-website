@@ -1,9 +1,23 @@
-.imagebox{
+.imagebox {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: space-evenly;
+    /* align-items: flex-start; */
+    cursor: pointer;
 
- 
 
 }
-.foodimage{width: 150px;height: 150px;margin: 3px;}
+
+.foodimage {
+    width: 150px;
+    height: 150px;
+    margin: 3px;
+    border-radius: 5px
+}
+.imagebox:nth-last-child(1){
+    /* width: 200px;
+    height: 200px; */
+    justify-self: flex-start;
+    /* align-self: flex-start ; */
+}

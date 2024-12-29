@@ -22,6 +22,7 @@
   max-height: 10vh;
   gap: 0px;
   width: 50%;
+  transition: transform 1s ease-in;
 }
 .imageListBox2{
   display: flex;
@@ -32,6 +33,7 @@
   max-height: 10vh;
   gap: 0px;
   width: 50%;
+
 }
 #imagedisplayed {
   /* width: 10vw;
@@ -50,6 +52,7 @@
   width: auto;
   height: 10vh;
   margin: 1px;
+border-radius: 10px;
   /* background-color: white; */
   opacity: 0.4;
 }
@@ -67,11 +70,12 @@
 .editIcon {
   color: whitesmoke;
   position: absolute;
-  width: 2vw;
-  top: 30%;
+  width: 25px;
+  top: 25px;
   font-size: 25px;
   font-weight: bold;
   align-items: center;
+  /* transform: translateX(50%) */
   /* margin:0 10px 0 10px; */
 }
 
@@ -89,7 +93,7 @@
   position: absolute;
   font-size: .7rem;
   top: 2rem;
-  left: 50%;
+  left:50%;
   transform: translateX(-50%)scale(var(--scale));
   transition: 150ms tranform;
 }
@@ -100,7 +104,7 @@
 .editIcon::before,
 .cancel::before {
   content: attr(datatooltip);
-  padding: .3rem;
+  /* padding: .3rem; */
   text-align: center;
   /* width: max-content; */
   max-width: 60px;
@@ -119,16 +123,16 @@
 }
 
 .cancel {
-  right: 15%;
+  right: 25px;
 }
 
 .editIcon,
 .saveIcon {
-  right: 45%;
+  right: 75px;
 }
 
 .trashIcon {
-  right: 80%;
+  right: 125px;
 }
 
 .trashIcon:hover,
@@ -199,7 +203,7 @@
     cursor: pointer;
   } */
 .mainbox {
-  display: flex;
+  display: relative;
   flex-direction: column;
 }
 

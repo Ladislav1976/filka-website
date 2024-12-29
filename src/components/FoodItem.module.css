@@ -27,7 +27,7 @@
   margin-left: 10px;
   margin-top: 10px;
   margin-right: 10px;
-  
+  border-radius: 5px
 }
 
 .foodName {
@@ -39,5 +39,6 @@
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 5px;
+  
 }
 

@@ -12,13 +12,13 @@ export default function Lightbox(props) {
     // console.log("isVisibleEdit: ", isVisibleEdit)
     // console.log("imagePosition 2: ", imagePosition)
 
-    const [imageURLsList, setImageURLsList] = useState(props.imageURLsList);
-    // console.log("imageURLsList[imagePosition]: ", imageURLsList[imagePosition])
+    const [imageURLsList, setImageURLsList] = props.imageURLsList;
+    console.log("imageURLsList[imagePosition]: ", imageURLsList)
     // const [imageDispley, setImageDispley] = useState(props.imageDispley)
     // const imageDispley = props.imageDispley
-    const imageToDelete = props.imageToDelete
+
     // const [currentImageID, setCurrentImageID] = useState(props.currentImageID)
-    let currentImageID = props.currentImageID
+    // let currentImageID = props.currentImageID
 
 
 
@@ -31,41 +31,97 @@ export default function Lightbox(props) {
     //     }
     //     return null; //not found
     //   }
-    function imageDisplayChange(move, image) {
+
+    function makeImagesSave() {
+        props.imageURLsUpdater(imageURLsList)
+        props.closeModal();
+    }
+
+    // function handlerImage(imageToAdd) {
+    //     console.log("imageToAdd  :" ,imageToAdd)
+    //     let position = props.getPosition(imageToAdd.id, imageURLsList)
+    //     console.log("position  :" ,position)
+    //     console.log("imagePosition  :" ,imagePosition)
+    //     setImagePosition(position)
+    // }
+
+    function imageDisplaydelete(newImageURLsList) {
+        let i = imagePosition;
+        while (newImageURLsList[i].statusDelete === true) {
+            if (newImageURLsList.length > 1) {
+                if (imagePosition > 0) { i = i - 1 }
+                if (imagePosition === 0) { i++ }
+            }
+            if (newImageURLsList.length === 1) { i = "" }
+        }
+        return i
+    }
+    function makeImageDelete(image) {
+        console.log("Image :",image, "imageURLsList :",imageURLsList)
+        let imageIDPosition = props.getPosition(image.id, imageURLsList);
+        let newImageURLsList = imageURLsList.slice();
+        newImageURLsList.splice(imageIDPosition, 1, { ...image, statusDelete : true })
+        console.log("newImageURLsList :",newImageURLsList)
+        setImageURLsList(newImageURLsList);
+        setImagePosition(imageDisplaydelete(newImageURLsList))
+
+    }
+
+
+      function imageDisplayChange(move, image) {
         let position = props.getPosition(image.id, imageURLsList)
         if (isVisibleEdit) {
             imageDisplayMove(move, image, position)
         }
         if (!isVisibleEdit) { imgageDisplayStep(move, position) }
     }
+
+    function moveImage(array, from, to) {
+        return array.map((item, index) => {
+            if (index === to) return array[from];
+            if (index === from) return array[to];
+            return item;
+        });
+    }
     function imageDisplayMove(move, image, position) {
         console.log("move", move)
         console.log("position", position)
+        // console.log("image", image)
+        const newPosition = position + move
+        console.log("newPosition", newPosition)
         let newImageURLsList = imageURLsList.slice()
         if (move > 0) {
-
+    
             if (position < (-1 + imageURLsList.length)) {
-
-                newImageURLsList.splice(position, 1);
-                newImageURLsList.splice(position + move, 0, image);
-
+                const  newImageURLsList = moveImage(imageURLsList,position,newPosition)
+                console.log("newImageURLsList :",newImageURLsList)
+                // newImageURLsList.splice(position, 1);
+                // newImageURLsList.splice(position + move, 0, image);
+    
                 setImageURLsList(newImageURLsList)
-                setImagePosition(position + move)
+                setImagePosition(newPosition)
+                // setImagePosition((old)=> console.log("old",old))
             }
         }
         if (move < 0) {
             if (position > 0) {
-                newImageURLsList.splice(position, 1);
-                newImageURLsList.splice(position - 1, 0, image);
-
+                const  newImageURLsList = moveImage(imageURLsList,position,newPosition)
+                console.log("newImageURLsList :",newImageURLsList)
+                // newImageURLsList.splice(position, 1);
+                // newImageURLsList.splice(position + move, 0, image);
                 setImageURLsList(newImageURLsList)
-                setImagePosition(position + move)
+                setImagePosition(newPosition)
+                // setImageURLsList(newImageURLsList)
+                // setImagePosition(position + move )
             }
         }
+        console.log("imagePosition :",imagePosition,
+            "imageURLsList :",imageURLsList
+        )
     }
-
+    
     function imgageDisplayStep(move, position) {
-        console.log("step")
+    
         if (move > 0) {
             if (position < (-1 + imageURLsList.length)) {
                 let newPosition = position + move
@@ -79,20 +135,7 @@ export default function Lightbox(props) {
             }
         }
     }
-    function makeImagesSave() {
-        imageURLsList.map((res, index) => {
-            let newImage = {
-                id: res.id,
-                name: res.name,
-                date: res.date,
-                food: res.food,
-                imgposition: index + 1,
-            }
-            props.putImagefood({ newImage })
-        })
-        props.closeModal();
-        props.pageReload()
-    }
+    
     //   function handlerImage(imageToAdd, currentImageID) {
     //     let position = getPosition(imageToAdd.id, imageURLsList)
     //     console.log("positionnnnn", position)
@@ -126,7 +169,7 @@ export default function Lightbox(props) {
                             image={imageURLsList[imagePosition]}
                             src={imageURLsList[imagePosition].image}
                             // onClick={() => console.log("haha")}
-                            alt={imageURLsList[imagePosition].name}
+                            // alt={imageURLsList[imagePosition].name}
                         // id="imagePreviewed"
                         />
                     </TransformComponent>
@@ -146,17 +189,18 @@ export default function Lightbox(props) {
 
     const newImageUrlsRender1 = [];
     const newImageUrlsRender2 = [];
-
+console.log(imageURLsList.map((a)=>a.id))
+console.log("newImageUrlsRender2 :",newImageUrlsRender2.map((a)=>a.id))
     if (imageURLsList.length < 1) { return; } else {
-        let lenght = imageURLsList.length
+        let filterImageURLsList = imageURLsList.filter((e => e.statusDelete === false))
         let IDs = 0
 
-        imageURLsList.forEach((image, index) => {
-            let pos = props.getPosition(image.id, imageURLsList)
+        filterImageURLsList.forEach((image, index) => {
+            let pos = props.getPosition(image.id, filterImageURLsList)
             if (pos === imagePosition) { click() }
             // console.log("imageURLs[index]", imageURLs[index], "currentImageID", currentImageID)
-            console.log("position", pos, "imagePosition", imagePosition, pos === imagePosition ? "imagedisplayed" : "")
-            console.log("clicker : ", clicker)
+            // console.log("position", pos, "imagePosition", imagePosition, pos === imagePosition ? "imagedisplayed" : "")
+            // console.log("clicker : ", clicker)
             if (clicker) {
                 newImageUrlsRender2.push(<>
                     <img
@@ -190,6 +234,9 @@ export default function Lightbox(props) {
     return (<>
 
         <div className={style.mainbox} >
+            {isVisibleEdit && <div className={style.saveIcon} datatooltip="Uložiť" onClick={makeImagesSave} ><FontAwesomeIcon icon={faFloppyDisk} /></div>}
+            {isVisibleEdit && <div className={style.trashIcon} datatooltip="Zmazať fotografiu" onClick={() => makeImageDelete(imageURLsList[imagePosition])} ><FontAwesomeIcon icon={faTrash} /></div>}
+            {!isVisibleEdit && (component == "editcomponent"||component == "newcomponent"  )&& <div className={style.editIcon} datatooltip="Upraviť"><FontAwesomeIcon icon={faPenToSquare} onClick={() => setIsVisibleEdit(true)} /></div>}
             <div className={style.headbox}>
                 <a className={style.prev} onClick={() => { imageDisplayChange(-1, imageURLsList[imagePosition]) }} >&#10094;</a>
                 <a className={style.next} onClick={() => { imageDisplayChange(+1, imageURLsList[imagePosition]) }} >&#10095;</a>
@@ -204,9 +251,7 @@ export default function Lightbox(props) {
                     </div>
                 </div>
                 <div className={style.third_column} >
-                    {isVisibleEdit && <div className={style.saveIcon} datatooltip="Uložiť" onClick={makeImagesSave} ><FontAwesomeIcon icon={faFloppyDisk} /></div>}
-                    {isVisibleEdit && <div className={style.trashIcon} datatooltip="Zmazať fotografiu" onClick={() => props.deleteImagefood(imageURLsList[imagePosition])} ><FontAwesomeIcon icon={faTrash} /></div>}
-                    {!isVisibleEdit && component == "editcomponent"&& <div className={style.editIcon} datatooltip="Upraviť"><FontAwesomeIcon icon={faPenToSquare} onClick={() => setIsVisibleEdit(true)} /></div>}
+
                     <div className={style.cancel} datatooltip="Zavrieť" ><FontAwesomeIcon icon={faXmark} onClick={props.closeModal} /></div>
                 </div>
             </div>

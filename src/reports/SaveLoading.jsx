@@ -7,7 +7,7 @@ export default  function SaveLoading(props) {
 
     return(   <>
     <div></div>
-   <div className={style.loadingBox}>
+   {/* <div className={style.loadingBox}> */}
     <div className={style.loadingIcon}>
     <FontAwesomeIcon
       className={style.loadingIcon}
@@ -16,8 +16,8 @@ export default  function SaveLoading(props) {
       id="inpFileIcon"
       spin />
   </div>
-  <h3>Ukladá sa . . .</h3>
-  </div>
+  {/* <h3>Ukladá sa . . .</h3> */}
+  {/* </div> */}
     </>
     )
 }

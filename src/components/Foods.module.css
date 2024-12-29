@@ -30,9 +30,10 @@ header{
   flex-direction: row;
   justify-content:flex-end;
   align-items: center;
-  margin: 10px 0 10px 10px;
-  height: 25px;
+  /* margin: 10px 0 10px 0; */
+  height: 45px;
   padding: 5px;
+  border-bottom: var(--border3px);
 }
 
 .foodButton{  

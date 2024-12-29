@@ -8,15 +8,11 @@ export default function FoodItemList(props) {
   const [page, setPage] = props.page
   let pageSize = props.pageSize
   const isPreviousDataFoods = props.isPreviousDataFoods
-  const rawFoods = props.rawFoods
+  const backEndFoodFull = props.backEndFoodFull
 
 
-  // function foodItemsCount() {
-  //   let a = foodItemListRender.lenght
-  //   return a
-  // }
-  const filterTagList = props.filterTagList;
-  let filterTagListArray = [...filterTagList];
+
+  let filterTagListArray = [...props.filterTagList];
   const [foodItemEditRender, setFoodItemEditRender] =
     props.foodItemEditRenderState;
 
@@ -54,76 +50,79 @@ export default function FoodItemList(props) {
 
 
   function handlePageSize(event) {
-    pageSize =  event.target.value ;
+    pageSize = event.target.value;
     props.handleSetPage(page)
   }
 
-  const pagesArray = Array(rawFoods.TotalNumOfPages).fill().map((_, index) => index + 1)
+  const pagesArray = Array(backEndFoodFull.TotalNumOfPages).fill().map((_, index) => index + 1)
   const nav = (<>
-      <nav className="nav-ex2">
-        <button className={style.button} onClick={() => props.handleSetPage(page - 1)} disabled={isPreviousDataFoods || page === 1} id={isPreviousDataFoods || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
-        {/* Removed isPreviousData from PageButton to keep button focus color instead */}
-        {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page} handleSetPage={props.handleSetPage} />)}
-        <button className={style.button} onClick={() => props.handleSetPage(page + 1)} disabled={isPreviousDataFoods || page === rawFoods.TotalNumOfPages} id={isPreviousDataFoods || page === rawFoods.TotalNumOfPages ? style["buttondisabled"] : style["buttonenabled"]}>&gt;&gt;</button>
+    <nav className="nav-ex2">
+      <button className={style.button} onClick={() => props.handleSetPage(page - 1)} disabled={isPreviousDataFoods || page === 1} id={isPreviousDataFoods || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
+      {/* Removed isPreviousData from PageButton to keep button focus color instead */}
+      {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page} handleSetPage={props.handleSetPage} />)}
+      <button className={style.button} onClick={() => props.handleSetPage(page + 1)} disabled={isPreviousDataFoods || page === backEndFoodFull.TotalNumOfPages} id={isPreviousDataFoods || page === backEndFoodFull.TotalNumOfPages ? style["buttondisabled"] : style["buttonenabled"]}>&gt;&gt;</button>
 
 
-      </nav>
-      <div className={style.navdisplay}>({rawFoods.FirstItemsOnPage} - {rawFoods.LastItemsOnPage})  z  {rawFoods.TotalItems}</div>
+    </nav>
+    <div className={style.navdisplay}>({backEndFoodFull.FirstItemsOnPage} - {backEndFoodFull.LastItemsOnPage})  z  {backEndFoodFull.TotalItems}</div>
 
-          <select
-            className={style.unit}
-            onChange={handlePageSize}
-            value={pageSize}
-          >
-            <option>2</option>
-            <option>4</option>
-            <option>6</option>
-            <option>8</option>
-            <option>10</option>
+    <select
+      className={style.unit}
+      onChange={handlePageSize}
+      value={pageSize}
+    >
+      <option>2</option>
+      <option>4</option>
+      <option>6</option>
+      <option>8</option>
+      <option>10</option>
 
-          </select>
-    </>)
- 
+    </select>
+  </>)
+  if (props.foods) {
 
-  for (const food of props.food) {
+    for (const food of props.foods) {
 
-    const filterTagsListRender = [];
-    for (const filterTag of filterTagListArray) {
-      if (
-        !food.foodTags
-          .map((str) => str.toLowerCase())
-          .includes(filterTag.toLowerCase()) &&
-        !food.name.toLowerCase().includes(filterTag.toLowerCase())
-      ) {
+      const filterTagsListRender = [];
+      for (const filterTag of filterTagListArray) {
+        // console.log("food.foodTags :",food.foodTags)
+        // console.log("filterTag :",filterTag,"filterTag.foodTag :",filterTag.foodTag)
+        if (
+          !food.foodTags
+            .map((str) => str.foodTag.toLowerCase())
+            .includes(filterTag.foodTag.toLowerCase()) &&
+          !food.name.toLowerCase().includes(filterTag.foodTag.toLowerCase())
+        ) {
 
-        filterTagsListRender.push(filterTag);
-      } else {
+          filterTagsListRender.push(filterTag);
+        } else {
 
+        }
       }
-    }
 
 
-    if (filterTagsListRender.length === 0) {
+      if (filterTagsListRender.length === 0) {
 
-      foodItemListRender.push(
+        foodItemListRender.push(
 
-        <FoodItem
-          food={food}
-          key={food.id}
-          setModalEditFlagTrue={props.setModalEditFlagTrue}
-          foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
-        />
+          <FoodItem
+            food={food}
+            key={food.id}
+            setModalEditFlagTrue={props.setModalEditFlagTrue}
+            foodItemEditRenderState={[foodItemEditRender, setFoodItemEditRender]}
+          />
 
-      );
+        );
+      }
     }
   }
 
   return <>
+      <div className={style.foodItemBox}>
+    <div className={style.foodItemList} id={"foodItemList"}>   {foodItemListRender}</div>
 
-    <div className={style.foodItemList} id={"foodItemList"}>{foodItemListRender}</div>
-    <div className={style.paginationBox}>
      
     </div>
-    <button onClick={() => checkWidth()}>hi</button>
+    {/* <button onClick={() => checkWidth()}>hi</button> */}
   </>
 }

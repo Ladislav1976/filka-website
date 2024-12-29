@@ -36,3 +36,62 @@
 //     return mutation.data
 // }
 // export default PostStepMutation;
+import { useEffect } from "react";
+import { useState } from "react";
+
+const useMutate = (responce) => {
+  const [data, setData] = useState(null);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
+
+
+    // setTimeout(function () {
+    //   console.log("Hello World");
+    // }, 500);
+    try {if (!responce.res.ok) {
+        throw Error("could not fetch that resourse");
+        }else{
+            setData(data);
+            setIsPending(false);
+            setError(null);
+          } }
+          catch(err) {
+            setIsPending(false);
+            setError(err.message);
+          }
+    // ((responce)=>{
+    //     if (!responce.res.ok) {
+    //     throw Error("could not fetch that resourse");
+    //     })
+    //     .then((data) => {
+    //     setData(data);
+    //     setIsPending(false);
+    //     setError(null);
+    //   })
+    //   .catch((err) => {
+    //     setIsPending(false);
+    //     setError(err.message);
+    //   });}
+    // setTimeout(() => {
+    //   fetch(url)
+    //     .then((res) => {
+    //       if (!res.ok) {
+    //         throw Error("could not fetch that resourse");
+    //       }
+    //       return res.json();
+    //     })
+    //     .then((data) => {
+    //       setData(data);
+    //       setIsPending(false);
+    //       setError(null);
+    //     })
+    //     .catch((err) => {
+    //       setIsPending(false);
+    //       setError(err.message);
+    //     });
+    // }, 1000);
+
+  return { data, isPending, error };
+};
+
+export default useMutate;

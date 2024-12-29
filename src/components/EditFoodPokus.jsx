@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
-import DeleteConfirm from "../reports/DeleteConfirm";
 import ImageDeleteError from "../reports/ImageDeleteError";
 import SaveError from "../reports/SaveError";
 import SaveErrorMissing from "../reports/SaveErrorMissing";
@@ -14,19 +13,17 @@ import IngredientInput from "./IngredientInput";
 import LeftPanelFilter from "./LeftPanelFilter";
 import React, { Component } from "react";
 import Image from "./Image";
-import UrlInput from "./Url";
 import Modal from "../reports/Modal";
 import ModalPreview from "../reports/ModalPreview";
 import { useGet, useMutate } from "restful-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash, faBackward, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash , faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { useQueries, useQuery, useQueryClient, useMutation, } from "@tanstack/react-query"
-import { createPostStep, createPutStep, createDeleteStep, createPostUrl, createDeleteUrl, createPutUrl, createPostUnit, createPostIngredient, createPostIngredients, createPostFoodTag, createDeleteFood, createPutFood, createPostImagefood, createDeleteImagefood2, createPutImagefood, createDeleteIngredients, createPutIngredients, createPostFunction, createDeleteImagefood } from "../hooks/use-post";
+import { createPostStep, createPutStep, createDeleteStep, createPostUnit, createPostIngredient, createPostIngredients, createPostFoodTag, createPostFood, createPutFood, createPostImagefood, createDeleteImagefood2, createPutImagefood, createDeleteIngredients, createPutIngredients, createPostFunction, createDeleteImagefood } from "../hooks/use-post";
 // import { postStepMutation } from "../hooks/use-mutate";
 import PostStepMutation from "../hooks/use-mutate";
-import { imageExists, getFood, getIngredients, getIngredientsID, getIngredient, getIngredientID, getUnit, getUnitID, getImageFood, getImage, getSteps, getStep, getFoodTags, getUrl, queryFnFoodTagName, queryFnFoodTagId, queryFnFoodTagToId, queryFnFoodStep } from "../hooks/use-get";
-
+import { imageExists, getFood, getIngredients, getIngredientsID, getIngredient, getIngredientID, getUnit, getUnitID, getImageFood, getImage, getSteps, getStep, getFoodTags, queryFnFoodTagName, queryFnFoodTagId, queryFnFoodTagToId, queryFnFoodStep } from "../hooks/use-get";
 
 
 
@@ -35,19 +32,21 @@ function EditFood(props) {
   const queryClient = useQueryClient();
   const component = "editcomponent"
   const navigate = useNavigate()
-  const [foodID, setFoodID] = useState()
-  const [name, setName] = useState("")
-  // const [nameTagSet, setNameTagSet] = useState()
-  const [ingredientsList, setIngredientsList] = useState([]);
-  const [urlList, setUrlList] = useState([
-    // {id:1,url:"https://www.w3schools.com/tags/att_a_href.asp"},
-    // {id:2,url:
-    // "https://developer.mozilla.org/en-US/docs/Web/CSS/Subsequent-sibling_combinator"}
-  ])
-  const [stepsList, setStepsList] = useState([]);
-  const [foodTagSet, setFoodTagSet] = useState(new Set());
-  const [date, setDate] = useState("")
-  const newdate = new Date(date).toLocaleDateString('sk-SK')
+
+ 
+  const [nameTagSet, setNameTagSet] = useState()
+
+  const [url, setUrl] = useState("https://www.w3schools.com/cssref/atrule_import.php")
+  // const [ingredientsSetID, setIngredientsSetID] = useState(new Set());
+  //const [ingredientsNotDiv, setIngredientsNotDiv] = useState(new Set());
+
+  // const [stepsSetID, setStepsSetID] = useState([]);
+
+
+  // const [foodTagSetID, setFoodTagSetID] = useState(new Set())
+
+ 
+
 
 
 
@@ -55,18 +54,26 @@ function EditFood(props) {
 
 
   const [images, setImages] = useState("");
-  const [imageURLsList, setImageURLsList] = useState([])
+ 
+
   const [imageFlag, setImageFlag] = useState(true);
+  // const [imageURLsPost, setImageURLsPost] = useState([])
+
+
   const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
   const [modalSavedFlag, setModalSavedFlag] = useState(false);
-  const [modalDeleteFlag, setModalDeleteFlag] = useState(false);
   const [modalErrorFlag, setModalErrorFlag] = useState(false);
   const [modalSaveErrorMissingFlag, setModalSaveErrorMissingFlag] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] = useState(false);
   const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
+  const [imageDispley, setImageDispley] = useState([])
+  const [imageToDelete, setImageToDelete] = useState([])
   const [isVisibleEdit, setIsVisibleEdit] = useState(false)
 
+  // let foodTagSetArray = [...foodTagSet];
+  // let ingredientsList = ingredientList;
+  // let ingredientsIDList = [...ingredientsSetID];
 
 
 
@@ -74,49 +81,18 @@ function EditFood(props) {
   let ID = parseInt(id.id)
 
 
+
+
   const dataFoods = useQuery({
+    // queryKey: [`/foods/${id.id}/`],
     queryKey: ["foods", ID],
     enabled: !!id,
     queryFn: () => getFood(ID),
   })
 
 
-
-  const putFood = useMutation({
-    mutationFn: createPutFood,
-    onError: error => {
-      console.log("Error Put Food :", error);
-      setModalLoadingFlag(false);
-      handlerSetModalError()
-    },
-    onSuccess: (foodUpdated) => {
-      console.log("Food :", foodUpdated, "sucsesfully updated!");
-      queryClient.setQueryData(["foods", foodUpdated.data.id], foodUpdated.data)
-      queryClient.invalidateQueries(["foods"],)
-      setModalLoadingFlag(false)
-      handlerSetModalSave()
-    }
-  })
-
-  const deleteFood = useMutation({
-    mutationFn: createDeleteFood,
-    onError: error => {
-      console.log("Error Delete Food :", error);
-      setModalLoadingFlag(false);
-      handlerSetModalError()
-    },
-    onSuccess: (foodUpdated) => {
-      console.log("Food :", foodUpdated, "sucsesfully updated!");
-      queryClient.invalidateQueries(["foods"],)
-      setModalLoadingFlag(false);
-      handlerFoodDeleteConfirmed()
-    }
-  })
-
-
-
-
   const dataFoodsImage = useQueries({
+    // enabled:dataFoods.data,
     queries: dataFoods.isLoading == false
       ? dataFoods?.data?.images?.map((id) => ({
         queryKey: ["imagefood", id],
@@ -138,6 +114,125 @@ function EditFood(props) {
       }
     },
   })
+
+  const dataFoodTags = useQuery({
+    queryKey: ["foodTags"],
+    queryFn: getFoodTags,
+  })
+
+
+  const dataFoodsSteps = useQueries({
+    // enabled:!!dataFoods.data,
+    queries: dataFoods.isLoading == false 
+   
+      ? dataFoods?.data?.steps?.map((id) => ({
+        queryKey: ["steps", id],
+        queryFn: () => getStep(id),
+        staleTime: Infinity,
+
+      })) : [],
+    combine: (results) => {
+      if (!results) return
+      return {
+        data: results?.map((result) => result.data)
+          .sort(function (a, b) {
+            return a.position - b.position;
+          })
+        ,
+
+        isPending: results.some((result) => result.isPending),
+        isLoading: results.some((result) => result.isLoading),
+        isSuccess: results.some((result) => result.isSuccess),
+        status: results.some((result) => result.status),
+        isFetched: results.some((result) => result.isFetched),
+        //       // statusError: results.some((result) => result.status ==="error"),
+        //       // errorMessage: results.some((result) => result.status ==="error"),
+      }
+    },
+  })
+
+
+  const dataIngredients = useQuery({
+    queryKey: ["ingredients"],
+    queryFn: getIngredients,
+  })
+
+  const dataIngredient = useQuery({
+    queryKey: ["ingredient"],
+    // enabled: !!dataIngredients,
+    queryFn: getIngredient,
+  })
+  const dataUnit = useQuery({
+    queryKey: ["unit"],
+    // enabled: !!dataIngredient,
+    queryFn: getUnit,
+  })
+
+
+  // const main = useQueries({
+  //   // enabled:!!dataFoods.data,
+  //   queries: 
+  //   dataFoods.isLoading == false &&
+  //   dataFoodTags.isLoading == false &&
+  //   dataFoodsImage.isLoading == false &&
+  //   dataFoodsSteps.isLoading == false &&
+  //   dataIngredients.isLoading == false &&
+  //   dataIngredient.isLoading == false &&
+  //   dataUnit.isLoading == false 
+   
+  //     ? 
+      
+  //     async function (){
+  //     await itemListDownl(dataFoods?.data?.images, dataFoodsImage.data, "yes")}
+  //     // ingredientsListDownl()
+  //     // itemListDownl(dataFoods.steps, stepRes, "yes")
+  //     // // steps: stepsquery.data,
+  //     // itemListDownl(dataFoods.foodTags, backEndFoodTags, "no"),
+      
+  //     : [],
+  //   combine: (results) => {
+  //     if (!results) return
+  //     return {
+  //       data: results?.map((result) => result.data)
+  //         // .sort(function (a, b) {
+  //         //   return a.position - b.position;
+  //         // })
+  //       ,
+
+  //       isPending: results.some((result) => result.isPending),
+  //       isLoading: results.some((result) => result.isLoading),
+  //       isSuccess: results.some((result) => result.isSuccess),
+  //       status: results.some((result) => result.status),
+  //       isFetched: results.some((result) => result.isFetched),
+  //       //       // statusError: results.some((result) => result.status ==="error"),
+  //       //       // errorMessage: results.some((result) => result.status ==="error"),
+  //     }
+  //   },
+  // })
+
+  const putFood = useMutation({
+    mutationFn: createPutFood,
+    onError: error => {
+      console.log("Error Put Food :", error);
+      setModalLoadingFlag(false);
+      handlerSetModalError()
+    },
+    onSuccess: (foodUpdated) => {
+      console.log("Food :", foodUpdated, "sucsesfully updated!");
+      queryClient.setQueryData(["foods", foodUpdated.data.id], foodUpdated.data)
+      queryClient.invalidateQueries(["foods"],)
+      setModalLoadingFlag(false)
+      handlerSetModalSave()
+    }
+  })
+
+// useEffect(()=>{
+//   dataFoodsImage()
+//   dataFoodsSteps()
+// },[dataFoods.data])
+
+
+
   const postImagefood = useMutation({
     mutationFn: createPostImagefood,
     onError: error => { console.log("Error Post Imagefood :", error); },
@@ -168,13 +263,10 @@ function EditFood(props) {
     }
   })
 
-  const dataFoodTags = useQuery({
-    queryKey: ["foodTags"],
-    queryFn: getFoodTags,
-  })
-  const postFoodTag = useMutation({
+
+  const { status: statusPostFoodTag, error: errorPostFoodTag, mutate: postFoodTag } = useMutation({
     mutationFn: createPostFoodTag,
-    onError: error => { console.log("Error Post FoodTag :", error);handlerSetModalError() },
+    onError: error => { console.log("Error Post FoodTag :", error) },
     onSuccess: (foodTagCreated) => {
       console.log("FoodTag :", foodTagCreated, "sucsesfully created!")
       queryClient.setQueryData(["foodTags"], (prev) => {
@@ -183,41 +275,13 @@ function EditFood(props) {
           foodTagCreated]
       })
       queryClient.invalidateQueries(["foodTags"])
-      addTagTofoodTagSet(foodTagCreated)
+      addTofoodTagList(foodTagCreated)
 
     }
   })
 
 
-  const dataFoodsSteps = useQueries({
 
-    queries: dataFoods.isLoading == false
-
-      ? dataFoods?.data?.steps?.map((id) => ({
-        queryKey: ["steps", id],
-        queryFn: () => getStep(id),
-        staleTime: Infinity,
-
-      })) : [],
-    combine: (results) => {
-      if (!results) return
-      return {
-        data: results?.map((result) => result.data)
-          .sort(function (a, b) {
-            return a.position - b.position;
-          })
-        ,
-
-        isPending: results.some((result) => result.isPending),
-        isLoading: results.some((result) => result.isLoading),
-        isSuccess: results.some((result) => result.isSuccess),
-        status: results.some((result) => result.status),
-        isFetched: results.some((result) => result.isFetched),
-        //       // statusError: results.some((result) => result.status ==="error"),
-        //       // errorMessage: results.some((result) => result.status ==="error"),
-      }
-    },
-  })
 
   const postStep = useMutation({
     mutationFn: createPostStep,
@@ -247,16 +311,22 @@ function EditFood(props) {
     onError: error => { console.log("Error Delete Step :", error) },
     onSuccess: (response, deletedStep) => {
       console.log("Step :", deletedStep, "sucsesfully deleted!", response)
+
+      // queryClient.removeQueries(["steps", deletedStep.id], { exact: true }
+
+        // (prev) => {
+        //   if (!prev) return undefined;
+        //   return prev.filter((id)=>id != deletedStep.id)
+
+        // }
+      // )
       queryClient.invalidateQueries(["steps"])
     }
   })
 
 
 
-  const dataIngredients = useQuery({
-    queryKey: ["ingredients"],
-    queryFn: getIngredients,
-  })
+
 
 
 
@@ -325,11 +395,6 @@ function EditFood(props) {
 
 
 
-  const dataIngredient = useQuery({
-    queryKey: ["ingredient"],
-    // enabled: !!dataIngredients,
-    queryFn: getIngredient,
-  })
 
   const postIngredient = useMutation({
     mutationFn: createPostIngredient,
@@ -346,10 +411,7 @@ function EditFood(props) {
     }
   })
 
-  const dataUnit = useQuery({
-    queryKey: ["unit"],
-    queryFn: getUnit,
-  })
+
 
   const postUnit = useMutation({
     mutationFn: createPostUnit,
@@ -361,129 +423,80 @@ function EditFood(props) {
         return [...prev.filter(p => p.id != unitCreated.data.id),
         unitCreated.data]
       })
+
+
       queryClient.invalidateQueries(["unit"])
+
     }
   })
 
 
-  const dataUrl = useQueries({
 
-    queries: dataFoods.isLoading == false
+  // useEffect(() => {
+  //   let food = ""
+  //   // console.log("dataFoods.isSuccess :", dataFoods.isLoading == false)
+  //   // console.log("dataFoodsImage.isSuccess :", dataFoodsImage.isLoading == false)
+  //   // console.log("dataFoodTags.isSuccess :", dataFoodTags.isLoading == false)
+  //   // console.log("dataFoodsSteps.isSuccess :", dataFoodsSteps.isLoading == false)
+  //   // console.log("dataFoodsIngre.isSuccess :", dataFoodsIngre.isLoading == false)
+  //   // console.log("dataFoodsUnit.isSuccess :", dataFoodsUnit.isLoading == false)
+  //   if (dataFoods.isLoading == false) {
+  //     if (dataFoodsImage.isLoading == false) {
+  //       if (dataFoodTags.isLoading == false) {
+  //         if (dataFoodsSteps.isLoading == false) {
+  //           if (dataIngredients.isLoading == false) {
+  //             if (dataIngredient.isLoading == false) {
+  //               if (dataUnit.isLoading == false) {
+  //                 food = handleFood()
 
-      ? dataFoods?.data?.urls?.map((id) => ({
-        queryKey: ["url", id],
-        queryFn: () => getUrl(id),
-        staleTime: Infinity,
+            
+  //                 // setNameTagSet(food.nameTags);
+  //                 // setFoodTagSet();
+  //                 // setStepsList();
+  //                 // setIngredientsList();
+  //                 // setDate();
+  //                 // setImageURLs(food.images);
 
-      })) : [],
-    combine: (results) => {
-      if (!results) return
-      return {
-        data: results?.map((result) => result.data),
-        isPending: results.some((result) => result.isPending),
-        isLoading: results.some((result) => result.isLoading),
-        isSuccess: results.some((result) => result.isSuccess),
-        status: results.some((result) => result.status),
-        isFetched: results.some((result) => result.isFetched),
-      }
-    },
-  })
+  //                 // setImageURLsPost(food.images);
+  //               } else {
+  //               }
+  //             } else {
+  //             }
+  //           } else {
+  //           }
+  //         } else {
+  //         }
+  //       } else {
+  //       }
 
-  const postUrl = useMutation({
-    mutationFn: createPostUrl,
-    onError: error => { console.log("Error Post URL :", error) },
-    onSuccess: (urlCreated, old) => {
-      console.log("URL :", urlCreated, "sucsesfully created!", old)
-      queryClient.setQueryData(["url", urlCreated.data.id], urlCreated.data
-      )
-      queryClient.invalidateQueries(["url"])
-    }
-  })
+  //     } else {
+  //     }
+  //   } else {
+  //   }
 
-  const deleteUrl = useMutation({
-    mutationFn: createDeleteUrl,
-    onError: error => { console.log("Error Delete URL :", error) },
-    onSuccess: (response, deletedURL) => {
-      console.log("Step :", deletedURL, "sucsesfully deleted!", response)
-      queryClient.invalidateQueries(["url"])
-    }
-  })
-
-  const putUrl = useMutation({
-
-    mutationFn: createPutUrl,
-    onError: error => { console.log("Error Put URL :", error) },
-    onSuccess: (UrlUpdated) => {
-      console.log("Step :", UrlUpdated, "sucsesfully updated!",)
-      queryClient.setQueryData(["url", UrlUpdated.data.id], UrlUpdated.data)
-      queryClient.invalidateQueries(["url"])
-    }
-  })
-
-  useEffect(() => {
-    let food = ""
-    // console.log("dataFoods.isSuccess :", dataFoods.isLoading == false)
-    // console.log("dataFoodsImage.isSuccess :", dataFoodsImage.isLoading == false)
-    // console.log("dataFoodTags.isSuccess :", dataFoodTags.isLoading == false)
-    // console.log("dataFoodsSteps.isSuccess :", dataFoodsSteps.isLoading == false)
-    // console.log("dataFoodsIngre.isSuccess :", dataFoodsIngre.isLoading == false)
-    // console.log("dataFoodsUnit.isSuccess :", dataFoodsUnit.isLoading == false)
-    if (dataFoods.isLoading == false) {
-      if (dataFoodsImage.isLoading == false) {
-        if (dataFoodTags.isLoading == false) {
-          if (dataFoodsSteps.isLoading == false) {
-            if (dataIngredients.isLoading == false) {
-              if (dataIngredient.isLoading == false) {
-                if (dataUnit.isLoading == false) {
-                  if (dataUrl.isLoading == false) {
-                    food = handleFood()
-                    setFoodID(food.id);
-                    setName(food.name);
-                    // setNameTagSet(food.nameTags);
-                    setUrlList(food.urls)
-                    setFoodTagSet(food.foodTags);
-                    setStepsList(food.steps);
-                    setIngredientsList(food.ingredients);
-                    setDate(food.date);
-                    setImageURLsList(food.images);
-
-                  } else {
-                  }
-                } else {
-                }
-              } else {
-              }
-            } else {
-            }
-          } else {
-          }
-        } else {
-        }
-
-      } else {
-      }
-    } else {
-    }
-
-  }, [dataFoods.isLoading, dataFoodsImage.isLoading, dataFoodTags.isLoading, dataFoodsSteps.isLoading, dataIngredients.isLoading, dataIngredient.isLoading, dataUnit.isLoading, dataUrl.isLoading
-  ])
+  // }, [dataFoods.isLoading, dataFoodsImage.isLoading, dataFoodTags.isLoading, dataFoodsSteps.isLoading, dataIngredients.isLoading, dataIngredient.isLoading, dataUnit.isLoading,
+  // ])
 
 
   const backEndFood = dataFoods.data ?? [];
   const backEndFoodTags = dataFoodTags.data ?? [];
   const backEndSteps = dataFoodsSteps.data ?? [];
-  const backEndUrls = dataUrl.data ?? [];
   const backEndImagefood = dataFoodsImage.data ?? [];
   const backEndIngredients = dataIngredients.data ?? [];
   const backEndIngredient = dataIngredient.data ?? [];
   const backEndUnit = dataUnit.data ?? [];
 
-  function handleFood() {
+  // function handleFood() {
 
 
 
-
-
+console.log("dataFoods.data",dataFoods.data)
+console.log("dataFoodTags.data",dataFoodTags.data)
+console.log("dataFoodsSteps.data",dataFoodsSteps.data)
+console.log("dataFoodsImage.data",dataFoodsImage.data)
+console.log("dataIngredients.data",dataIngredients.data)
+console.log("dataIngredient.data",dataIngredient.data)
+console.log("dataUnit.data",dataUnit.data)
     // imageFood
     // function imageFoodListDownl() {
     //   let newBackEndImagefood = dataImagefood?.filter((e) =>
@@ -497,10 +510,10 @@ function EditFood(props) {
 
     function ingredientsListDownl() {
       let ingredients = []
-      backEndFood.ingredients.map((datatags) => {
+      backEndFood?.ingredients?.map((datatags) => {
         backEndIngredients.map((e) => {
           if (e.id == datatags) {
-            backEndUnit.map((u) => {
+            backEndUnit?.map((u) => {
               if (u.id == e.units) {
                 backEndIngredient?.map((i) => {
                   if (i.id == e.ingredientName) {
@@ -509,8 +522,7 @@ function EditFood(props) {
                       quantity: e.quantity,
                       unit: [u],
                       ingredient: [i],
-                      position: e.position,
-                      statusDelete: false
+                      position: e.position
                     })
                   }
                 })
@@ -527,24 +539,14 @@ function EditFood(props) {
       return ingredients
     }
 
-    function itemListDownl(backEndFood, backEndItems, sorting, del) {
+    function itemListDownl(backEndFood, backEndItems, sorting) {
       let returnList = []
 
       backEndFood?.forEach((f) => {
         backEndItems?.map((e) => {
           if (e.id === f) {
-            if (del) {
-              returnList.push({
-                ...e,
-                statusDelete: false
-              })
-            } else {
-              {
-                returnList.push({
-                  ...e,
-                })
-              }
-            }
+            returnList.push(e);
+            ;
           }
         });
       });
@@ -557,19 +559,34 @@ function EditFood(props) {
       return returnList
 
     }
-
-    return ({
-      id: backEndFood.id,
-      name: backEndFood.name,
-      images: itemListDownl(backEndFood.images, backEndImagefood, true, true),
+    let food =[]
+    async function loader (){
+      const foodsRes = await dataFoods()
+      const stepRes = await dataFoodsSteps()
+      const imageRes = await dataFoodsImage()
+      const foodTagsRes = await dataFoodsImage()
+    food.push({
+      id: foodsRes.data.id,
+      name: foodsRes.data.name,
+      // image: imageFoodListDownl(),
+      images: itemListDownl(foodsRes.data.images, imageRes.data, "yes"),
       ingredients: ingredientsListDownl(),
-      steps: itemListDownl(backEndFood.steps, backEndSteps, true, true),
-      urls: itemListDownl(backEndFood.urls, backEndUrls, false, true),
-      foodTags: itemListDownl(backEndFood.foodTags, backEndFoodTags, false, false),
-      date: backEndFood.date,
-    })
-  }
-
+      steps: itemListDownl(foodsRes.data.steps, stepRes.data, "yes"),
+      // steps: stepsquery.data,
+      foodTags: itemListDownl(foodsRes.data.foodTags, foodTagsRes.data, "no"),
+      date: foodsRes.data.date,
+    })}
+  
+console.log("food :",food)
+    loader()
+  const [foodID, setFoodID] = useState(food.id)
+  const [name, setName] = useState(food.name)
+  const [foodTagSet, setFoodTagSet] = useState(new Set(food.foodTags));
+  const [stepsList, setStepsList] = useState([food.steps]);
+  const [ingredientsList, setIngredientsList] = useState([food.ingredients]);
+  const [date, setDate] = useState(food.date)
+  const [imageURLsList, setImageURLsList] = useState([food.images])
+  const newdate = new Date(date).toLocaleDateString('sk-SK')
   // setFoodID(food.id);
   // setName(food.name);
   // setNameTagSet(food.nameTags);
@@ -580,50 +597,46 @@ function EditFood(props) {
   // setImageURLs(food.images);
   // setImageURLsList(food.images);
   // setImageURLsPost(food.images);
-  function handleFoodDelete() {
-    setModalDeleteFlag(true)
-  }
-
 
   function handleFoodSave() {
 
 
     const filterIngredients = ingredientsList.filter((ingre) => ingre.position !== "delete")
-
+    // console.log("foodTagSetID :", foodTagSetID)
     if (
-      !name &&
+      name === "" &&
       filterIngredients.length === 0 &&
-      foodTagSet.size === 0 &&
+      foodTagSet === "" &&
       stepsList === ""
     ) {
       alert("Nazov , Suroviny, Druj jedla, Postup nie se uvedene");
     } else if (
       filterIngredients.length === 0 &&
-      foodTagSet.size === 0 &&
+      foodTagSet === "" &&
       stepsList === ""
     ) {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: , Suroviny, Druj jedla, Postup");
-    } else if (!name  && foodTagSet.size === 0 && stepsList === "") {
+    } else if (name === "" && foodTagSet === "" && stepsList === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov , Druj jedla, Postup");
-    } else if (!name && filterIngredients.length === 0 && stepsList === "") {
+    } else if (name === "" && filterIngredients.length === 0 && stepsList === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov, Suroviny, Postup");
-    } else if (!name && filterIngredients.length === 0 && foodTagSet.size === 0) {
+    } else if (name === "" && filterIngredients.length === 0 && foodTagSet === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov, Suroviny, Druj jedla");
-    } else if (!name && filterIngredients.length === 0) {
+    } else if (name === "" && filterIngredients.length === 0) {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov,Suroviny");
-    } else if (!name && foodTagSet.size === 0) {
+    } else if (name === "" && foodTagSet === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: ,Nazov, Druj jedla");
-    } else if (!name && stepsList === "") {
+    } else if (name === "" && stepsList === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov, Postup");
-    } else if (filterIngredients.length === 0 && foodTagSet.size === 0) {
+    } else if (filterIngredients.length === 0 && foodTagSet === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Suroviny,Druj jedla");
     } else if (filterIngredients.length === 0 && stepsList === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Suroviny,Postup");
-    } else if (!name) {
+    } else if (name === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov");
     } else if (filterIngredients.length === 0) {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Suroviny");
-    } else if (foodTagSet.size === 0) {
+    } else if (foodTagSet === "") {
       handlerSetModalErrorMissing("Doplň chýbajúce informácie: Druj jedla");
     } else if (stepsList === "") {
       handlerSetModalErrorMissing("Druj jedla nie je uvedeny");
@@ -638,29 +651,24 @@ function EditFood(props) {
     ;
   }
 
-  // function handleAddToNameTagList() {
-  //   let nameSplit = name?.split(" ");
-  //   addToNameTagList(nameSplit);
-  // }
+  function handleAddToNameTagList() {
+    let nameSplit = name?.split(" ");
+    addToNameTagList(nameSplit);
+  }
 
   function handleNameChange(event) {
     setName(event.target.value);
   }
 
 
-  function foodTagSetCheck(tag) {
-    let filter = Array.from(foodTagSet).filter((f) => f.foodTag === tag)
+  function foodTagListCheck(tag) {
+    let filter = Array.from(foodTagSet).filter((f) => f.foodTag == tag)
     if (filter != "") {
-      removeFromFoodTagSet(filter[0]);
+      removeFromFoodTagList(tag);
     } else {
-      handleAddTagToFoodTagSet(tag);
+      handleAddToFoodTagList(tag);
     }
   }
-
-  // function foodTagListCheck2(tag) {
-  //   console.log("foodTagListCheck2 :", tag)
-  //   tag.map(ta => { foodTagListCheck(ta.tagName) })
-  // }
 
 
   function ingredientsCheckPost(ing) {
@@ -734,186 +742,167 @@ function EditFood(props) {
     }
   }
 
-  function addTagTofoodTagSet(foodTag) {
+  function addTofoodTagList(foodTag) {
     let newFoodTagSet = new Set(foodTagSet);
     newFoodTagSet.add(foodTag);
     setFoodTagSet(newFoodTagSet);
   }
+
+  // function addToIngredientsIDList(ing) {
+  //   let newIngredientsIDList = new Set(ingredientsSetID);
+  //   newIngredientsIDList.add(ing.id);
+  //   setIngredientsSetID(newIngredientsIDList);
+  // }
+
+
+  // function ingredientsPost(quantity, unitChecked, ingredientChecked) {
+  //   let ingredientFilter = dataIngredients.find(
+  //     (element) =>
+  //       element.quantity == quantity &&
+  //       element.units[0] == unitChecked.id &&
+  //       element.ingredientName[0] == ingredientChecked.id
+  //   )
+
+  //   if (ingredientFilter == null) {
+  //     postIngredients({
+  //       quantity: quantity,
+  //       units: [unitChecked.id],
+  //       ingredientName: [ingredientChecked.id],
+  //     })
+  //   }
+  //   else { addToIngredientsIDList(ingredientFilter) }
+  // }
+
 
   function addToIngredientList(id, quantity, unit, ing) {
     if (ing === "") {
       return;
     }
     let newIngredientsList = ingredientsList.slice()
-    newIngredientsList.push({ id: id, quantity: quantity, unit: [{ id: id, unit: unit }], ingredient: [{ id: id, ingredient: ing }], statusDelete: false }
+    newIngredientsList.push({ id: id, quantity: quantity, unit: [{ id: id, unit: unit }], ingredient: [{ id: id, ingredient: ing }] }
     );
     setIngredientsList(newIngredientsList);
   }
 
   function makeIngredientsDelete(ingre) {
-    setIngredientsList(makeItemDelete(ingre, ingredientsList))
+    setIngredientsList(makeItemDelete(ingre,ingredientsList))
+    // let ingreIDPosition = getPosition(ingre.id, ingredientsList);
+    // let newIngreList = ingredientsList.slice();
+    // newIngreList.splice(ingreIDPosition, 1, { ...ingre, position: "delete" })
+    // setIngredientsList(newIngreList);
   }
 
   function makeSteptoDelete(step) {
-    setStepsList(makeItemDelete(step, stepsList))
-  }
-
-  function makeUrlToDelete(url) {
-    setUrlList(makeItemDelete(url, urlList))
+    setStepsList(makeItemDelete(step,stepsList))
+    // let stepIDPosition = getPosition(step.id, stepsList);
+    // let newStepsList = stepsList.slice();
+    // newStepsList.splice(stepIDPosition, 1, { ...step, position: "delete" })
+    // setStepsList(newStepsList);
   }
 
   function makeItemDelete(item, array) {
     let itemIDPosition = getPosition(item.id, array);
     let newArray = array.slice();
-    newArray.splice(itemIDPosition, 1, { ...item, statusDelete: true })
+    newArray.splice(itemIDPosition, 1, { ...item, position: "delete" })
     return newArray;
   }
 
 
-  // function updateStepList(oldID, newID, step) {
-  //   console.log("step :", step)
-  //   setStepsList(updateItemList(oldID, newID, { id: oldID, step: step ,statusDelete: false}, { id: newID, step: step ,statusDelete: false}, stepsList))
-  // }
+  function updateStepInTagList(oldID, newID, step) {
+    let stepIDPosition = getPosition(oldID, stepsList);
 
-  function updateStepList(step) {
-    setStepsList(updateItemList(step, stepsList))
+    let newStepsList = stepsList.slice();
+    if (Number.isInteger(oldID)) {
+      newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step })
+    }
+    if (!Number.isInteger(oldID)) {
+      if (newID == "") {
+        newStepsList.splice(stepIDPosition, 1, { id: oldID, step: step })
+      } if (newID) {
+        newStepsList.splice(stepIDPosition, 1, { id: newID, step: step })
+      }
+    }
+    setStepsList(newStepsList);
+    // setStepsSetID(newStepsIDList)
+  }
+  function handleAddStep(id, step) {
+    if (step == "") return
+    let newStepsList = stepsList.slice();
+    newStepsList.push({ id: id, step: step })
+    setStepsList(newStepsList);
   }
 
-  function updateUrlList(url) {
-    setUrlList(updateItemList( url, urlList))
-  }
-
-  // function updateUrlList(oldID, url) {
-  //   setUrlList(updateItemList(oldID, newID, { id: oldID, url: url,statusDelete: false }, { id: newID, url: url,statusDelete: false }, urlList))
-  // }
-  function updateItemList(itemObj, array) {
-  // function updateItemList(oldID, newID, itemOldObj, itemNewObj, array) {
-    let position = getPosition(itemObj.id, array);
-    // console.log(itemOldObj, itemNewObj)
-    let newArray = array.slice();
-    newArray.splice(position, 1, itemObj)
-    // if (Number.isInteger(oldID)) {
-    //   newArray.splice(position, 1, itemOldObj)
-    // }
-    // if (!Number.isInteger(oldID)) {
-    //   if (newID == "") {
-    //     newArray.splice(position, 1, itemOldObj)
-    //   } if (newID) {
-    //     newArray.splice(position, 1, itemNewObj)
-    //   }
-    // }
-    return (newArray);
-  }
-
-  function handleAddUrl(url, urlList) {
-    if (url.url == "") return
-    setUrlList(addItem(url, urlList))
-  }
-
-
-  function handleAddStep(step, stepsList) {
-    if (step.step == "") return
-    setStepsList(addItem(step, stepsList))
-  }
-
-  function addItem(itemObj, array) {
-    let newArray = array.slice();
-    newArray.push(itemObj)
-    return newArray;
-  }
-
-  function handleAddTagToFoodTagSet(foodTag) {
+  function handleAddToFoodTagList(foodTag) {
     let filterFoodTag = dataFoodTags.data.filter((element) => element.foodTag == foodTag);
     if (filterFoodTag == "") {
-      postFoodTag.mutate({ foodTag: foodTag })
-    } else { addTagTofoodTagSet(filterFoodTag[0]) }
+      postFoodTag({ foodTag: foodTag })
+    } else { addTofoodTagList(filterFoodTag[0]) }
   }
 
-  function removeFromFoodTagSet(tag) {
+  function removeFromFoodTagList(tag) {
     let newFoodTagSet = new Set(foodTagSet);
-    newFoodTagSet.delete(tag);
+    let filterfoodTag = dataFoodTags.data.filter(
+      (element) => element.foodTag == tag
+    );
+    newFoodTagSet.delete(filterfoodTag[0]);
     setFoodTagSet(newFoodTagSet);
   }
+
+  function addToNameTagList(tag) {
+    let newNameTagSet = new Set(nameTagSet);
+    newNameTagSet.add(tag);
+    setNameTagSet(newNameTagSet);
+  }
+
+  function handlerSetModalErrorMissing(message) {
+    setModalMessage(message)
+    setTimeout(() => {
+      setModalMessage("")
+    }, 3000)
+  }
+
 
   function handleDataID(res) {
     let array = []
     res.map(r => { if (r.status !== 204) { array.push(r.data.id) } })
     return array
   }
-  async function urlForPostHandler() {
-    return Promise.all(
-
-      urlList?.map((res) => {
-        const urlVar = {
-          id: res.id,
-          url: res.url,
-        }
-       
-        if (res.statusDelete === true && Number.isInteger(res.id)) {
-          return deleteUrl.mutateAsync(urlVar)
-        }
-        if (Number.isInteger(res.id)) {
-          return putUrl.mutateAsync(urlVar)
-        }
-        if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
-        else {
-          return postUrl.mutateAsync(urlVar)
-        }
-
-      })
-    ).then(res => {
-      return {
-        status: "fullfilled",
-        value: handleDataID(res)
-      }
-    }).catch((err) => {
-      console.log("Error URL", err); handlerSetModalErrorMissing("Error URL");
-      setModalLoadingFlag(false);
-      handlerSetModalError()
-    })
-
-  }
 
   async function stepsForPostHandler() {
 
-    return Promise.all(
-      stepsList?.map((res, index) => {
+    return  Promise.all(
+      stepsList?.map( (res, index) => {
         const stepVar = {
           id: res.id,
           step: res.step,
           position: index + 1,
         }
 
-        if (res.statusDelete === true && Number.isInteger(res.id)) {
-          return deleteStep.mutateAsync(stepVar)
+        if (res.position === "delete" && Number.isInteger(res.id)) {
+          return  deleteStep.mutateAsync(stepVar)
         }
         if (Number.isInteger(res.id)) {
-          return putStep.mutateAsync(stepVar)
+          return  putStep.mutateAsync(stepVar)
         }
-        if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
+        if (!Number.isInteger(res.id) && res.position === "delete") { return { status: 204 } }
         else {
-          return postStep.mutateAsync(stepVar)
+          return  postStep.mutateAsync(stepVar)
         }
 
       })
     ).then(res => {
-      return {
+      console.log("res Steps", res); return {
         status: "fullfilled",
         value: handleDataID(res)
       }
-    }).catch((err) => {
-      console.log("Error Steps", err); handlerSetModalErrorMissing("Error Steps");
-      setModalLoadingFlag(false);
-      handlerSetModalError()
-    })
-
-
+    }).catch((err) => { console.log("Error Steps", err); handlerSetModalErrorMissing("Error Steps") })
+     
   }
 
   async function ingredientsForPostHandler() {
 
-    return Promise.all(
-      ingredientsList?.map((res, index) => {
+    return  Promise.all(
+      ingredientsList?.map( (res, index) => {
         // console.log("res :", res, "index", index)
         const ingreVar = {
           id: res.id,
@@ -922,15 +911,15 @@ function EditFood(props) {
           ingredientName: [res.ingredient[0]],
           position: index + 1,
         }
-        if (res.statusDelete === true && Number.isInteger(res.id)) {
-          return (deleteIngredients.mutateAsync(ingreVar.id))
+        if (res.position === "delete" && Number.isInteger(res.id)) {
+          return  (deleteIngredients.mutateAsync(ingreVar.id))
         }
         if (Number.isInteger(res.id)) {
-          return putIngredients.mutateAsync(ingreVar)
+          return  putIngredients.mutateAsync(ingreVar)
         }
-        if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
+        if (!Number.isInteger(res.id) && res.position === "delete") { return { status: 204 } }
         else {
-          return ingredientsCheckPost(ingreVar)
+          return  ingredientsCheckPost(ingreVar)
         }
       })
     ).then(res => {
@@ -938,26 +927,20 @@ function EditFood(props) {
         status: "fullfilled",
         value: handleDataID(res)
       }
-    })
-      .catch((err) => {
-        console.log("Error Ingredients", err);
-        handlerSetModalErrorMissing("Error Ingredients");
-        setModalLoadingFlag(false);
-        handlerSetModalError()
-      })
+    }).catch((err) => { console.log("Error Ingredients", err); handlerSetModalErrorMissing("Error Ingredients") })
 
-
+     
   }
 
 
-  async function imagiesForPostHandler(food) {
+  async  function imagiesForPostHandler(food) {
 
     const date = new Date(food.date).toISOString().substring(0, 10)
     const seconds = new Date(food.date).getUTCMilliseconds()
 
 
-    return Promise.all(
-      imageURLsList?.map((res, index) => {
+    return  Promise.all(
+      imageURLsList?.map( (res, index) => {
 
         const imageID = res.id
         let form = new FormData();
@@ -973,50 +956,41 @@ function EditFood(props) {
           id: imageID,
           imageForm: form
         }
-    
 
-        if (Number.isInteger(res.id) && res.statusDelete === true) {
-          return deleteImagefood.mutateAsync(formdataPut)
+
+        if (Number.isInteger(res.id) && res.position === "delete"  ) {
+          return  deleteImagefood.mutateAsync(formdataPut)
         }
-        if (!Number.isInteger(res.id) && res.statusDelete === false) {
-          return postImagefood.mutateAsync({ formdata })
+        if (!Number.isInteger(res.id) && res.position != "delete") {
+          return  postImagefood.mutateAsync(formdata)
         }
-        if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
+        if (!Number.isInteger(res.id) && res.position === "delete") { return { status: 204 } }
         if (Number.isInteger(res.id)) {
-          return putImagefood.mutateAsync(formdataPut)
+          return  putImagefood.mutateAsync(formdataPut)
         }
 
       })
     ).then(res => {
-  
       return {
         status: "fullfilled",
         value: handleDataID(res)
       }
-    }).catch((err) => {
-      console.log("Error Imagies", err); handlerSetModalErrorMissing("Error Imagies");
-      setModalLoadingFlag(false);
-      handlerSetModalError()
-    })
-
+    }).catch((err) => { console.log("Error Imagies", err); handlerSetModalErrorMissing("Error Imagies") })
+     
   }
 
 
   async function makeFoodRecord(food) {
     setModalLoadingFlag(true)
-    const stepsRun = stepsForPostHandler()
-    const ingredientsRun = ingredientsForPostHandler()
-    const imagiesRun = imagiesForPostHandler(food)
-    const urlRun = urlForPostHandler()
+    const stepsRun =  stepsForPostHandler()
+    const ingredientsRun =  ingredientsForPostHandler()
+    const imagiesRun =  imagiesForPostHandler(food)
 
-  
     const stepsRes = await stepsRun
     const ingredientsRes = await ingredientsRun
     const imagiesRes = await imagiesRun
-    const urlRes = await urlRun
 
-
-    Promise.all([stepsRes, ingredientsRes, imagiesRes, urlRes])
+    Promise.all([stepsRes, ingredientsRes, imagiesRes])
       .catch(err => {
         console.log("ERROR putFood can not be executed! Posssible Error in the following post function: Steps, Ingredients or Imagies", err);
         setModalLoadingFlag(false)
@@ -1028,48 +1002,37 @@ function EditFood(props) {
           steps: stepsRes.value,
           ingredients: ingredientsRes.value,
           images: imagiesRes.value,
-          urls: urlRes.value,
         })
       }
       )
   }
 
-  function foodDelete() {
-    setModalDeleteFlag(false)
-    setModalLoadingFlag(true)
-    deleteFood.mutate({ id: foodID })
-  }
-
-
   function imageURLsUpdater(imageURLsList) {
     setImageURLsList(imageURLsList);
-
+    // setImageURLsPost(imageURLsList);
   }
 
   function stepMove(move, step) {
-    setStepsList(itemMove(move, step, stepsList))
+    setStepsList(itemMove(move, step,stepsList))
   }
 
   function ingredientMove(move, ing) {
-    setIngredientsList(itemMove(move, ing, ingredientsList))
+    setIngredientsList(itemMove(move, ing,ingredientsList))
   }
 
   function itemMove(move, item, array) {
     let position = getPosition(item.id, array)
-    console.log("position :", position,
-      "array.length :", array.length
-    )
+
     let newArray = array.slice()
     if (move > 0) {
-      if (position === (-1 + array.length)) { return newArray } else {
+      if (position < (-1 + array.length)) {
         newArray.splice(position, 1);
         newArray.splice(position + move, 0, item);
         return newArray
       }
     }
     if (move < 0) {
-      if (position === 0) { return newArray }
-      else {
+      if (position > 0) {
         newArray.splice(position, 1);
         newArray.splice(position - 1, 0, item);
         return newArray
@@ -1081,19 +1044,6 @@ function EditFood(props) {
 
   function handlerFoodSaveClose() {
     navigate(`/recepty/${ID}/`);
-  }
-
-  function handlerFoodDeleteCancel() {
-    setModalDeleteFlag(false)
-    navigate(`/recepty/uprava/${id.id}/`)
-  }
-
-  function handlerFoodDeleteConfirmed() {
-    setModalSavedFlag(true)
-    setTimeout(() => {
-      setModalSavedFlag(false)
-      navigate(`/recepty/?page_size=${20}`);
-    }, 1000)
   }
 
   function handlerSetModalSave() {
@@ -1115,13 +1065,6 @@ function EditFood(props) {
       setModalImageDeleteErrorFlag(false)
     }, 3000)
   }
-
-  function handlerSetModalErrorMissing(message) {
-    setModalMessage(message)
-    setTimeout(() => {
-      setModalMessage("")
-    }, 3000)
-  }
   function closeModal(e) {
     setModalLightboxFlag(false)
     setIsVisibleEdit(false)
@@ -1129,7 +1072,7 @@ function EditFood(props) {
 
   function getPosition(elementToFind, arrayElements) {
 
-    let i;
+    var i;
     for (i = 0; i < arrayElements.length; i += 1) {
       if (arrayElements[i].id === elementToFind) {
         return i;
@@ -1140,7 +1083,9 @@ function EditFood(props) {
 
   const [imagePosition, setImagePosition] = useState("")
   function handlerImage(imageToAdd) {
-    let position = getPosition(imageToAdd.id, imageURLsList)
+    let position = (getPosition(imageToAdd.id, imageURLsList))
+    console.log("position  :" ,position)
+    console.log("imagePosition  :" ,imagePosition)
     setImagePosition(position)
   }
 
@@ -1149,21 +1094,28 @@ function EditFood(props) {
   // images for Posting
   useEffect(() => {
     let newImageUrlsPost = imageURLsList.slice()
+    let ID = 0;
+    let newImageURL = [];
+    let newImagePreview = [];
+    let newImageList = [];
     let uniqueID = new Date().toISOString()
-
+let ee= `${uniqueID}-${1}`
+console.log(ee)
     if (images.length < 1) return;
-    let position = imageURLsList.length + 1
+    let pisitionUrls = imageURLsList.length + 1
+    // let pisitionUrls = imageURLsPost.length + 1
+
     images.forEach(
-      (image, index) => {
+      (image,index) => {
         newImageUrlsPost.push({
           id: `${uniqueID}${index}`,
           image: URL.createObjectURL(image),
           imageForBackEnd: image,
-          position: position,
-          statusDelete: false
-        }); position++
+          position: pisitionUrls,
+        }); pisitionUrls++
       }, setImageURLsList(newImageUrlsPost)
     )
+    ID++;
 
   }, [images]);
 
@@ -1173,7 +1125,7 @@ function EditFood(props) {
   }
 
 
-  if (dataFoods.isLoading || dataFoodTags.isLoading || dataFoodsSteps.isLoading || dataIngredients.isLoading || dataIngredient.isLoading || dataUnit.isLoading || dataFoodsImage.isLoading || dataUrl.isLoading)
+  if (dataFoods.isLoading || dataFoodTags.isLoading || dataFoodsSteps.isLoading || dataIngredients.isLoading || dataIngredient.isLoading || dataUnit.isLoading || dataFoodsImage.isLoading)
     return <label htmlFor="inpFile">
       <div className={style.loadingContainer}>
         <FontAwesomeIcon
@@ -1195,127 +1147,87 @@ function EditFood(props) {
 
     <div className={style.main}>
       <div className={style.header}>RECEPT</div>
-      <div className={style.boxcontainer}>
-        <div className={style.messagebox}>
-          {modalMessage}</div>
-        
-        <div className={style.buttonBox} >
-  
-          <div className={style.foodButton} id={style.foodButtonSave}
-          // datatooltip="Uloziť"
-          >
-            <FontAwesomeIcon
-              onClick={handleFoodSave}
-              icon={faCartPlus}
-
-            />
-          </div>
-          {/* <div className={style.foodButton} onClick={handleFoodSave}>
-                  ULOŽIŤ
-                </div> */}
-
-          <div className={style.foodButtonDelete}
-          // datatooltip="Vymazať"
-          >
-            <FontAwesomeIcon
-              // className={style.deleteIcon}
-              icon={faTrash}
-              onClick={handleFoodDelete}
-            /></div>
-          {/* <div className={style.foodButton} onClick={handleFoodDelete}>
-                          VYMAZAŤ
-                        </div> */}
-          <div className={style.foodButton}
-          // datatooltip="Spať"
-          >
-            <FontAwesomeIcon
-              onClick={handlerFoodSaveClose}
-              icon={faBackward}
-
-            />
-          </div>
-         
-        {/* <div className={style.foodButton} onClick={handlerFoodSaveClose}>
+      <div className={style.buttonBox} >
+        <div className={style.foodButton} onClick={handleFoodSave}>
+          ULOŽIŤ
+        </div>
+        <div className={style.foodButton} onClick={handlerFoodSaveClose}>
           SPÄŤ
-        </div> */}
+        </div>
       </div>
-      </div>
-      <div className={style.fooodbox} >
+      <div className={style.fooodbox} id="fooodbox">
         <LeftPanelFilter
           onFoodTagSet={foodTagSet}
-          handleAddTagToFoodTagsList={foodTagSetCheck}
-          // handleAddTagToFoodTagsList2={foodTagListCheck2}
+          handleAddTagToFoodTagsList={foodTagListCheck}
           foodTagsBox={null}
           component={component}
         />
+        <div className={style.Content_Flex}>
+          <div className={style.messagebox}>
+            {modalMessage} </div>
+          <div className={style.ingreProcedureBox}>
+            <div className={style.ingredientsImageBox}>
+              <div>
+                <p>Suroviny:</p>
+                <IngredientInput
+                  addToIngredientList={addToIngredientList}
+                  ingredientMove={ingredientMove}
+                  ingredientsList={ingredientsList}
+                  handlerSetModalErrorMissing={handlerSetModalErrorMissing}
+                  removeFromIngredientList={makeIngredientsDelete}
+                  component={component}
+                ></IngredientInput>
+              </div>
+              {/* <div className={style.images} id="imagePreview">
+            {imagePreview}
+            <span className={style.imagePreview__defaultText}>
+              Image Preview
+            </span>
+          </div> */}
 
-        {/* <div className={style.ingreProcedureBox}> */}
+              <input
+                // className={style.imageinput}
+                className={style.imageinput}
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/gif"
+                id="inpFile"
+                // id="image-input"
+                onChange={onImageChange}
+                display="none"
+              />
+              <label htmlFor="inpFile" className={style.imageIcon}
+                datatooltip="Pridať fotografiu">
+                <FontAwesomeIcon
 
-        <div className={style.secondColumn}>
-          {/* <div className={style.Content_Flex}> */}
-          {/* </div> */}
-          <div className={style.ingredients}>
-            <p>Suroviny:</p>
-            <IngredientInput
-              addToIngredientList={addToIngredientList}
-              ingredientMove={ingredientMove}
-              ingredientsList={ingredientsList}
-              handlerSetModalErrorMissing={handlerSetModalErrorMissing}
-              removeFromIngredientList={makeIngredientsDelete}
-              component={component}
-            ></IngredientInput>
-          </div>
-          {/* <div className={style.images} id="imagePreview">
-                {imagePreview}
-                <span className={style.imagePreview__defaultText}>
-                  Image Preview
-                </span>
-              </div> */}
-
-          <input
-            // className={style.imageinput}
-            className={style.imageinput}
-            type="file"
-            multiple
-            accept="image/jpeg,image/png,image/gif"
-            id="inpFile"
-            // id="image-input"
-            onChange={onImageChange}
-            display="none"
-          />
-          <div className={style.imageIconBox}>
-            <label htmlFor="inpFile" className={style.imageIcon}
-              datatooltip="Pridať fotografiu">
-              <FontAwesomeIcon
-
-                icon={faCircleArrowUp}
-                // onClick={props.onTagDelete}
-                id="inpFileIcon"
-              ></FontAwesomeIcon>
-            </label>
-          </div>
-          {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
-            No Files chosen
-          </p>}
-          <div className={style.imagebox}>
-            <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage}></Image>
-          </div>
-        </div>
-        <div className={style.thirdColumn}>
-
-          <div className={style.urlName}>
-            <p>URL :</p>
-          </div>
-          <UrlInput
-            urlList={urlList}
-            component={component}
-            deleteUrl={makeUrlToDelete}
-            updateUrlList={updateUrlList}
-            handleAddUrl={handleAddUrl}
-          >
-
-          </UrlInput>
-          {/* <label htmlFor="url">URL:</label>
+                  icon={faCircleArrowUp}
+                  // onClick={props.onTagDelete}
+                  id="inpFileIcon"
+                ></FontAwesomeIcon>
+              </label>
+              {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
+                No Files chosen
+              </p>}
+              <div className={style.imagebox}>
+                <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage}></Image>
+              </div>
+            </div>
+            <div className={style.procedureBox}>
+              <div>
+                <p>Nazov:</p>
+              </div>
+              <input
+                className={style.foodname}
+                value={name}
+                type="text"
+                maxLength="25"
+                onChange={handleNameChange}
+                onClick={handleAddToNameTagList}
+              />
+              <div className={style.date}>
+                Vytvoreny:{newdate}
+              </div>
+              <label htmlFor="url">URL:</label>
               <input
                 className={style.foodurl}
                 value={url}
@@ -1324,41 +1236,22 @@ function EditFood(props) {
                 id="url"
                 onChange={handleNameChange}
                 onClick={handleAddToNameTagList}
-              /> */}
-          <div className={style.urlName}>
-            <p>Postup :</p>
-          </div>
-          <StepsInput
-            stepMove={stepMove}
-            handleAddStep={handleAddStep}
-            updateStepList={updateStepList}
-            stepsList={stepsList}
-            stepsSetIDState={stepsList.id}
-            deleteStep={makeSteptoDelete}
-            component={component}
-          ></StepsInput>
-        </div>
-        <div className={style.fooodnamebox} >
-        <div className={style.name}>
-            Nazov:
-          </div>
-        <input
-          className={style.foodname}
-          value={name}
-          type="text"
-          maxLength="300"
-          onChange={handleNameChange}
-        // onClick={handleAddToNameTagList}
-        />
-                <div className={style.name}>
-       
+              />
+              <div>
+                <p>Postup:</p>
+              </div>
+              <StepsInput
+                stepMove={stepMove}
+                handleAddStep={handleAddStep}
+                updateStepInTagList={updateStepInTagList}
+                stepsSet={stepsList}
+                stepsSetIDState={stepsList.id}
+                deleteStep={makeSteptoDelete}
+                component={component}
+              ></StepsInput>
+            </div>
           </div>
         </div>
-        <div className={style.date}>
-          Vytvorené:{newdate}
-        </div>
-        {/* </div> */}
-
       </div>
     </div>
     <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
@@ -1368,11 +1261,6 @@ function EditFood(props) {
     <Modal visible={modalSavedFlag} setModalFlag={setModalSavedFlag}>
       <SaveSaved
       ></SaveSaved>
-    </Modal>
-    <Modal visible={modalDeleteFlag} setModalFlag={setModalDeleteFlag}>
-      <DeleteConfirm
-        foodDelete={foodDelete}
-        handlerFoodDeleteCancel={handlerFoodDeleteCancel}></DeleteConfirm>
     </Modal>
     <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
       <SaveError
@@ -1385,17 +1273,19 @@ function EditFood(props) {
     </Modal>
     <ModalPreview visible={modalLightboxFlag} setModalFlag={setModalLightboxFlag}>
       <Lightbox
-        imageURLsList={[imageURLsList, setImageURLsList]}
+        imageURLsList={imageURLsList}
         closeModal={closeModal}
         handlerImage={handlerImage}
         getPosition={getPosition}
+        imageDispley={imageDispley}
+
         modalImageDeleteErrorFlag={modalImageDeleteErrorFlag}
         isVisibleEdit={[isVisibleEdit, setIsVisibleEdit]}
         imagePosition={[imagePosition, setImagePosition]}
         imageURLsUpdater={imageURLsUpdater}
         putImagefood={putImagefood}
         // imageDisplayChange={imageDisplayChange}
-
+  
         component={component}
       >
       </Lightbox>

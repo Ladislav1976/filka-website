@@ -2,21 +2,22 @@ import { useState, useEffect } from "react";
 import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark, faQuestion, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
 function Step(props) {
   const [step, setStep] = useState(props.step);
-  const [stepID, setStepID] = useState(props.stepID)
   const [stepDefault, setStepDefault] = useState("");
-  const stposition = props.stposition
   const component = props.component
 
   function handleUpdateStep(event) {
     if (stepDefault == "") {
+      console.log("current step :", step)
       setStepDefault(step)
-      setStep(event.target.value);
+      setStep({...step,
+        step: event.target.value});
     } else {
-      setStep(event.target.value);
+      setStep({...step,
+        step: event.target.value});
     }
 
   }
@@ -27,47 +28,48 @@ function Step(props) {
     }
   }
 
-  function handleUpdateStepInTagList() {
-    props.updateStepInTagList(stepID, "", step)
+  function handleUpdateStepList() {
+    props.updateStepList(step)
     setStepDefault("")
   }
   function handleStepMove(move, step) {
-    console.log("handleStepMove",move, step)
+    console.log("handleStepMove", move, step)
     props.stepMove(move, step)
 
   }
   return (
     <>
-
-      <div className={style.stepid}>{props.stID}.</div>
-      <div className={style.stepBox}>
-        {component == "viewcomponent" && <div className={style.stepTextView}>{step}</div>}
-        {component == "editcomponent" && <textarea
-          className={style.stepText}
-          type="text"
-          rows="2"
-          value={step}
-          onChange={handleUpdateStep}
-        />}
-        {component == "editcomponent" && <div className={style.iconBox}>
+      <div className={style.stepContainer}>
+        <div className={style.stepid}>{props.stID}.</div>
+        {/* <div className={style.stepBox}> */}
+          {component == "viewcomponent" && <div className={style.stepTextView}>{step.step}</div>}
+          {(component == "editcomponent" ||component == "newcomponent") && <textarea
+            className={style.stepText}
+            type="text"
+            rows="2"
+            value={step.step}
+            onChange={handleUpdateStep}
+          />}
+   
+        {(component == "editcomponent" ||component == "newcomponent") && <div className={style.iconBox}>
           <div className={stepDefault == "" ? style.OKIcon : style.editIcon} datatooltip={stepDefault == "" ? "OK" : "Uložiť"}>
             <FontAwesomeIcon
               color={stepDefault == "" ? "#558113" : "#fd0000"}
               // className={style.editIcon}
               icon={stepDefault == "" ? faCheck : faFloppyDisk}
               onClick={() => {
-                handleUpdateStepInTagList()
+                handleUpdateStepList()
 
               }}
             /></div>
 
           <div className={style.deleteIcon}
-            //datatooltip="Vymazať"
+          // datatooltip="Vymazať"
           >
             <FontAwesomeIcon
               // className={style.deleteIcon}
               icon={faTrash}
-              onClick={() => props.stepDelete(stepID, step, stposition)}
+              onClick={() => props.handleStepDelete()}
             /></div>
           {stepDefault != "" && <div className={style.cancelIcon} datatooltip="Zrušiť">
             <FontAwesomeIcon
@@ -76,9 +78,9 @@ function Step(props) {
               onClick={() => handleCancelStep()} /></div>}
         </div>}
 
-        {component == "editcomponent" && <div className={style.upddownbox} >
-          <div className={style.up} onClick={() => handleStepMove(-1, { id: stepID, step: step })} >&#10095;</div>
-          <div className={style.down} onClick={() => handleStepMove(1, { id: stepID, step: step })} >&#10094;</div>
+        {(component == "editcomponent"||component == "newcomponent") && <div className={style.upddownbox} >
+          <div className={style.up} onClick={() => handleStepMove(-1, step)} >&#10095;</div>
+          <div className={style.down} onClick={() => handleStepMove(1, step)} >&#10094;</div>
         </div>}
 
 
@@ -90,7 +92,7 @@ function Step(props) {
 export default function StepsInput(props) {
 
   const [stepsSetID, setStepsSetID] = useState(props.stepsSetIDState);
-  let stepsSet = props.stepsSet
+  let stepsList = props.stepsList
   const [addedStep, setAddedStep] = useState("");
   const component = props.component
 
@@ -115,27 +117,27 @@ export default function StepsInput(props) {
 
 
 
-  function handleStepDelete(stepID, step, stposition) {
-    props.deleteStep(stepID, step, stposition)
+  function handleStepDelete(step) {
+    props.deleteStep(step)
   }
 
   const proceduteListRender = [];
   let Id = 1;
-  let stepsSetFilter = stepsSet.filter((element) => element.stposition != "delete")
-  stepsSetFilter.map((step) => {
+
+  stepsList?.map((step) => {
+    if(step.statusDelete ===false){
     proceduteListRender.push(
       <Step
-        step={step.step}
-        stepID={step.id}
+        step={step}
+        // stepID={step.id}
         stID={Id}
-        stposition={step.stposition}
         key={step.id}
-        updateStepInTagList={props.updateStepInTagList}
-        stepDelete={handleStepDelete}
+        updateStepList={props.updateStepList}
+        handleStepDelete={() => handleStepDelete(step)}
         stepMove={props.stepMove}
         component={component}
       />
-    );
+    )};
 
     Id++;
   })
@@ -143,20 +145,23 @@ export default function StepsInput(props) {
 
   let uniqueID = new Date().toISOString()
 
-  if (component == "viewcomponent") return <div className={style.addedstep}>{proceduteListRender}</div>
+  if (component === "viewcomponent") return <div className={style.addedstep}>{proceduteListRender}</div>
   return (
     <>
+      
       <div className={style.stepBox}>
         <textarea
-          className={style.stepText}
+          className={style.newStepText}
+
+          placeholder='"Vlozit dalsi postup"'
           rows="5"
           value={addedStep}
           onChange={handleChangeStep}
         />
         <div className={style.newStepIcon} datatooltip="Uložiť">
           <FontAwesomeIcon
-            icon={faFloppyDisk}
-            onClick={() => { props.addStepToTagList(uniqueID, addedStep); setAddedStep("") }}
+            icon={faBasketShopping}
+            onClick={() => { props.handleAddStep({id: uniqueID, step: addedStep, statusDelete: false},stepsList); setAddedStep("") }}
           ></FontAwesomeIcon>{" "}
         </div>
       </div>

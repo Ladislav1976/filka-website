@@ -12,7 +12,7 @@ function Tag(props) {
         icon={faXmark}
         onClick={props.onTagDelete}
       ></FontAwesomeIcon>{" "}
-      {props.tag}
+      {props.tag.foodTag}
     </div>
   );
 }
@@ -50,7 +50,7 @@ export default function TagInput(props) {
       <Tag
         className={style.tagname}
         tag={tag}
-        key={tag}
+        key={tag.id}
         onTagDelete={() => handleTagDelete(tag)}
       />
     );
@@ -64,7 +64,7 @@ export default function TagInput(props) {
           <input
             type="text"
             className={style.searchInput}
-            placeholder="Vyhľadať jedlo ..."
+            placeholder="Hľadať recept ..."
             value={searchedTag}
             onChange={handleChange}
             onKeyPress={handleKeyPress}

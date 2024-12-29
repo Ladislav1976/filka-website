@@ -1,8 +1,12 @@
+.foodItemBox{    height: 82vh;
+    width: 85vw;}
+
 .foodItemList {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    height: 82vh;
-    width: 85vw;
+
+
 }
+
 

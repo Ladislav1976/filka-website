@@ -16,8 +16,8 @@ export default  function SaveErrorMissing(props) {
      }
     return(   <>
     <div></div>
-   <div className={style.loadingBox}>
-    <div className={style.loadingIcon}>
+   <div className={style.box}>
+    <div className={style.icon}>
     <FontAwesomeIcon className={style.errorIcon} icon={faCircleExclamation}  id="inpFileIcon"/>
   </div>
             <h3>{messageRender }</h3>

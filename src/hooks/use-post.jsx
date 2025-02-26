@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query"
 import axios from 'axios';
-
+import Cookies from 'js-cookie';
 
 
 
@@ -199,5 +199,17 @@ export async function createPutIngredients(ingredients) {
             }).then(res => res)))
 }
 
+export async function createPostForgotPassword(email) {
+console.log("email :",email)
+    return (
+        (await axios
+            .post("http://127.0.0.1:8000/forgot-password/", email,
+                {    headers: {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/json",
+                                        "X-CSRFToken": Cookies.get("csrftoken")
+                                    }}
+            )))
 
+}
 

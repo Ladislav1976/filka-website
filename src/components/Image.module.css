@@ -1,8 +1,9 @@
 .imagebox {
+    position: relative;
     display: flex;
-    flex-direction: row;
+    /* flex-direction: row; */
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
     /* align-items: flex-start; */
     cursor: pointer;
 
@@ -12,12 +13,55 @@
 .foodimage {
     width: 150px;
     height: 150px;
-    margin: 3px;
+    margin: 20px;
     border-radius: 5px
 }
-.imagebox:nth-last-child(1){
-    /* width: 200px;
-    height: 200px; */
-    justify-self: flex-start;
-    /* align-self: flex-start ; */
+
+.imageContainer {
+    position: relative;
+    /* display: flex;
+    position: relative; */
+    /* justify-content: flex-start;
+    height: 34px;
+    align-items: center; */
+    padding: auto;
+    /* margin: 0px 0px 0px 40px; */
+    
 }
+/* .imageContainer:hover{cursor: pointer; &:hover{background-color: rgb(255, 246, 228);color: orange;}} */
+/* .foodDiv:nth-last-child(odd){
+    justify-content: flex-start; */
+    /* position: absolute;
+    bottom: 10px;
+    left:10px; */
+    /* border-color:  black ;
+    border: 5px solid; */
+/* } */
+/* .foodDiv:nth-last-child(even){
+    display: flex;
+    justify-content: flex-end; */
+    /* position: absolute;
+    bottom: 10px;
+    left:10px; */
+    /* border-color:  black ;
+    border: 5px solid;
+} */
+.checkboxInput{
+    display: none;
+}
+.deleteIcon {
+    position: absolute;
+    right: 0px;
+    top:25px;
+    color: var(--greydark);
+    cursor: pointer;&:hover{color: orange;}
+}
+.displayNone {
+display: none;
+}
+
+.unvisible{
+    /* position: absolute;
+    left: -9999px; */
+    visibility: hidden;
+  }

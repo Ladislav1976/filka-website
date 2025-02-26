@@ -6,7 +6,7 @@ export function Home() {
 
     return (
         <>
-            <header className={style.Appheader}>RECEPTY</header>
+            <header className={style.Appheader}>HOME</header>
             <div className={style.droplist}>
                 <div className={style.newFoodButton} >
                     {/* <div

@@ -1,6 +1,4 @@
-header{
-  background-color: aquamarine;
-}
+
 .App {
   display: flex;
   flex-direction: column;
@@ -9,7 +7,7 @@ header{
 }
 
 .Appheader {
-  position: sticky;
+
   width: 100%;
   top: 0px;
   background-color: rgb(63, 64, 73);
@@ -18,7 +16,6 @@ header{
   font-size: 32px;
   /* font-weight: bold; */
   color: bisque;
-
   font-style: italic;
  
 
@@ -137,6 +134,7 @@ header{
   /* .FoodItemList{width: 600px;} */
 
   .paginationBox {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -173,4 +171,10 @@ header{
 .navigationbar{
   display: flex;
     justify-content:center;
+}
+
+.unvisible{
+  /* position: absolute;
+  left: -9999px; */
+  /* visibility: hidden; */
 }

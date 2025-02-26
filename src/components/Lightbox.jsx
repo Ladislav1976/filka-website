@@ -4,15 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ImageDeleteError from "../reports/ImageDeleteError";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { ACTION_TYPES } from "../reducer/actionTypes";
+import { STATE_LIST } from "../reducer/reducer";
 
 export default function Lightbox(props) {
     const [isVisibleEdit, setIsVisibleEdit] = props.isVisibleEdit
     const [imagePosition, setImagePosition] = props.imagePosition
+    const dispatch = props.dispatch
     const component = props.component
     // console.log("isVisibleEdit: ", isVisibleEdit)
     // console.log("imagePosition 2: ", imagePosition)
 
     const [imageURLsList, setImageURLsList] = props.imageURLsList;
+    // const imageURLsList = props.imageURLsList;
     console.log("imageURLsList[imagePosition]: ", imageURLsList)
     // const [imageDispley, setImageDispley] = useState(props.imageDispley)
     // const imageDispley = props.imageDispley
@@ -45,6 +49,7 @@ export default function Lightbox(props) {
     //     setImagePosition(position)
     // }
 
+
     function imageDisplaydelete(newImageURLsList) {
         let i = imagePosition;
         while (newImageURLsList[i].statusDelete === true) {
@@ -57,18 +62,21 @@ export default function Lightbox(props) {
         return i
     }
     function makeImageDelete(image) {
-        console.log("Image :",image, "imageURLsList :",imageURLsList)
+        console.log("image :", image)
         let imageIDPosition = props.getPosition(image.id, imageURLsList);
         let newImageURLsList = imageURLsList.slice();
-        newImageURLsList.splice(imageIDPosition, 1, { ...image, statusDelete : true })
-        console.log("newImageURLsList :",newImageURLsList)
+        newImageURLsList.splice(imageIDPosition, 1, { ...image, statusDelete: true })
         setImageURLsList(newImageURLsList);
-        setImagePosition(imageDisplaydelete(newImageURLsList))
+        setImagePosition(imageDisplaydelete(newImageURLsList));
+        dispatch({
+            type: ACTION_TYPES.DELETE_IMAGE, payload:
+                { name: STATE_LIST.IMAGES, value: image },
+        });
 
     }
 
 
-      function imageDisplayChange(move, image) {
+    function imageDisplayChange(move, image) {
         let position = props.getPosition(image.id, imageURLsList)
         if (isVisibleEdit) {
             imageDisplayMove(move, image, position)
@@ -84,44 +92,29 @@ export default function Lightbox(props) {
         });
     }
     function imageDisplayMove(move, image, position) {
-        console.log("move", move)
-        console.log("position", position)
-        // console.log("image", image)
         const newPosition = position + move
-        console.log("newPosition", newPosition)
-        let newImageURLsList = imageURLsList.slice()
+        // let newImageURLsList = imageURLsList.slice()
         if (move > 0) {
-    
+
             if (position < (-1 + imageURLsList.length)) {
-                const  newImageURLsList = moveImage(imageURLsList,position,newPosition)
-                console.log("newImageURLsList :",newImageURLsList)
-                // newImageURLsList.splice(position, 1);
-                // newImageURLsList.splice(position + move, 0, image);
-    
+                const newImageURLsList = moveImage(imageURLsList, position, newPosition)
                 setImageURLsList(newImageURLsList)
                 setImagePosition(newPosition)
-                // setImagePosition((old)=> console.log("old",old))
+
             }
         }
         if (move < 0) {
             if (position > 0) {
-                const  newImageURLsList = moveImage(imageURLsList,position,newPosition)
-                console.log("newImageURLsList :",newImageURLsList)
-                // newImageURLsList.splice(position, 1);
-                // newImageURLsList.splice(position + move, 0, image);
+                const newImageURLsList = moveImage(imageURLsList, position, newPosition)
                 setImageURLsList(newImageURLsList)
                 setImagePosition(newPosition)
-                // setImageURLsList(newImageURLsList)
-                // setImagePosition(position + move )
+
             }
         }
-        console.log("imagePosition :",imagePosition,
-            "imageURLsList :",imageURLsList
-        )
     }
-    
+
     function imgageDisplayStep(move, position) {
-    
+
         if (move > 0) {
             if (position < (-1 + imageURLsList.length)) {
                 let newPosition = position + move
@@ -135,27 +128,13 @@ export default function Lightbox(props) {
             }
         }
     }
-    
-    //   function handlerImage(imageToAdd, currentImageID) {
-    //     let position = getPosition(imageToAdd.id, imageURLsList)
-    //     console.log("positionnnnn", position)
-    //     imageUploader(position)
-    //   }
 
-    //   function imageUploader(position) {
-    // console.log("position 2", position)
-    // setCurrentImageID(position)
-    // console.log("imageURLs[position].id :", imageURLs[position].id);
-
-    // console.log("INsite 10", currentImageID)
     let imageDispley = []
-    let newImageToDelete = []
+
 
     imageDispley.push(
         <>
-            <div className={style.imageblock}>
-                {/* <a className={style.prev} onClick={() => { imageDisplayChange(-1, imageURLsList[imagePosition]) }}>&#10094;</a>
-                <a className={style.next} onClick={() => { imageDisplayChange(+1, imageURLsList[imagePosition]) }} >&#10095;</a> */}
+            <div className={style.imageblock} key={imageURLsList[imagePosition].id}>
                 <TransformWrapper
                     defaultScale={1}
                     defaultPositionX={100}
@@ -164,18 +143,13 @@ export default function Lightbox(props) {
                     <TransformComponent>
                         <img
                             className={style.imagePreviewed}
-                            key={imageURLsList[imagePosition].id}
-                            // key={IDs}
+                            loading="lazy"
                             image={imageURLsList[imagePosition]}
                             src={imageURLsList[imagePosition].image}
-                            // onClick={() => console.log("haha")}
-                            // alt={imageURLsList[imagePosition].name}
-                        // id="imagePreviewed"
                         />
                     </TransformComponent>
                 </TransformWrapper>
             </div>
-            {/* </div> */}
         </>
 
     )
@@ -189,8 +163,7 @@ export default function Lightbox(props) {
 
     const newImageUrlsRender1 = [];
     const newImageUrlsRender2 = [];
-console.log(imageURLsList.map((a)=>a.id))
-console.log("newImageUrlsRender2 :",newImageUrlsRender2.map((a)=>a.id))
+
     if (imageURLsList.length < 1) { return; } else {
         let filterImageURLsList = imageURLsList.filter((e => e.statusDelete === false))
         let IDs = 0
@@ -198,19 +171,16 @@ console.log("newImageUrlsRender2 :",newImageUrlsRender2.map((a)=>a.id))
         filterImageURLsList.forEach((image, index) => {
             let pos = props.getPosition(image.id, filterImageURLsList)
             if (pos === imagePosition) { click() }
-            // console.log("imageURLs[index]", imageURLs[index], "currentImageID", currentImageID)
-            // console.log("position", pos, "imagePosition", imagePosition, pos === imagePosition ? "imagedisplayed" : "")
-            // console.log("clicker : ", clicker)
             if (clicker) {
                 newImageUrlsRender2.push(<>
                     <img
                         className={style.imageadded}
                         key={image.id}
                         src={image.image}
+                        loading="lazy"
                         onClick={() => props.handlerImage(image)}
                         alt="Image Preview"
                         id={pos === imagePosition ? style["imagedisplayed"] : style[""]}
-                    // id={style["imagedisplayed"]} 
                     />
                 </>
                 );
@@ -220,10 +190,11 @@ console.log("newImageUrlsRender2 :",newImageUrlsRender2.map((a)=>a.id))
                         className={style.imageadded}
                         key={image.id}
                         src={image.image}
+                        loading="lazy"
                         onClick={() => props.handlerImage(image)}
                         alt="Image Preview"
                         id={pos === imagePosition ? style["imagedisplayed"] : style[""]}
-                    // id={style["imagedisplayed"]} 
+
                     />
                 </>
                 );
@@ -236,16 +207,13 @@ console.log("newImageUrlsRender2 :",newImageUrlsRender2.map((a)=>a.id))
         <div className={style.mainbox} >
             {isVisibleEdit && <div className={style.saveIcon} datatooltip="Uložiť" onClick={makeImagesSave} ><FontAwesomeIcon icon={faFloppyDisk} /></div>}
             {isVisibleEdit && <div className={style.trashIcon} datatooltip="Zmazať fotografiu" onClick={() => makeImageDelete(imageURLsList[imagePosition])} ><FontAwesomeIcon icon={faTrash} /></div>}
-            {!isVisibleEdit && (component == "editcomponent"||component == "newcomponent"  )&& <div className={style.editIcon} datatooltip="Upraviť"><FontAwesomeIcon icon={faPenToSquare} onClick={() => setIsVisibleEdit(true)} /></div>}
+            {!isVisibleEdit && (component == "editcomponent" || component == "newcomponent") && <div className={style.editIcon} datatooltip="Upraviť"><FontAwesomeIcon icon={faPenToSquare} onClick={() => setIsVisibleEdit(true)} /></div>}
             <div className={style.headbox}>
                 <a className={style.prev} onClick={() => { imageDisplayChange(-1, imageURLsList[imagePosition]) }} >&#10094;</a>
                 <a className={style.next} onClick={() => { imageDisplayChange(+1, imageURLsList[imagePosition]) }} >&#10095;</a>
                 <div className={style.first_column} ></div>
                 <div className={style.second_column} >
-                    <div className={style.imagePreviewBox} datatooltip="Zavrieť"
-                        key={1}>
-                        <div className={style.imagedeleteerror}  > <ImageDeleteError visible={props.modalImageDeleteErrorFlag}
-                        ></ImageDeleteError></div>
+                    <div className={style.imagePreviewBox} datatooltip="Zavrieť" >
                         <div className={style.imageDispley}>{imageDispley}</div>
 
                     </div>

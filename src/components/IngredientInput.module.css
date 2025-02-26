@@ -7,7 +7,11 @@ body {
   --marginRight: 20px;
   --border: 1px solid #b8babb;
 }
-
+.ingredientBox{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
 .quantity,
 .unit {
   height: 30px;
@@ -15,23 +19,24 @@ body {
   border: 1px var(--orange) dotted;
   border-radius: 15px;
   background-color: whitesmoke;
+  margin-right: 5px;
 }
 
 .quantity {
   width: 50px;
   margin-left: var(--marginLeft);
-  margin-right: 5px;
+
 }
 
 .ingredientInput {
   background-color: whitesmoke;
-  width: 200px;
-  min-width: 120px;
+  /* width: 350px; */
+  min-width: 230px;
   height: 30px;
   border: 1px var(--orange) dotted;
   border-radius: 15px;
   /* font-size: 16px; */
-  margin-top: 5px;
+  /* margin-top: 5px; */
   margin-left: 5px;
 
 }
@@ -98,22 +103,23 @@ body {
 }
 .iconDelete,
 .iconAdd {
-
+position: relative;
   color: rgb(68, 68, 68);
   cursor: pointer;
   font-size: 1.2rem;
 
 }
 .iconDelete{  margin-left: var(--marginLeft);}
-.iconAdd{  margin-left: 5px;}
+.iconAdd{  
+  margin-left: 5px;
+  /* margin-right: var(--marginRight); */
+}
 
 .iconDelete:hover,
 .iconAdd:hover {
   color: orange;
 }
-.iconAdd{
-  margin-right: var(--marginRight);
-}
+
 
 .ingredientsList {
   margin-top: 10px;

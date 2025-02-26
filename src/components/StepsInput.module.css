@@ -42,8 +42,8 @@ body {
 
 }
 
-.stepText {
-  min-width: 645px;
+.stepTextView,.stepText {
+  width: 645px;
   max-width: 645px;
 }
 
@@ -78,7 +78,7 @@ body {
 .stepid {
   margin-left: var(--marginLeft);
 
-  width: 25px;
+ width: 25px;
   text-align: center;
 }
 

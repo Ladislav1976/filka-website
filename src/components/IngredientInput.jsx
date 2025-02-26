@@ -2,18 +2,21 @@ import { useState, useEffect } from "react";
 import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faTrash, faCartPlus,faBasketShopping } from "@fortawesome/free-solid-svg-icons";
-function IngrID(props) {
-  return (
-    <>
-      <div className="dd" id="dd"></div>
-    </>
-  );
-}
+import { faTrash, faCartPlus, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
+import { ACTION_TYPES } from "../reducer/actionTypes";
+import { STATE_LIST } from "../reducer/reducer";
+
+// function IngrID(props) {
+//   return (
+//     <>
+//       <div className="dd" id="dd" ></div>
+//     </>
+//   );
+// }
 function Quantity(props) {
   return (
     <>
-      <div className={style.quantityIngredient}>{props.quantity}</div>
+      <div className={style.quantityIngredient} >{props.quantity}</div>
     </>
   );
 }
@@ -21,43 +24,60 @@ function Quantity(props) {
 function Unit(props) {
   return (
     <>
-      <div className={style.unitIngredient}>{props.unit}</div>
+      <div className={style.unitIngredient} >{props.unit}</div>
     </>
   );
 }
 
 function Ingredient(props) {
-  return <div className={style.ingIngredient}>{props.ing}</div>;
+  return <div className={style.ingIngredient} >{props.ing}</div>;
 }
 function Ing(props) {
   const component = props.component
+  const dispatch = props.dispatch
 
   function handleIngredientMove(move, ing) {
     props.ingredientMove(move, ing)
   }
-  // console.log(props.ing.ingredient[0].ingredient)
+
   return (
     <>
-      <div id="c" className={style.ingredientContent}>
-        {(component === "editcomponent" ||component === "newcomponent") && <>
+      <div className={style.ingredientContent} >
+        {(component === "editcomponent" || component === "newcomponent") && <>
           <div className={style.upddownbox} >
             <FontAwesomeIcon
-            className={style.iconDelete}
-            icon={faTrash}
-            onClick={props.handleIngredientDelete}
-          ></FontAwesomeIcon>
+              className={style.iconDelete}
+              icon={faTrash}
+              onClick={() => {
+                dispatch({
+                  type: ACTION_TYPES.DELETE_INGREDIENTS, payload:
+                    { name: STATE_LIST.INGREDIENTS, value: props.ing },
+                }); props.handleIngredientDelete()
+              }}
+
+            ></FontAwesomeIcon>
           </div>
-          <div>
-            <div className={style.up} onClick={() => handleIngredientMove(-1, props.ing)} >&#10095;</div>
-            <div className={style.down} onClick={() => handleIngredientMove(1, props.ing)} >&#10094;</div>
+          <div >
+            <div className={style.up} onClick={() => {
+              dispatch({
+                type: ACTION_TYPES.MOVE_UP_INGREDIENTS, payload:
+                  { name: STATE_LIST.INGREDIENTS, value: props.ing },
+              }); handleIngredientMove(-1, props.ing)
+            }} >&#10095;</div>
+            <div className={style.down} onClick={() => {
+              dispatch({
+                type: ACTION_TYPES.MOVE_DOWN_INGREDIENTS, payload:
+                  { name: STATE_LIST.INGREDIENTS, value: props.ing },
+              }); handleIngredientMove(1, props.ing)
+            }} >&#10094;</div>
           </div>
         </>
         }
 
-        <IngrID id={props.ing.id} key={props.IDid} />
-        <Quantity quantity={props.ing.quantity} key={props.IDquantity} />
-        <Unit unit={props.ing.unit[0].unit} key={props.IDunit} />
-        <Ingredient ing={props.ing.ingredient[0].ingredient} key={props.IDingredient} />
+
+        <Quantity quantity={props.ing.quantity} />
+        <Unit unit={props.ing.unit[0].unit} />
+        <Ingredient ing={props.ing.ingredient[0].ingredient} />
 
       </div>
     </>
@@ -69,6 +89,7 @@ export default function IngredientInput(props) {
   const [addedUnit, setAddedUnit] = useState("ks");
   const [addedIngredient, setAddedIngredient] = useState("");
   const component = props.component
+  const dispatch = props.dispatch
   let ingredientsSet = props.ingredientsList;
 
 
@@ -76,12 +97,19 @@ export default function IngredientInput(props) {
   let uniqueID = new Date().toISOString()
 
   function handleAddIngredients() {
-    const VerNum = Number(addedQuantity)*1;
-    console.log("VerNum :",VerNum)
-    if (Number.isInteger(VerNum)) { props.addToIngredientList(uniqueID, addedQuantity, addedUnit, addedIngredient) } else {
-      props.handlerSetModalErrorMissing("Vložene množstvo nie je číslova")
+    const VerNum = Number(addedQuantity) * 1;
+    const isFloat = /\d+\.\d+/.test(
+      addedQuantity
+    );
+    if (Number.isInteger(VerNum) || isFloat) {
+      dispatch({
+        type: ACTION_TYPES.ADD_INGREDIENTS, payload:
+          { name: STATE_LIST.INGREDIENTS, value: { uniqueID, addedQuantity, addedUnit, addedIngredient } },
+      }); props.addToIngredientList(uniqueID, addedQuantity, addedUnit, addedIngredient)
+    } else {
+      props.handlerSetModalErrorMissing("Vložene množstvo nie je číslo")
     }
-  
+
     setAddedIngredient("");
     setAddedQuantity(1);
     setAddedUnit("ks");
@@ -106,44 +134,28 @@ export default function IngredientInput(props) {
 
   // let ingredientListArray = [...ingredientSetBulk];
   const ingredientListRender = [];
-  let ingreId = 100;
-  let IDid = 1;
-  let IDquantity = 10;
-  let IDunit = 100;
-  let IDingredient = 1000;
 
 
-
-  //   for(const [index,value] of ingredientSetBulk){
-      // console.log("ingredientsSet",ingredientsSet);
-  // }
-
-  for (const ingre of ingredientsSet) {
-    if(ingre.statusDelete ===false){
+  ingredientsSet.map((ingre, index) => {
+    if (ingre.statusDelete === false) {
 
 
-    ingredientListRender.push(
+      ingredientListRender.push(
 
-      <Ing
-        ing={ingre}
-        // ingID={ingre.ingID}
-        key={ingreId}
-        IDid={IDid}
-        IDquantity={IDquantity}
-        IDunit={IDunit}
-        IDingredient={IDingredient}
-        handleIngredientDelete={() => handleIngredientDelete(ingre)}
-        component={component}
-        ingredientMove={props.ingredientMove}
-      />
+        <Ing
+          ing={ingre}
+          key={ingre.id}
+          index={index}
+          handleIngredientDelete={() => handleIngredientDelete(ingre)}
+          component={component}
+          ingredientMove={props.ingredientMove}
+          dispatch={dispatch}
+        />
 
-    )};
-    ingreId++;
-    IDid++;
-    IDquantity++;
-    IDunit++;
-    IDingredient++;
-  }
+      )
+    };
+
+  })
 
   return (
     <>
@@ -152,9 +164,12 @@ export default function IngredientInput(props) {
           <input
             type="text"
             className={style.quantity}
+            ref={props.qtRef}
+            onKeyDown={props.qrKeyDown}
             id="tm"
             value={addedQuantity}
             onChange={handleChangeQuantity}
+
           />
           {/* <input
             type="text"
@@ -167,6 +182,9 @@ export default function IngredientInput(props) {
             className={style.unit}
             onChange={handleChangeUnit}
             value={addedUnit}
+            ref={props.unitRef}
+            onKeyDown={props.unitKeyDown}
+
           >
             <option>-</option>
             <option>ks</option>
@@ -188,7 +206,10 @@ export default function IngredientInput(props) {
             className={style.ingredientInput}
             placeholder="Napiste nazov suroviny"
             value={addedIngredient}
+            ref={props.ingrRef}
+            onKeyDown={props.ingKeyDown}
             onChange={handleChangeIngredient}
+
           />
           {/* <div
             className={style.ingredientButton}
@@ -196,11 +217,12 @@ export default function IngredientInput(props) {
           >
             Pridať
           </div> */}
-          <FontAwesomeIcon
-            className={style.iconAdd}
-            icon={faBasketShopping}
-            onClick={handleAddIngredients}
-          ></FontAwesomeIcon>
+          <div className={style.iconAdd}>
+            <FontAwesomeIcon
+              icon={faBasketShopping}
+              onClick={handleAddIngredients}
+            ></FontAwesomeIcon>
+          </div>
         </div>}
         <div className={style.ingredientsList}>
           {ingredientListRender}

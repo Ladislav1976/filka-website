@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {  faCheck } from "@fortawesome/free-solid-svg-icons";
 import style from "./Save.module.css";
 
 export default  function SaveSaved(props) {

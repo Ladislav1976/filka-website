@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
-import ImageDeleteError from "../reports/ImageDeleteError";
 import SaveError from "../reports/SaveError";
 import SaveErrorMissing from "../reports/SaveErrorMissing";
 import Lightbox from "./Lightbox";
@@ -18,32 +17,60 @@ import Modal from "../reports/Modal";
 import ModalPreview from "../reports/ModalPreview";
 import { useGet, useMutate } from "restful-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCircleArrowUp, faSpinner, faBackward, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
-import { useQueries, useQuery, useQueryClient, useMutation, } from "@tanstack/react-query"
-import { createPostStep, createPostUrl, createDeleteImagefood2, createPostUnit, createPostIngredient, createPostIngredients, createPostFoodTag, createPostFood, createPutFood, createPostImagefood, createDeleteImagefood, createPutImagefood, createDeleteIngredients, createPutIngredients } from "../hooks/use-post";
-// import { postStepMutation } from "../hooks/use-mutate";
-import PostStepMutation from "../hooks/use-mutate";
-import { getIngredients, getIngredient, getUnit, getFoodTags, queryFnFoodTagName, queryFnFoodTagId, queryFnFoodTagToId, queryFnFoodStep } from "../hooks/use-get";
-import { checkUrlImage } from "../hooks/checkUrlImage";
+import {  useQueryClient  } from "@tanstack/react-query"
 
+import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useQueriesItems } from "../hooks/Queries/useQueriesItems";
+
+import { usePostFood } from "../hooks/Mutations/usePostFood";
+import { usePostImage } from "../hooks/Mutations/usePostImage";
+import { usePutImage } from "../hooks/Mutations/usePutImage";
+import { useDeleteImage } from "../hooks/Mutations/useDeleteImage";
+import { usePostTag } from "../hooks/Mutations/usePostTag";
+import { usePostStep } from "../hooks/Mutations/usePostStep";
+import { usePutStep } from "../hooks/Mutations/usePutStep";
+import { useDeleteStep } from "../hooks/Mutations/useDeleteStep";
+import { usePostIngredients } from "../hooks/Mutations/usePostIngredients";
+import { useDeleteIngredients } from "../hooks/Mutations/useDeleteIngredients";
+import { usePutIngredients } from "../hooks/Mutations/usePutIngredients";
+import { usePostIngredient } from "../hooks/Mutations/usePostIngredient";
+import { usePostUnit } from "../hooks/Mutations/usePostUnit";
+import { usePostUrl } from "../hooks/Mutations/usePostUrl";
+import { useDeleteUrl } from "../hooks/Mutations/useDeleteUrl";
+import { usePutUrl } from "../hooks/Mutations/usePutUrl";
 
 
 function NewFood(props) {
-    const queryClient = useQueryClient();
+    const { auth } = useAuth();
+    const axiosPrivate = useAxiosPrivate()
+    const controller = new AbortController();
     const component = "newcomponent"
     const navigate = useNavigate()
+
+    const postFood = usePostFood(handlerSetModalSave)
+    // const deleteFood = useDeleteFood(setModalLoadingFlag, handlerSetModalError, handlerFoodDeleteConfirmed)
+    const postImage = usePostImage()
+    const postFoodTag = usePostTag(addTagTofoodTagSet, handlerSetModalError)
+    const postStep = usePostStep()
+    const postIngredients = usePostIngredients()
+    const postIngredient = usePostIngredient()
+    const postUnit = usePostUnit()
+    const postUrl = usePostUrl()
+
+
     const [name, setName] = useState("")
     const [ingredientsList, setIngredientsList] = useState([]);
     const [urlList, setUrlList] = useState([])
     const [stepsList, setStepsList] = useState([]);
     const [foodTagSet, setFoodTagSet] = useState(new Set());
-    const [date, setDate] = useState("")
-    const newdate = new Date(date).toLocaleDateString('sk-SK')
+
 
     const [images, setImages] = useState("");
     const [imageURLsList, setImageURLsList] = useState([])
-    const [imageFlag, setImageFlag] = useState(true);
+
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
@@ -52,165 +79,64 @@ function NewFood(props) {
     const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] = useState(false);
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
     const [isVisibleEdit, setIsVisibleEdit] = useState(false)
+    const [imgLoader, setImgLoader] = useState(0)
 
 
     const id = useParams()
     let ID = parseInt(id.id)
 
+    const nameRef = useRef()
+    const urlRef = useRef()
+    const stepRef = useRef()
+    const qtRef = useRef()
+    const unitRef = useRef()
+    const ingrRef = useRef()
 
-    const postFood = useMutation({
-        mutationFn: createPostFood,
-        onError: error => { console.log("Error Post Food :", error) },
-        onSuccess: (foodCreated, image) => {
-            console.log("Food :", foodCreated, "sucsesfully created!")
-            queryClient.setQueryData(["foods", foodCreated.data.id], foodCreated.data)
-            //queryClient.invalidateQueries(["foods", foodCreated.id], )  
-            handlerSetModalSave()
+
+    useEffect(() => {
+        nameRef.current?.focus();
+    }, [])
+    function nameKeyDown(event) {
+        if (event.key === "Enter") {
+            urlRef.current.focus();
         }
-    })
-
-    const postImagefood = useMutation({
-        mutationFn: createPostImagefood,
-        onError: error => { console.log("Error Post Imagefood :", error); },
-        onSuccess: (ImagefoodCreated) => {
-            console.log("Imagefood :", ImagefoodCreated, "sucsesfully created!")
-            queryClient.setQueryData(["imagefood", ImagefoodCreated.data.id], ImagefoodCreated.data)
-            queryClient.invalidateQueries(["imagefood"])
+    }
+    function urlKeyDown(event) {
+        if (event.key === "Enter") {
+            stepRef.current.focus();
         }
-    })
-
-    const dataFoodTags = useQuery({
-        queryKey: ["foodTags"],
-        queryFn: getFoodTags,
-    })
-
-    const postFoodTag = useMutation({
-        mutationFn: createPostFoodTag,
-        onError: error => { console.log("Error Post FoodTag :", error);handlerSetModalError()  },
-        onSuccess: (foodTagCreated) => {
-            console.log("FoodTag :", foodTagCreated, "sucsesfully created!")
-            queryClient.setQueryData(["foodTags"], (prev) => {
-                if (!prev) return undefined;
-                return [...prev,
-                    foodTagCreated]
-            })
-            queryClient.invalidateQueries(["foodTags"])
-            addTofoodTagList(foodTagCreated)
-
+    }
+    function stepKeyDown(event) {
+        if (event.key === "Enter") {
+            qtRef.current.focus();
         }
-    })
+    }
 
-
-    const postStep = useMutation({
-        mutationFn: createPostStep,
-        onError: error => { console.log("Error Post Step :", error) },
-        onSuccess: (stepCreated, old) => {
-            console.log("Step :", stepCreated, "sucsesfully created!", old)
-            queryClient.setQueryData(["steps", stepCreated.data.id], stepCreated.data
-            )
-            queryClient.invalidateQueries(["steps"])
+    function qrKeyDown(event) {
+        if (event.key === "Enter") {
+            unitRef.current.focus();
         }
-    })
+    }
 
-
-    const postIngredients = useMutation({
-        mutationFn: createPostIngredients,
-        onError: error => { console.log("Error Post Ingredients :", error) },
-        onSuccess: (ingredientsCreated) => {
-            console.log("Ingredients :", ingredientsCreated, "sucsesfully created!")
-            queryClient.setQueryData(["ingredients"], (prev) => {
-                console.log("prev", prev, ingredientsCreated)
-                if (!prev) return undefined;
-                return [...prev,
-                    ingredientsCreated]
-            })
-            queryClient.invalidateQueries(["ingredients"])
+    function unitKeyDown(event) {
+        if (event.key === "Enter") {
+            ingrRef.current.focus();
         }
-    })
-
-    // const { status: statusDeleteIngredients, error: errorDeleteIngredients, mutate: deleteIngredients, mutateAsync: deleteIngredietnsAsync } = useMutation({
-    //     // queryKey: (id) => [`/steps/${id}/`],
-    //     mutationFn: (ingredients) => createDeleteIngredients(ingredients),
-    //     onError: error => { console.log("Error Delete ingredients :", error) },
-    //     onSuccess: (id, ingredients) => {
-    //         console.log("Ingredients :", ingredients, "sucsesfully deleted!")
-    //         // queryClient.removeQueries({ queryKey: [`/steps/${id.id}/`], exact: true })//, oldPost => [...oldPost, newPost])
-    //         // queryClient.invalidateQueries([`/steps/${id.id}/`], id)//, oldPost => [...oldPost, newPost])
-    //         // removeFromStepsList(step)
-    //     }
-    // })
-
-    // const { status: statusPutIngredients, error: errorPutIngredients, mutate: putIngredients, mutateAsync: putIngredietnsAsync } = useMutation({
-    //     // queryKey: (id) => [`/steps/${id}/`],
-    //     mutationFn: createPutIngredients,
-    //     onError: error => { console.log("Error Put Ingredients :", error) },
-    //     onSuccess: (IngredientsUpdated) => {
-    //         console.log("Ingredients :", IngredientsUpdated, "sucsesfully updated!",)
-    //         queryClient.invalidateQueries([`/ingredients/${IngredientsUpdated.id}/`], IngredientsUpdated)
-    //     }
-    // })
-
-    const dataIngredients = useQuery({
-        queryKey: ["ingredients"],
-        queryFn: getIngredients,
-    })
-
-    const dataIngredient = useQuery({
-        queryKey: ["ingredient"],
-        queryFn: getIngredient,
-    })
-
-
-    const postIngredient = useMutation({
-        mutationFn: createPostIngredient,
-        onError: error => { console.log("Error Post Ingredient :", error) },
-        onSuccess: (ingredientCreated, ingredient) => {
-            console.log("Ingredient :", ingredientCreated, "sucsesfully created!")
-            queryClient.setQueryData(["ingredient"], (prev) => {
-                if (!prev) return undefined;
-                return [...prev.filter(p => p.id != ingredientCreated.data.id),
-                ingredientCreated.data]
-            })
-            queryClient.invalidateQueries(["ingredient"])
-
+    }
+    function ingKeyDown(event){
+        if(event.key ==="Enter"){
+          nameRef.current.focus();
         }
-    })
+      }
 
-    const dataUnit = useQuery({
-        queryKey: ["unit"],
-        queryFn: getUnit,
-    })
-
-    const postUnit = useMutation({
-        mutationFn: createPostUnit,
-        onError: error => { console.log("Error Post Unit :", error) },
-        onSuccess: (unitCreated, unit) => {
-            console.log("Unit :", unitCreated, "sucsesfully created!")
-            queryClient.setQueryData(["unit"], (prev) => {
-                if (!prev) return undefined;
-                return [...prev.filter(p => p.id != unitCreated.data.id),
-                unitCreated.data]
-            })
-            queryClient.invalidateQueries(["unit"])
-        }
-    })
-
-    const postUrl = useMutation({
-        mutationFn: createPostUrl,
-        onError: error => { console.log("Error Post URL :", error) },
-        onSuccess: (urlCreated, old) => {
-            console.log("URL :", urlCreated, "sucsesfully created!", old)
-            queryClient.setQueryData(["url", urlCreated.data.id], urlCreated.data
-            )
-            queryClient.invalidateQueries(["url"])
-        }
-    })
+    const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
 
 
-    const backEndFoodTags = dataFoodTags.data ?? [];
-    const backEndIngredients = dataIngredients.data ?? [];
-    const backEndIngredient = dataIngredient.data ?? [];
-    const backEndUnit = dataUnit.data ?? [];
+
+    const backEndFoodTags = tagsQf.data ?? [];
+    // const backEndIngredients = ingredientsQf.data ?? [];
+    const backEndIngredient = ingredientQf.data ?? [];
+    const backEndUnit = unitsQf.data ?? [];
 
     function handleFoodSave() {
 
@@ -261,6 +187,7 @@ function NewFood(props) {
                 name: name,
                 date: new Date().toISOString().substring(0, 10),
                 foodTags: ([...foodTagSet]).map((tag) => tag.id),
+                user: [auth?.userRes?.id],
             })
         }
         ;
@@ -272,7 +199,7 @@ function NewFood(props) {
 
 
     function foodTagListCheck(tag) {
-        let filter = Array.from(foodTagSet).filter((f) => f.foodTag == tag)
+        let filter = Array.from(foodTagSet).filter((f) => f.foodTag === tag)
         if (filter != "") {
             removeFromFoodTagList(filter[0]);
         } else {
@@ -282,20 +209,15 @@ function NewFood(props) {
 
 
     function ingredientsCheckPost(ing) {
-        // console.log("unitFilter", "Unit", ing.units[0].unit, "Ingredient :", ing.ingredientName[0])
 
-
-        let unitFilter = backEndUnit.find((element) => (element.unit == ing.units[0].unit))
-        // console.log("unitFilter", unitFilter)
-
+        let unitFilter = unitsQf?.data?.find((element) => (element.unit == ing.units[0].unit))
         if (unitFilter == null) {
             return postUnit.mutateAsync({ unit: ing.units[0].unit })
                 .then((unit) => {
-                    let ingredientFilter = backEndIngredient.find((element) => element.ingredient == ing.ingredientName[0].ingredient)
+                    let ingredientFilter = ingredientQf?.data?.find((element) => element.ingredient == ing.ingredientName[0].ingredient)
                     if (ingredientFilter == null) {
                         return postIngredient.mutateAsync({ ingredient: ing.ingredientName[0].ingredient })
                             .then((ingre) => {
-                                console.log("POST unit and ingredient do not exist", { unit: [unit.data.id], quantity: ing.quantity, ingredientName: [ingre.data.id], position: ing.position })
                                 return postIngredients.mutateAsync({
                                     units: [unit.data.id],
                                     quantity: ing.quantity,
@@ -308,7 +230,7 @@ function NewFood(props) {
                             })
                     }
                     else {
-                        console.log("POST unit not exist but ingredient exist")
+
                         return (postIngredients.mutateAsync({
                             units: [unit.data.id],
                             quantity: ing.quantity,
@@ -323,7 +245,7 @@ function NewFood(props) {
                 })
         }
         else {
-            let ingredientFilter = backEndIngredient.find((element) => element.ingredient == ing.ingredientName[0].ingredient)
+            let ingredientFilter = ingredientQf?.data?.find((element) => element.ingredient == ing.ingredientName[0].ingredient)
             if (ingredientFilter == null) {
                 return postIngredient.mutateAsync({ ingredient: ing.ingredientName[0].ingredient })
                     .then((ingre) => {
@@ -352,7 +274,7 @@ function NewFood(props) {
         }
     }
 
-    function addTofoodTagList(foodTag) {
+    function addTagTofoodTagSet(foodTag) {
         let newFoodTagSet = new Set(foodTagSet);
         newFoodTagSet.add(foodTag);
         setFoodTagSet(newFoodTagSet);
@@ -361,13 +283,13 @@ function NewFood(props) {
 
     function addToIngredientList(id, quantity, unit, ing) {
         if (ing === "") {
-          return;
+            return;
         }
         let newIngredientsList = ingredientsList.slice()
         newIngredientsList.push({ id: id, quantity: quantity, unit: [{ id: id, unit: unit }], ingredient: [{ id: id, ingredient: ing }], statusDelete: false }
         );
         setIngredientsList(newIngredientsList);
-      }
+    }
 
     function makeIngredientsDelete(ingre) {
         setIngredientsList(makeItemDelete(ingre, ingredientsList))
@@ -416,14 +338,14 @@ function NewFood(props) {
     function handleAddUrl(url, urlList) {
         if (url.url == "") return
         setUrlList(addItem(url, urlList))
-      }
+    }
 
 
-      function handleAddStep(step, stepsList) {
+    function handleAddStep(step, stepsList) {
         if (step.step == "") return
         setStepsList(addItem(step, stepsList))
-      }
-    
+    }
+
 
     function addItem(itemObj, array) {
         let newArray = array.slice();
@@ -431,22 +353,12 @@ function NewFood(props) {
         return newArray;
     }
 
-    // function removeFromStepsList(step) {
-    //     let stepsSetPosition = getPosition(step.id, stepsList)
-    //     let stepsSetIDPosition = getPosition(step.id, stepsListID)
-    //     let newStepsSet = stepsList.slice();
-    //     let newStepsIDSet = stepsListID.slice();
-    //     newStepsSet.splice(stepsSetPosition, 1);
-    //     newStepsIDSet.splice(stepsSetIDPosition, 1);
-    //     setStepsListID(newStepsIDSet);
-    //     setStepsList(newStepsSet);
-    // }
 
     function handleAddToFoodTagList(foodTag) {
-        let filterFoodTag = dataFoodTags.data.filter((element) => element.foodTag == foodTag);
+        let filterFoodTag = tagsQf?.data?.filter((element) => element.foodTag == foodTag);
         if (filterFoodTag == "") {
             postFoodTag.mutate({ foodTag: foodTag })
-        } else { addTofoodTagList(filterFoodTag[0]) }
+        } else { addTagTofoodTagSet(filterFoodTag[0]) }
     }
 
     function removeFromFoodTagList(tag) {
@@ -552,7 +464,7 @@ function NewFood(props) {
                 // }
                 if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
                 else {
-                  return ingredientsCheckPost(ingreVar)
+                    return ingredientsCheckPost(ingreVar)
                 }
             })
         ).then(res => {
@@ -600,8 +512,8 @@ function NewFood(props) {
                 //     return deleteImagefood.mutateAsync(formdataPut)
                 // }
                 if (!Number.isInteger(res.id) && res.statusDelete === false) {
-                    return postImagefood.mutateAsync({ formdata })
-                  }
+                    return postImage.mutateAsync({ formdata })
+                }
                 if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
                 // if (Number.isInteger(res.id)) {
                 //     return putImagefood.mutateAsync(formdataPut)
@@ -692,7 +604,7 @@ function NewFood(props) {
     function handlerSetModalSave() {
         setModalSavedFlag(true)
         setTimeout(() => {
-            setModalSavedFlag(false); navigate(`/recepty/?page_size=${2}`);
+            setModalSavedFlag(false); navigate(`/recepty/?page_size=${20}`);
         }, 1000)
     }
     function handlerSetModalError() {
@@ -736,6 +648,12 @@ function NewFood(props) {
         setImagePosition(imagePosition)
     }
 
+    function makeImageDelete(image) {
+        let imageIDPosition = getPosition(image.id, imageURLsList);
+        let newImageURLsList = imageURLsList.slice();
+        newImageURLsList.splice(imageIDPosition, 1, { ...image, statusDelete: true })
+        setImageURLsList(newImageURLsList);
+    }
     // images for Posting
     useEffect(() => {
         let newImageUrlsPost = imageURLsList.slice()
@@ -763,7 +681,7 @@ function NewFood(props) {
     }
 
 
-    if (dataFoodTags.isLoading || dataIngredients.isLoading || dataIngredient.isLoading || dataUnit.isLoading)
+    if (tagsQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading)
         return <label htmlFor="inpFile">
             <div className={style.loadingContainer}>
                 <FontAwesomeIcon
@@ -783,18 +701,28 @@ function NewFood(props) {
     return (<>
 
         <div className={style.main}>
-            <div className={style.header}>RECEPT</div>
             <div className={style.boxcontainer}>
-        <div className={style.messagebox}>
-          {modalMessage}</div>
-            <div className={style.buttonBox} >
-                <div className={style.foodButton} onClick={handleFoodSave}>
-                    ULOŽIŤ
+                <div className={style.messagebox}>
+                    {modalMessage}</div>
+                <div className={style.buttonBox} >
+                    <div className={style.foodButton} id={style.foodButtonSave}
+                    // datatooltip="Uloziť"
+                    >
+                        <FontAwesomeIcon
+                            onClick={handleFoodSave}
+                            icon={faCartPlus}
+
+                        />
+                    </div>
+                    <div className={style.foodButton}
+                    // datatooltip="Spať"
+                    >
+                        <FontAwesomeIcon
+                            onClick={handlerFoodSaveClose}
+                            icon={faBackward}
+                        />
+                    </div>
                 </div>
-                <div className={style.foodButton} onClick={handlerFoodSaveClose}>
-                    ZRUŠIŤ
-                </div>
-            </div>
             </div>
             <div className={style.fooodbox} id="fooodbox">
                 <LeftPanelFilter
@@ -812,45 +740,46 @@ function NewFood(props) {
                         <IngredientInput
                             addToIngredientList={addToIngredientList}
                             ingredientsList={ingredientsList}
-
                             handlerSetModalErrorMissing={handlerSetModalErrorMissing}
                             ingredientMove={ingredientMove}
                             removeFromIngredientList={makeIngredientsDelete}
                             component={component}
+                            qtRef={qtRef}
+                            unitRef={unitRef}
+                            ingrRef={ingrRef}
+                            qrKeyDown={qrKeyDown}
+                            unitKeyDown={unitKeyDown}
+                            ingKeyDown={ingKeyDown}
                         ></IngredientInput>
                     </div>
-                    {/* <div className={style.images} id="imagePreview">
-                        {imagePreview}
-                        <span className={style.imagePreview__defaultText}>
-                        Image Preview
-                        </span>
-                     </div> */}
+
 
                     <input
-                        // className={style.imageinput}
+
                         className={style.imageinput}
                         type="file"
                         multiple
                         accept="image/jpeg,image/png,image/gif"
                         id="inpFile"
-                        // id="image-input"
                         onChange={onImageChange}
                         display="none"
                     />
-                    <label htmlFor="inpFile" className={style.imageIcon}
-                        datatooltip="Pridať fotografiu">
-                        <FontAwesomeIcon
+                    <div className={style.imageIconBox}>
+                        <label htmlFor="inpFile" className={style.imageIcon}
+                            datatooltip="Pridať fotografiu">
+                            <FontAwesomeIcon
 
-                            icon={faCircleArrowUp}
-                            // onClick={props.onTagDelete}
-                            id="inpFileIcon"
-                        ></FontAwesomeIcon>
-                    </label>
+                                icon={faCircleArrowUp}
+                                // onClick={props.onTagDelete}
+                                id="inpFileIcon"
+                            ></FontAwesomeIcon>
+                        </label>
+                    </div>
                     {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
                         No Files chosen
                     </p>}
                     <div className={style.imagebox}>
-                        <Image visible={imageFlag} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage}></Image>
+                        <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
                     </div>
                 </div>
                 <div className={style.thirdColumn}>
@@ -864,6 +793,8 @@ function NewFood(props) {
                         deleteUrl={makeUrlToDelete}
                         updateUrlList={updateUrlList}
                         handleAddUrl={handleAddUrl}
+                        urlRef={urlRef}
+                        urlKeyDown={urlKeyDown}
                     >
 
                     </UrlInput>
@@ -875,27 +806,30 @@ function NewFood(props) {
                         handleAddStep={handleAddStep}
                         updateStepList={updateStepList}
                         stepsList={stepsList}
-
                         deleteStep={makeSteptoDelete}
                         component={component}
+                        stepRef={stepRef}
+                        stepKeyDown={stepKeyDown}
                     ></StepsInput>
 
                 </div>
-                {/* <div className={style.name}>
+                <div className={style.fooodnamebox} >
+                    <div className={style.name}>
                         Nazov:
-                    </div> */}
+                    </div>
 
-                <input
+                    <input
                         className={style.foodname}
+                        ref={nameRef}
                         value={name}
+                        onKeyDown={nameKeyDown}
                         type="text"
                         maxLength="25"
                         onChange={handleNameChange}
-                    // onClick={handleAddToNameTagList}
                     />
-                    <div className={style.date}>
-                        {/* Vytvoreny:{newdate} */}
-                    </div>
+                </div>
+                <div className={style.date}>
+                </div>
             </div>
 
         </div>

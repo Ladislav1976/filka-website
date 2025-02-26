@@ -19,11 +19,17 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { defaultQueryFn, getFoodsPageFn, searchFoodsPageFn, getFoodTags, getImageFood } from "../hooks/use-get";
-
+import { defaultQueryFn, getFoodsPageFn, searchFoodsPageFn, getData, getImage, getFoodTags, getImageFood } from "../hooks/use-get";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useFoods } from "../hooks/Queries/useFoods";
+import { useImagesList } from "../hooks/Queries/useImagesList";
+import { useTags } from "../hooks/Queries/useTags";
+import { usePostTag } from "../hooks/Mutations/usePostTag";
 
 
 function Foods(props) {
+    const axiosPrivate = useAxiosPrivate()
+    const controller = new AbortController();
     const queryClient = useQueryClient();
     const component = "foodscomponent"
     const navigate = useNavigate();
@@ -35,222 +41,59 @@ function Foods(props) {
         setLoc(location)
     }, [location])
 
-    const current_time = new Date().toDateString()
-    // const currentDate = new Date().toLocaleDateString('sk-SK')
-    // let current_time = new Date().toLocaleDateString("en-ca", {
-    //   year: "numeric",
-    //   month: "numeric",
-    //   day: "numeric",
-    //   hour: "numeric",
-    //   minute: "numeric",
-    // });
+    const foodsQf = useFoods(location, page)
+    const imagesQf = useImagesList(foodsQf)
+    const tagsQf = useTags()
+    const postFoodTag = usePostTag(addToTagList,handlerSetModalError)
 
-    const [getTodo, setTodo] = useState("");
-
-    var apiKey = "6de9bfb3c9bb1f5bb3f71b73e0e0dc0d";
-    var city = "Bratislava";
-    let clock = 0;
-    //fetchSelectedData()
-
-
-
-
-
-    function getDate() {
-        const today = new Date();
-        const month = today.getMonth() + 1;
-        const year = today.getFullYear();
-        const date = today.getDate();
-        const hour = today.getHours();
-        const minute = today.getMinutes();
-        const second = today.getSeconds();
-
-        return `${month}/${date}/${year},  ${hour}:${minute}/${second}`;
-    }
-
-    const [currentDate, setCurrentDate] = useState(getDate());
-
-    const [filterTagSet, setFilterTagSet] = useState(new Set([]));
-      const [modalErrorFlag, setModalErrorFlag] = useState(false);
-
-    const { status: statusFoods, data: dataFoods, isFetching: isFetchingFoods, isLoading: loadingFoods, error: errorFoods, isError: isErrorFoods, isPreviousData: isPreviousDataFoods } = useQuery({
-        queryKey: ["foods"],
-        queryFn: () => {
-            if (location?.search != null) {
-                return searchFoodsPageFn(location.search)
-                // if (page > 1) { return searchFoodsPageFn(location.search, page) }
-                // if (page < 1) { return searchFoodsPageFn(location.search) }
-            } else { return getFoodsPageFn(page) }
-        }
-
-        // keepPreviousData: true
-    })
-
-    // const {  data} = useQueries({
-    //     queryKey: ["/foods/", location],
-    //     queryFn: () => {
-    //         if (location?.search != null) {
-    //             return searchFoodsPageFn(location.search)
-    //             // if (page > 1) { return searchFoodsPageFn(location.search, page) }
-    //             // if (page < 1) { return searchFoodsPageFn(location.search) }
-    //         } else { return getFoodsPageFn(page) }
-    //     },
-    //     onSuccess:()=>console.log("YES")
-
-    //     // keepPreviousData: true
-    // })
-
-
-
-
-
-    const { status: statusFoodTags, data: dataFoodTags, isFetching: isFetchingFoodTags, error: errorFoodTags, isLoading: loadingFoodTags, isError: isErrorFoodTags } = useQuery({
-        queryKey: ["foodTags"],
-        // enabled: dataFoods?.results != null,
-        queryFn: getFoodTags,
-    })
-
-    const postFoodTag = useMutation({
-        mutationFn: createPostFoodTag,
-        onError: error => { console.log("Error Post FoodTag :", error);handlerSetModalError() },
-        onSuccess: (foodTagCreated, oldFoodTag) => {
-            console.log("FoodTag :", foodTagCreated, "sucsesfully created!")
-            queryClient.setQueryData(["foodTags"], (prev) => 
-                // if (!prev) return undefined;
-            // console.log("prev :",prev),
-           { if (!prev) return undefined;
-            return [...prev,foodTagCreated] })
-            queryClient.invalidateQueries(["foodTags"])//"/steps/",newPost.id],newPost)
-            addToTagList(foodTagCreated)
-
-        }
-    })
-
-    const { status: statusImagefood, data: dataImagefood, isFetching: isFetchingImagefood, error: errorImagefood, isLoading: loadingImagefood, isError: isErrorImagefood, } = useQuery({
-        queryKey: ["imagefood"],
-        // enabled: dataFoods?.results != null,
-        queryFn: getImageFood,
-    })
-
-    // const results = useQueries({
-
-    //     queryKey: ["/foods/", location],
-    //     queryFn: () => {
-    //         if (location?.search != null) {
-    //             return searchFoodsPageFn(location.search)
-    //             // if (page > 1) { return searchFoodsPageFn(location.search, page) }
-    //             // if (page < 1) { return searchFoodsPageFn(location.search) }
-    //         } else { return getFoodsPageFn(page) }
-    //     },
-    //     combine: 
-
-    // onSuccess:foods=>foods.map(food=>)
-    // enabled: !!dataFoods && !!dataFoodTags,
-    // queries: () => {
-    //     if (dataFoods && dataFoodTags) {
-    //         dataFoods.map((data) => {
-    //             return {
-    //                 id: data.id,
-    //                 name: data.name,
-    //                 image: imageFoodListDownl(data),
-    //                 foodTags: itemListDownl(data.foodTags, dataFoodTags),
-    //             }
-    //         })
-    //     }
-    // }
-    // })
-    // console.log("results", results)
-
-    function imageFoodListDownl(data) {
-
-        const newBackEndImagefood = dataImagefood.filter((e) =>
-            e.food === data.id);
-        //sorting of imageFoodList from 1 to 999
-        newBackEndImagefood.sort(function (a, b) {
-            return a.imgposition - b.imgposition;
-        });
-
-        return newBackEndImagefood
-    }
-    // const [foodID, setFoodID] = useState()
-    // const [name, setName] = useState("")
-    // const [foodTagSet, setFoodTagSet] = useState(new Set());
-    // const [imageURLs, setImageURLs] = useState([])
-    // const [imageURLsList, setImageURLsList] = useState([])
-    // const [imageURLsPost, setImageURLsPost] = useState([])
-
-    let backEndFoodFull = dataFoods ?? [];
-    let backEndFoodTags = dataFoodTags ?? [];
-    let backEndImagefood = dataImagefood ?? [];
-
-
-    let backEndFoods = backEndFoodFull?.results
-
-    let foodTagsContainer = backEndFoodFull?.tags_list
-
-
-    const [foods, setFoods] = useState([]);
-    // const [ foodTagsContainer , setFoodTagsContainer]= useState([]);
-    // let foodTagsContainer = []
-    useEffect(() => {
-        let food = ""
-        if (statusFoods === 'success') {
-            if (statusImagefood === 'success') {
-                if (statusFoodTags === 'success') {
-                    setFoods(handleFood())
-                    // setFoodTagsContainer(itemListDownl(backEndFoods.foodTags, backEndFoodTags, "no"))
-                } else {
-                }
-            } else {
-            }
-        } else {
-        }
-    }, [dataFoods, dataFoodTags, dataImagefood])//statusFoods,statusImagefood, statusFoodTags, 
-
-
-    function itemListDownl(backEnd, backEndItems, sorting) {
-
-        let returnList = []
-        backEnd?.map((f) => {
-            backEndItems.map((e) => {
-                if (e.id === f) {
-                    returnList.push(e);
+    function handler(a, b) {
+        let list = []
+        a?.map((f) => {
+            b?.map((e) => {
+                if (e.id == f) {
+                    list.push(e);
                 }
             });
         });
-        //sorting of items from 1 to 999
-        if (sorting) {
-            returnList.sort(function (a, b) {
-                return a.position - b.position;
-            }
-            )
-        };
-        return returnList
+        return list
     }
 
 
-    function handleFood() {
+    const [foods, setFoods] = useState([])
+    const [imgLoader,setImgLoader] = useState(0)
 
-        let foodsList = []
 
-        backEndFoods?.forEach((data) => {
-            foodsList.push({
-                id: data.id,
-                name: data.name,
-                images: itemListDownl(data.images, backEndImagefood, "yes"),
-                foodTags: itemListDownl(data.foodTags, backEndFoodTags, "no"),
+    useEffect(() => {
+
+        let foods = []
+        if (!foodsQf.isLoading && !imagesQf.isLoading && !tagsQf.isLoading) {
+            foodsQf?.data?.results?.map((data) => {
+
+                foods.push({
+                    id: data.id,
+                    name: data.name,
+                    images: handler([data.images[0]], imagesQf.data),
+                    foodTags: handler(data.foodTags, tagsQf.data),
+                 
+                })
             })
-        })
-        return foodsList
+            setFoods(foods)
+            setImgLoader(foods.length)
+        }
+    }, [foodsQf.data, imagesQf.data, tagsQf.data])
 
-    }
+    const [filterTagSet, setFilterTagSet] = useState(new Set([]));
+    const [modalErrorFlag, setModalErrorFlag] = useState(false);
 
-    const [modalNewFlag, setModalNewFlag] = useState(false);
-    const [modalEditFlag, setModalEditFlag] = useState(false);
 
-    const [foodItemEditRender, setFoodItemEditRender] = ("")
 
-    // let filterTagListArray = [...filterTagSet];
+
+    let backEndFoodFull = foodsQf.data ?? [];
+    let backEndFoodTags = tagsQf.data ?? [];
+    let backEndFoods = foodsQf?.data?.results ?? [];
+    let foodTagsContainer = foodsQf?.data?.tags_list ?? [];
+
+
 
     function handleSetPage(page) {
         setPage(page)
@@ -269,7 +112,7 @@ function Foods(props) {
                     console.log("match", match)
                     if (page > 1) {
                         navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${match[3]}${match[4]}${page}${match[6]}${match[7]}${pageSize}`)}`)
-                        // navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${page}${match[4]}${match[5]}${pageSize}`)}`)
+     
                     }
                     else {
                         navigate(`/recepty/${matchColplete[0].replace(match[0], `${match[1]}${match[2]}${match[6]}${match[7]}${pageSize}`)}`)
@@ -294,12 +137,12 @@ function Foods(props) {
     }
 
     function addToTagList(tag) {
-        console.log("addToTagList(tag)",(tag))
+        console.log("addToTagList(tag)", (tag))
         setPage(1)
         if (tag.foodTag === "") {
             return;
         } else if (Array.from(filterTagSet).map(res => res.foodTag.toLowerCase()).includes(tag.foodTag.toLowerCase())) {
-            console.log("include",(tag));return;
+            console.log("include", (tag)); return;
         }
 
         let newTagList = new Set(filterTagSet);
@@ -319,6 +162,7 @@ function Foods(props) {
         setFilterTagSet(newTagList);
     }
 
+ 
     function searchAddToTagList(tag) {
         console.log("tag", tag)
         let search = (`?search=${tag}`)
@@ -343,20 +187,13 @@ function Foods(props) {
 
     }
 
-    function setModalNewFlagTrue(flag) {
-        setModalNewFlag(true);
-    }
-
-    function setModalEditFlagTrue(flag) {
-        setModalEditFlag(true);
-    }
 
     function handlerSetModalError() {
         setModalErrorFlag(true)
         setTimeout(() => {
-          setModalErrorFlag(false)
+            setModalErrorFlag(false)
         }, 3000)
-      }
+    }
 
     function tagSearchInArray(array, label) {
         let response;
@@ -369,12 +206,10 @@ function Foods(props) {
     }
 
     function dataFoodTagsCheck(foodTag) {
-        const response = tagSearchInArray(dataFoodTags,foodTag)
-        // let filterFoodTag = dataFoodTags.filter((element) => element.foodTag == foodTag);
-        console.log("response  :",response)
-        if (response === undefined) {  console.log("filterFoodTag == []  :")
+        const response = tagSearchInArray(backEndFoodTags, foodTag)
+        if (response === undefined) {
             postFoodTag.mutate({ foodTag: foodTag })
-        } else {console.log("filterFoodTag !== []  :",response)
+        } else {
             addToTagList(response)
         }
     }
@@ -400,23 +235,22 @@ function Foods(props) {
     }, [pageSize])
 
     const pagesArray = Array(backEndFoodFull.TotalNumOfPages).fill().map((_, index) => index + 1)
-    const nav = (<>
-
-    </>)
-
-    if (loadingFoods || loadingFoodTags || loadingImagefood)
-        return <label htmlFor="inpFile">
-            <div className={style.loadingContainer}>
-                <FontAwesomeIcon
-                    className={style.loadingIcon}
-                    icon={faSpinner}
-                    id="inpFileIcon"
-                    spin ></FontAwesomeIcon>
-            </div>
-        </label>//<h1>Loading...</h1> 
-    if (isErrorFoods) return <h1>foods: {JSON.stringify(errorFoods.message)}</h1>
-    if (isErrorImagefood) return <h1>Image: {JSON.stringify(errorImagefood.message)}</h1>
-    if (isErrorFoodTags) return <h1>TAGS: {JSON.stringify(errorFoodTags.message)}</h1>
+   
+    // if (foodsQf.isLoading || imagesQf.isLoading || tagsQf.isLoading)
+    //     // if (dataFoods.isLoading || dataFoodTags.isLoading || dataImagefood.isLoading)
+    //     return <label htmlFor="inpFile">
+    //         <div className={style.loadingContainer}>
+    //             <FontAwesomeIcon
+    //                 className={style.loadingIcon}
+    //                 icon={faSpinner}
+    //                 id="inpFileIcon"
+    //                 spin ></FontAwesomeIcon>
+    //         </div>
+    //     </label>
+    //<h1>Loading...</h1> 
+    // if (isErrorFoods) return <h1>foods: {JSON.stringify(errorFoods.message)}</h1>
+    // if (isErrorImagefood) return <h1>Image: {JSON.stringify(errorImagefood.message)}</h1>
+    // if (isErrorFoodTags) return <h1>TAGS: {JSON.stringify(errorFoodTags.message)}</h1>
 
 
     // const pagesArray = Array(rawFoods.TotalNumOfPages).fill().map((_, index) => index + 1)
@@ -431,9 +265,17 @@ function Foods(props) {
     //   </nav>)
 
     return (
-        <>
-            <header className={style.Appheader}>RECEPTY</header>
-            <div className={style.droplist}>
+        <> 
+        {(foodsQf.isLoading || imagesQf.isLoading || tagsQf.isLoading) ? (<label htmlFor="inpFile">
+            <div className={style.loadingContainer}>
+                <FontAwesomeIcon
+                    className={style.loadingIcon}
+                    icon={faSpinner}
+                    id="inpFileIcon"
+                    spin ></FontAwesomeIcon>
+            </div>
+        </label>) 
+        : (<> <div className={style.droplist}>
                 {/* <div>{current_time}</div> */}
                 <main className={style.Appmain}>
                     <TagInput
@@ -446,7 +288,7 @@ function Foods(props) {
                     NOVY RECEPT
                 </div>
             </div>
-            <div className={style.main}>
+            <div className={ style.main}>
                 <LeftPanelFilter
                     onFoodTagSet={filterTagSet}
                     handleAddTagToFoodTagsList={filterTagSetCheck}
@@ -457,24 +299,17 @@ function Foods(props) {
                 <div  >
                     <FoodItemList
                         foods={foods}
+                        imgLoader = {[imgLoader,setImgLoader]}
                         filterTagList={filterTagSet}
-                        setModalEditFlagTrue={setModalEditFlagTrue}
-                        foodItemEditRenderState={[
-                            foodItemEditRender,
-                            setFoodItemEditRender,
-                        ]}
-                        page={[page, setPage]}
                         pageSize={[pageSize, setPageSize]}
                         handleSetPage={handleSetPage}
-                        isPreviousDataFoods={isPreviousDataFoods}
-                        backEndFoodFull={dataFoods}
                     ></FoodItemList>
                     <div className={style.paginationBox}>
                         <nav className={style.navigationbar}>
-                            <button className={style.button} onClick={() => handleSetPage(page - 1)} disabled={isPreviousDataFoods || page === 1} id={isPreviousDataFoods || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
+                            <button className={style.button} onClick={() => handleSetPage(page - 1)} disabled={foodsQf.isPreviousData || page === 1} id={foodsQf.isPreviousData || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
                             {/* Removed isPreviousData from PageButton to keep button focus color instead */}
                             {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page} handleSetPage={handleSetPage} />)}
-                            <button className={style.button} onClick={() => handleSetPage(page + 1)} disabled={isPreviousDataFoods || page === backEndFoods?.TotalNumOfPages} id={isPreviousDataFoods || page === backEndFoods.TotalNumOfPages ? style["buttondisabled"] : style["buttonenabled"]}>&gt;&gt;</button>
+                            <button className={style.button} onClick={() => handleSetPage(page + 1)} disabled={foodsQf.isPreviousData || page === backEndFoods?.TotalNumOfPages} id={foodsQf.isPreviousData || page === backEndFoods.TotalNumOfPages ? style["buttondisabled"] : style["buttonenabled"]}>&gt;&gt;</button>
 
 
                         </nav>
@@ -496,10 +331,10 @@ function Foods(props) {
                     </div>
                 </div>
             </div>
-                <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
-                  <SaveError
-                  ></SaveError>
-                </Modal>
+            <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
+                <SaveError
+                ></SaveError>
+            </Modal></>)}
         </>
     );
 }

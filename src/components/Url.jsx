@@ -1,7 +1,7 @@
 import style from "./UrlInput.module.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
 
 

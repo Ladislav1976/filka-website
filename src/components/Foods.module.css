@@ -22,7 +22,9 @@
 }
 
 .droplist{
-  background-color: transparent;
+  position: sticky;
+  top:202px;
+  background-color: white;
   display: flex;
   flex-direction: row;
   justify-content:flex-end;
@@ -31,6 +33,7 @@
   height: 45px;
   padding: 5px;
   border-bottom: var(--border3px);
+  z-index: 1;
 }
 
 .foodButton{  

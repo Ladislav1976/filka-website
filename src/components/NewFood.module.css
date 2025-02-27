@@ -467,11 +467,15 @@ p {
   --scale: 1;
 }
 .boxcontainer{
+  position: sticky;
+  top:202px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border-bottom: var(--border3px);
-  align-items: center;
+  align-items: center;z-index: 1;
+  background-color: white;
+
 }
 .messagebox {
   /* position: absolute; */

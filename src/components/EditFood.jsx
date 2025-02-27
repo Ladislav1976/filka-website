@@ -63,15 +63,15 @@ function EditFood(props) {
   const imagesQf = useImages(foodQf)
 
 
-  const [foodID, setFoodID] = useState(foodQf?.data?.id)
-  const [user, setUser] = useState(itemListDownl(foodQf?.data?.user, usersQf?.data, false),);
-  const [name, setName] = useState(foodQf?.data?.id)
-  const [ingredientsList, setIngredientsList] = useState(ingredientsListDownl(foodQf?.data, ingredientsQf?.data, unitsQf?.data, ingredientQf.data));
-  const [urlList, setUrlList] = useState(itemListDownl(foodQf?.data?.urls, urlsQf?.data, false))
-  const [foodTagSet, setFoodTagSet] = useState(new Set(itemListDownl(foodQf?.data?.foodTags, tagsQf?.data, false)));
-  const [stepsList, setStepsList] = useState(itemListDownl(foodQf?.data?.steps, stepsQf?.data, true));
-  const [imageURLsList, setImageURLsList] = useState(itemListDownl(foodQf?.data?.images, imagesQf?.data, true))
-  const [date, setDate] = useState(foodQf?.data?.date)
+  // const [foodID, setFoodID] = useState(foodQf?.data?.id)
+  // const [user, setUser] = useState(itemListDownl(foodQf?.data?.user, usersQf?.data, false),);
+  // const [name, setName] = useState(foodQf?.data?.id)
+  // const [ingredientsList, setIngredientsList] = useState(ingredientsListDownl(foodQf?.data, ingredientsQf?.data, unitsQf?.data, ingredientQf.data));
+  // const [urlList, setUrlList] = useState(itemListDownl(foodQf?.data?.urls, urlsQf?.data, false))
+  // const [foodTagSet, setFoodTagSet] = useState(new Set(itemListDownl(foodQf?.data?.foodTags, tagsQf?.data, false)));
+  // const [stepsList, setStepsList] = useState(itemListDownl(foodQf?.data?.steps, stepsQf?.data, true));
+  // const [imageURLsList, setImageURLsList] = useState(itemListDownl(foodQf?.data?.images, imagesQf?.data, true))
+  // const [date, setDate] = useState(foodQf?.data?.date)
 
 
   const nameRef = useRef()
@@ -85,15 +85,15 @@ function EditFood(props) {
 
 
 
-  // const [foodID, setFoodID] = useState("")
-  // const [user, setUser] = useState([]);
-  // const [name, setName] = useState("")
-  // const [ingredientsList, setIngredientsList] = useState([]);
-  // const [urlList, setUrlList] = useState([])
-  // const [foodTagSet, setFoodTagSet] = useState(new Set([]));
-  // const [stepsList, setStepsList] = useState([]);
-  // const [imageURLsList, setImageURLsList] = useState([])
-  // const [date, setDate] = useState("")
+  const [foodID, setFoodID] = useState("")
+  const [user, setUser] = useState([]);
+  const [name, setName] = useState("")
+  const [ingredientsList, setIngredientsList] = useState([]);
+  const [urlList, setUrlList] = useState([])
+  const [foodTagSet, setFoodTagSet] = useState(new Set([]));
+  const [stepsList, setStepsList] = useState([]);
+  const [imageURLsList, setImageURLsList] = useState([])
+  const [date, setDate] = useState("")
   // setUsercont("")
 
 

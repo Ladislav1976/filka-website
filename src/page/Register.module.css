@@ -26,18 +26,20 @@ body {
 }
 
 .layout {
-    height: 100%;
+    /* height: 100%; */
 }
 
 .App {
     display: flex;
-    /* min-height: 100vh; */
+    margin-top: 50px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    /* height: 100vh; */
     min-width: 100vw;
     padding: 1rem 0.5rem;
+    z-index: 1;
+
     /* background-color: rgb(228, 249, 255); */
     /* background-image: url(D:\SCRIPTS\filka-website\filka-website\src\image\1685519116-asian-cuisine-ingredients-food-background-ginger-2023-05-09-20-34-33-utc.webp);
     background-size: cover; */
@@ -48,9 +50,10 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: rgb(228, 249, 255);
+    /* height: 500px; */
+    /* background-color: rgb(228, 249, 255); */
 }
+
 
 .navbar,
 .navbarleft {
@@ -73,11 +76,13 @@ body {
     float: left;
     font-size: 16px;
     color: var(--greydark);
-
+    width: 110px;
+    border-radius: 5px;
     text-align: center;
-    padding: 10px 16px;
+    padding: 16px 16px;
     text-decoration: none;
 }
+
 /* .navbarleft .dropdown {
     float: left;
     font-size: 16px;
@@ -101,9 +106,9 @@ body {
 
 /* The dropdown container */
 .dropdown {
-    float: left;
-    overflow: hidden;
-    align-items: center;
+    /* float: left; */
+    /* overflow: hidden; */
+    /* align-items: center; */
     /* text-align: center; */
 }
 
@@ -115,8 +120,10 @@ body {
 }
 
 .dropdown .dropbtn {
+    width: 115px;
     font-size: 16px;
     border: none;
+    border-radius: 5px;
     outline: none;
     color: var(--greydark);
     padding: 16px 16px;
@@ -132,6 +139,7 @@ body {
 .navbar a:hover,
 .dropdown:hover .dropbtn {
     color: var(--orange);
+    background-color: #ddd;
 }
 
 /* Dropdown content (hidden by default) */
@@ -148,6 +156,7 @@ body {
 /* Links inside the dropdown */
 .dropdowncontent .li {
     float: none;
+    width: 115px;
     color: var(--greydark);
     padding: 12px 16px;
     text-decoration: none;
@@ -165,7 +174,7 @@ body {
 .dropdown:hover .dropdowncontent {
     display: block;
     /* top: 5px; */
-    z-index: 1;
+    z-index: 2;
 }
 
 .dropdowncontent:hover {
@@ -173,7 +182,7 @@ body {
 
     /* display: flex;
     flex-direction: column; */
-    z-index: 1;
+    z-index: 2;
 }
 
 .down,
@@ -291,15 +300,15 @@ a {
     /* position: sticky; */
 }
 
-.sticky {
+.navsticky {
     position: sticky;
     /* position: -webkit-sticky; */
     /* width: 100rim */
     ;
     background-color: white;
 
-    /* z-index: 1; */
-    height: 3.2rem;
+    z-index: 2;
+    height: 52px;
     top: 0px;
 
 
@@ -383,8 +392,9 @@ textarea {
     position: relative;
 
 }
+
 textarea {
-height: 300px;
+    height: 300px;
     min-width: 500px;
     max-width: 500px;
 }
@@ -400,14 +410,14 @@ button {
 
 .inputbox {
     position: relative;
-    margin:5px 0 15px 0
+    margin: 5px 0 15px 0
 }
 
 
 .instructions {
     position: absolute;
     top: 38px;
-    /* z-index:100; */
+
     font-size: 0.75rem;
     border-radius: 0.5rem;
     background: #000;
@@ -435,7 +445,7 @@ button {
     /* justify-content: ; */
     align-items: center;
     padding-bottom: 1rem;
-    
+
 
 }
 
@@ -608,4 +618,11 @@ th {
 table>tr:first-child>th {
     font-weight: bold;
     font-size: 1rem;
+}
+
+.header {
+    position: sticky;
+    top: 52px;
+    height: 150px;
+    z-index: 1;
 }

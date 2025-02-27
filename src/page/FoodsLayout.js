@@ -4,10 +4,7 @@ import style from "./Register.module.css";
 const FooodsLayout = () => {
     return (
         <main className={style.layout}>
-                        <header className={style.header}>RECEPTY</header>
-            {/* <div className={style.sticky} >
-            <Navbar />
-            </div> */}
+            <header className={style.header}>RECEPTY</header>
             <Outlet />
         </main>
     )

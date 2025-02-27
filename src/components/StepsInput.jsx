@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
-import { ACTION_TYPES } from "../reducer/actionTypes";
-import { STATE_LIST } from "../reducer/reducer";
+
 
 
 function Step(props) {
   const [step, setStep] = useState(props.step);
   const [stepDefault, setStepDefault] = useState("");
   const component = props.component
-  const dispatch = props.dispatch
+
 
 
 
@@ -37,11 +36,7 @@ function Step(props) {
   }
 
   function handleUpdateStepList() {
-    props.updateStepList(step)
-    dispatch({
-      type: ACTION_TYPES.UPDATE_STEP, payload:
-        { name: STATE_LIST.STEPS, value: step },
-    })
+    props.updateStepList(step);
     setStepDefault("")
   }
   function handleStepMove(move, step) {
@@ -80,10 +75,6 @@ function Step(props) {
               // className={style.deleteIcon}
               icon={faTrash}
               onClick={() => {
-                dispatch({
-                  type: ACTION_TYPES.DELETE_STEP, payload:
-                    { name: STATE_LIST.STEPS, value: step },
-                });
                 props.handleStepDelete()
               }}
             /></div>
@@ -96,17 +87,10 @@ function Step(props) {
 
         {(component == "editcomponent" || component == "newcomponent") && <div className={style.upddownbox} >
           <div className={style.up} onClick={() => {
-            dispatch({
-              type: ACTION_TYPES.MOVE_UP_STEP, payload:
-                { name: STATE_LIST.STEPS, value: step },
-            });
             handleStepMove(-1, step)
           }} >&#10095;</div>
           <div className={style.down} onClick={() => {
-            dispatch({
-              type: ACTION_TYPES.MOVE_DOWN_STEP, payload:
-                { name: STATE_LIST.STEPS, value: step },
-            });
+
             handleStepMove(1, step)
           }} >&#10094;</div>
         </div>}
@@ -124,7 +108,6 @@ export default function StepsInput(props) {
   const [addedStep, setAddedStep] = useState("");
   const component = props.component
 
-  const dispatch = props.dispatch
 
   function handleChangeStep(event) {
     setAddedStep(event.target.value);
@@ -144,12 +127,7 @@ export default function StepsInput(props) {
     if (addedStep == "") return
     props.handleAddStep({ id: uniqueID, step: addedStep, statusDelete: false }, stepsList);
     setAddedStep("");
-    // dispatch({
-    //   type: ACTION_TYPES.ADD_STEP, payload:
-    //     { name: STATE_LIST.STEPS, value: { id: uniqueID, step: addedStep, statusDelete: false } },
-    // })
-    
-  }
+   }
 
   function handleStepDelete(step) {
     props.deleteStep(step)
@@ -170,7 +148,7 @@ export default function StepsInput(props) {
           handleStepDelete={() => handleStepDelete(step)}
           stepMove={props.stepMove}
           component={component}
-          dispatch={dispatch}
+
 
         />
       )

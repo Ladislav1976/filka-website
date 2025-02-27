@@ -3,8 +3,7 @@ import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faTrash, faCartPlus, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
-import { ACTION_TYPES } from "../reducer/actionTypes";
-import { STATE_LIST } from "../reducer/reducer";
+
 
 // function IngrID(props) {
 //   return (
@@ -34,7 +33,7 @@ function Ingredient(props) {
 }
 function Ing(props) {
   const component = props.component
-  const dispatch = props.dispatch
+
 
   function handleIngredientMove(move, ing) {
     props.ingredientMove(move, ing)
@@ -49,26 +48,17 @@ function Ing(props) {
               className={style.iconDelete}
               icon={faTrash}
               onClick={() => {
-                dispatch({
-                  type: ACTION_TYPES.DELETE_INGREDIENTS, payload:
-                    { name: STATE_LIST.INGREDIENTS, value: props.ing },
-                }); props.handleIngredientDelete()
+                 props.handleIngredientDelete()
               }}
 
             ></FontAwesomeIcon>
           </div>
           <div >
             <div className={style.up} onClick={() => {
-              dispatch({
-                type: ACTION_TYPES.MOVE_UP_INGREDIENTS, payload:
-                  { name: STATE_LIST.INGREDIENTS, value: props.ing },
-              }); handleIngredientMove(-1, props.ing)
+               handleIngredientMove(-1, props.ing)
             }} >&#10095;</div>
             <div className={style.down} onClick={() => {
-              dispatch({
-                type: ACTION_TYPES.MOVE_DOWN_INGREDIENTS, payload:
-                  { name: STATE_LIST.INGREDIENTS, value: props.ing },
-              }); handleIngredientMove(1, props.ing)
+               handleIngredientMove(1, props.ing)
             }} >&#10094;</div>
           </div>
         </>
@@ -89,7 +79,6 @@ export default function IngredientInput(props) {
   const [addedUnit, setAddedUnit] = useState("ks");
   const [addedIngredient, setAddedIngredient] = useState("");
   const component = props.component
-  const dispatch = props.dispatch
   let ingredientsSet = props.ingredientsList;
 
 
@@ -102,10 +91,7 @@ export default function IngredientInput(props) {
       addedQuantity
     );
     if (Number.isInteger(VerNum) || isFloat) {
-      dispatch({
-        type: ACTION_TYPES.ADD_INGREDIENTS, payload:
-          { name: STATE_LIST.INGREDIENTS, value: { uniqueID, addedQuantity, addedUnit, addedIngredient } },
-      }); props.addToIngredientList(uniqueID, addedQuantity, addedUnit, addedIngredient)
+       props.addToIngredientList(uniqueID, addedQuantity, addedUnit, addedIngredient)
     } else {
       props.handlerSetModalErrorMissing("Vložene množstvo nie je číslo")
     }
@@ -149,7 +135,7 @@ export default function IngredientInput(props) {
           handleIngredientDelete={() => handleIngredientDelete(ingre)}
           component={component}
           ingredientMove={props.ingredientMove}
-          dispatch={dispatch}
+    
         />
 
       )

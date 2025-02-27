@@ -4,13 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ImageDeleteError from "../reports/ImageDeleteError";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { ACTION_TYPES } from "../reducer/actionTypes";
-import { STATE_LIST } from "../reducer/reducer";
+
 
 export default function Lightbox(props) {
     const [isVisibleEdit, setIsVisibleEdit] = props.isVisibleEdit
     const [imagePosition, setImagePosition] = props.imagePosition
-    const dispatch = props.dispatch
+
     const component = props.component
     // console.log("isVisibleEdit: ", isVisibleEdit)
     // console.log("imagePosition 2: ", imagePosition)
@@ -68,10 +67,7 @@ export default function Lightbox(props) {
         newImageURLsList.splice(imageIDPosition, 1, { ...image, statusDelete: true })
         setImageURLsList(newImageURLsList);
         setImagePosition(imageDisplaydelete(newImageURLsList));
-        dispatch({
-            type: ACTION_TYPES.DELETE_IMAGE, payload:
-                { name: STATE_LIST.IMAGES, value: image },
-        });
+        
 
     }
 

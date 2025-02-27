@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useReducer } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
@@ -16,7 +16,7 @@ import UrlInput from "./Url";
 import Modal from "../reports/Modal";
 import ModalPreview from "../reports/ModalPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash, faBackward, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCircleArrowUp, faSpinner, faTrash, faBackward, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
@@ -43,10 +43,6 @@ import { useDeleteUrl } from "../hooks/Mutations/useDeleteUrl";
 import { usePutUrl } from "../hooks/Mutations/usePutUrl";
 import useAuth from "../hooks/useAuth";
 
-
-
-import { reducer, INITIAL_STATE, STATE_LIST } from "../reducer/reducer";
-import { ACTION_TYPES } from "../reducer/actionTypes";
 
 
 
@@ -87,7 +83,7 @@ function EditFood(props) {
 
   
 
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+
 
   // const [foodID, setFoodID] = useState("")
   // const [user, setUser] = useState([]);
@@ -178,41 +174,6 @@ function EditFood(props) {
       setUser(itemListDownl(foodQf.data.user, usersQf.data, false),)
       setUsercont(foodQf.data.user)
       nameRef.current?.focus();
-
-
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.ID, value: foodQf.data.id },
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.NAME, value: foodQf.data.name },
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.TAGS, value: itemListDownl(foodQf.data.foodTags, tagsQf.data, false) },
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.STEPS, value: itemListDownl(foodQf.data.steps, stepsQf.data, false) },
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.INGREDIENTS, value: ingredientsListDownl(foodQf.data, ingredientsQf.data, unitsQf.data, ingredientQf.data) }
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.URLS, value: itemListDownl(foodQf.data.urls, urlsQf.data, false) }
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.IMAGES, value: itemListDownl(foodQf.data.images, imagesQf.data, true) }
-      })
-      dispatch({
-        type: ACTION_TYPES.CHANGE_INPUT, payload:
-          { name: STATE_LIST.DATE, value: foodQf.data.date },
-      })
-
     }
   }, [usersQf.isLoading, foodQf.isLoading, ingredientQf.isLoading, unitsQf.isLoading, urlsQf.isLoading, tagsQf.isLoading, stepsQf.isLoading, ingredientsQf.isLoading, imagesQf.isLoading
   ])
@@ -353,10 +314,6 @@ function EditFood(props) {
 
   function handleNameChange(e) {
     setName(e.target.value);
-    dispatch({
-      type: ACTION_TYPES.CHANGE_INPUT,
-      payload: { name: e.target.name, value: e.target.value },
-    })
   }
 
 
@@ -364,16 +321,8 @@ function EditFood(props) {
     let filter = Array.from(foodTagSet).filter((f) => f.foodTag === tag)
     if (filter != "") {
       removeFromFoodTagSet(filter[0]);
-      dispatch({
-        type: ACTION_TYPES.REMOVE_TAG, payload:
-          { name: STATE_LIST.TAGS, value: filter[0] },
-      })
     } else {
       handleAddTagToFoodTagSet(tag);
-      dispatch({
-        type: ACTION_TYPES.ADD_TAG, payload:
-          { name: STATE_LIST.TAGS, value: tag },
-      })
     }
   }
 
@@ -926,7 +875,7 @@ function EditFood(props) {
           handleAddTagToFoodTagsList={foodTagSetCheck}
           foodTagsBox={null}
           component={component}
-          dispatch={dispatch}
+  
         />
         <div className={style.secondColumn}>
           <div className={style.ingredients}>
@@ -938,7 +887,6 @@ function EditFood(props) {
               handlerSetModalErrorMissing={handlerSetModalErrorMissing}
               removeFromIngredientList={makeIngredientsDelete}
               component={component}
-              dispatch={dispatch}
               qtRef={qtRef}
               unitRef={unitRef}
               ingrRef={ingrRef}
@@ -969,7 +917,7 @@ function EditFood(props) {
             No Files chosen
           </p>}
           <div className={style.imagebox}>
-            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} makeImageDelete={makeImageDelete} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component} dispatch={dispatch}></Image>
+            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} makeImageDelete={makeImageDelete} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component} ></Image>
           </div>
         </div>
         <div className={style.thirdColumn}>
@@ -983,7 +931,6 @@ function EditFood(props) {
             deleteUrl={makeUrlToDelete}
             updateUrlList={updateUrlList}
             handleAddUrl={handleAddUrl}
-            dispatch={dispatch}
             urlRef={urlRef}
             urlKeyDown={urlKeyDown}
           >
@@ -999,7 +946,6 @@ function EditFood(props) {
             stepsList={stepsList}
             deleteStep={makeSteptoDelete}
             component={component}
-            dispatch={dispatch}
             stepRef={stepRef}
             stepKeyDown={stepKeyDown}
           ></StepsInput>
@@ -1059,7 +1005,6 @@ function EditFood(props) {
         isVisibleEdit={[isVisibleEdit, setIsVisibleEdit]}
         imagePosition={[imagePosition, setImagePosition]}
         imageURLsUpdater={imageURLsUpdater}
-        dispatch={dispatch}
 
         // imageDisplayChange={imageDisplayChange}
 

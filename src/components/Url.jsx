@@ -2,14 +2,13 @@ import style from "./UrlInput.module.css";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
-import { ACTION_TYPES } from "../reducer/actionTypes";
-import { STATE_LIST } from "../reducer/reducer";
+
 
 
 function Url(props) {
     const [urlDefault, setUrlDefault] = useState("");
     const [url, setUrl] = useState(props.url);
-    const dispatch = props.dispatch
+
 
 
     function handleUpdateUrl(event) {
@@ -35,11 +34,7 @@ function Url(props) {
     }
 
     function handleUpdateUrlList() {
-        props.updateUrlList(url)
-        dispatch({
-            type: ACTION_TYPES.UPDATE_URL, payload:
-                { name: STATE_LIST.URLS, value: url },
-        })
+        props.updateUrlList(url);
         setUrlDefault("")
     }
     return <div className={style.urlContainer} >
@@ -96,12 +91,7 @@ function Url(props) {
                         <FontAwesomeIcon
                             // className={style.deleteIcon}
                             icon={faTrash}
-
                             onClick={() => {
-                                dispatch({
-                                    type: ACTION_TYPES.DELETE_URL, payload:
-                                        { name: STATE_LIST.URLS, value: url },
-                                });
                                 props.handleUrlDelete(url)
                             }}
                         /></div>
@@ -125,7 +115,7 @@ export default function UrlInput(props) {
     const [addedUrl, setAddedUrl] = useState("");
     let uniqueID = new Date().toISOString()
     const component = props.component
-    const dispatch = props.dispatch
+
 
     function handleUrlDelete(url) {
         props.deleteUrl(url)
@@ -134,10 +124,6 @@ export default function UrlInput(props) {
     function addURL() {
         if (addedUrl == "") return
         props.handleAddUrl({ id: uniqueID, url: addedUrl, statusDelete: false }, urlList);
-        dispatch({
-            type: ACTION_TYPES.ADD_URL, payload:
-                { name: STATE_LIST.URLS, value: { id: uniqueID, url: addedUrl, statusDelete: false } },
-        })
         setAddedUrl("")
     }
 
@@ -146,7 +132,7 @@ export default function UrlInput(props) {
     }
     let urlListRender = []
 
-let id = 0
+    let id = 0
     urlList?.map((url, index) => {
         if (url.statusDelete === false) {
             urlListRender.push(
@@ -157,9 +143,9 @@ let id = 0
                     component={component}
                     handleUrlDelete={handleUrlDelete}
                     updateUrlList={props.updateUrlList}
-                    dispatch={dispatch}
+                 
                 />)
-                id++;
+            id++;
         }
     })
 

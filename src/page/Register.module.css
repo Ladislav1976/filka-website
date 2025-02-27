@@ -1,0 +1,628 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap'); */
+
+* {
+    /* margin: 0;
+    padding: 0;
+    box-sizing: border-box; */
+}
+
+html {
+    /* font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    color: #fff; */
+}
+
+body {
+    min-height: 100vh;
+
+    /* background-color: dodgerblue; */
+}
+
+:root {
+
+    --greydark: rgb(68, 68, 68);
+
+
+}
+
+.layout {
+    /* height: 100%; */
+}
+
+.App {
+    display: flex;
+    margin-top: 50px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    min-width: 100vw;
+    padding: 1rem 0.5rem;
+    z-index: 1;
+
+    /* background-color: rgb(228, 249, 255); */
+    /* background-image: url(D:\SCRIPTS\filka-website\filka-website\src\image\1685519116-asian-cuisine-ingredients-food-background-ginger-2023-05-09-20-34-33-utc.webp);
+    background-size: cover; */
+}
+
+.adminmain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* height: 500px; */
+    /* background-color: rgb(228, 249, 255); */
+}
+
+
+.navbar,
+.navbarleft {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.navbarleft,
+.navbarright {
+    overflow: hidden;
+    background-color: white;
+    font-family: Arial;
+}
+
+/* Links inside the navbar */
+.navbarleft .navlik {
+    float: left;
+    font-size: 16px;
+    color: var(--greydark);
+    width: 110px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 16px 16px;
+    text-decoration: none;
+}
+
+/* .navbarleft .dropdown {
+    float: left;
+    font-size: 16px;
+    color: var(--greydark);
+
+    text-align: center;
+    padding: 10px 16px;
+    text-decoration: none;
+} */
+
+
+
+.navbarright a {
+    float: right;
+    font-size: 16px;
+    color: var(--greydark);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* The dropdown container */
+.dropdown {
+    /* float: left; */
+    /* overflow: hidden; */
+    /* align-items: center; */
+    /* text-align: center; */
+}
+
+/* Dropdown button */
+.dropbtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown .dropbtn {
+    width: 115px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    color: var(--greydark);
+    padding: 16px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    /* Important for vertical align on mobile phones */
+    margin: 0;
+    text-align: center;
+    /* Important for vertical align on mobile phones */
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover,
+.dropdown:hover .dropbtn {
+    color: var(--orange);
+    background-color: #ddd;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdowncontent {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+
+    /* min-width: 160px; */
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+
+}
+
+/* Links inside the dropdown */
+.dropdowncontent .li {
+    float: none;
+    width: 115px;
+    color: var(--greydark);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdowncontent a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdowncontent {
+    display: block;
+    /* top: 5px; */
+    z-index: 2;
+}
+
+.dropdowncontent:hover {
+    position: absolute;
+
+    /* display: flex;
+    flex-direction: column; */
+    z-index: 2;
+}
+
+.down,
+.up {
+    /* position: relative; */
+    /* display: flex;
+    align-items: center; */
+    text-align: center;
+    /* display: flex;
+    align-items: center; */
+    justify-content: center;
+    color: rgb(68, 68, 68);
+    /* padding-top: 5px;
+    padding-bottom: 5px; */
+    /* padding: 5px; */
+    /* transition: 0.6s ease; */
+    /* border-radius: .3rem; */
+    border-radius: 50%;
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 14px;
+    margin-left: 10px;
+    width: auto;
+    height: auto;
+    padding: auto;
+}
+
+.up {
+    transform: rotate(-90deg);
+    transition-duration: var(--transDuration);
+}
+
+
+
+.main_box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #dee7ee;
+}
+
+.left_box {
+    display: flex;
+    /* flex-wrap: wrap; */
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: #dee7ee;
+    padding: 0px;
+    position: relative;
+}
+
+.team {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+a {
+    color: black;
+    padding: 0;
+    text-align: left;
+    font-size: small;
+    padding: 2px;
+    display: block;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
+}
+
+.team a:hover {
+    display: block;
+    background-color: #ddd;
+    border: #2196f3;
+
+}
+
+.team_hover:hover .team {
+    display: block;
+}
+
+#team_button {
+    /* display: inline-block; */
+}
+
+.right_box {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    background-color: #dee7ee;
+    padding: 0px;
+}
+
+.button {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
+}
+
+.navBar,
+.navBarUser,
+.navBarRight {
+    /* position: -webkit-sticky; */
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /* height: 3rem; */
+    padding: 0 0.5rem;
+    /* position: sticky; */
+}
+
+.navsticky {
+    position: sticky;
+    /* position: -webkit-sticky; */
+    /* width: 100rim */
+    ;
+    background-color: white;
+
+    z-index: 2;
+    height: 52px;
+    top: 0px;
+
+
+}
+
+
+h1,
+h5,
+p,
+.label {
+    color: var(--greydark);
+    margin: 5px 0 5px 0;
+}
+
+
+.onscreen>h5:first-child {
+    margin: 35px 0 5px 0;
+}
+
+.onscreen>h5:nth-child(3) {
+    margin: 5px 0 55px 0;
+}
+
+
+
+section {
+    width: auto;
+    /* max-width: 420px;
+    min-height: 400px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    position: relative;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex-grow: 1;
+    padding-bottom: 1rem;
+}
+
+.line>a {
+    color: yellow;
+}
+
+.labelPassword {
+    color: white;
+}
+
+a:visited {
+    /* color: white; */
+    /* color: rgba(255, 255, 0, 0.507) */
+}
+
+p,
+a {
+    display: flex;
+    flex-direction: column;
+    justify-content: inherit;
+    align-items: inherit;
+}
+
+/* input[type="text"],
+input[type="password"],
+input[type="email"], */
+.input,
+button,
+textarea {
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    /* color: #fff; */
+    position: relative;
+
+}
+
+textarea {
+    height: 300px;
+    min-width: 500px;
+    max-width: 500px;
+}
+
+label,
+button {
+    margin-top: 1rem;
+}
+
+button {
+    padding: 0.5rem;
+}
+
+.inputbox {
+    position: relative;
+    margin: 5px 0 15px 0
+}
+
+
+.instructions {
+    position: absolute;
+    top: 38px;
+
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    background: #000;
+    color: #fff;
+    padding: 0.25rem;
+    /* position: relative; */
+    /* bottom: 40px; */
+    width: 280px;
+    z-index: 1;
+}
+
+.instructions>svg {
+    margin-right: 0.25rem;
+}
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+}
+
+.onscreen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: ; */
+    align-items: center;
+    padding-bottom: 1rem;
+
+
+}
+
+.hide {
+    display: none;
+}
+
+.logout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.unhide {
+    /* display: flex; 
+    flex-direction: row;
+    justify-content: flex-start; */
+    display: flex;
+    flex-direction: row;
+
+    /* justify-content: flex-start; */
+    /* height: 36px; */
+    align-items: center;
+}
+
+.unhide,
+.logout,
+.logoutlabel {
+    font-size: 1rem;
+    /* font-weight: bold; */
+    cursor: pointer;
+    margin-left: 10px;
+    color: var(--greydark);
+
+    &:hover {
+        color: var(--orange);
+    }
+}
+
+.logoutlabel {
+    font-size: 0.8rem;
+}
+
+.valid {
+    color: limegreen;
+    margin-left: 0.25rem;
+}
+
+.invalid {
+    color: red;
+    margin-left: 0.25rem;
+}
+
+.errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.line {
+    display: inline-block;
+    justify-content: inherit;
+    align-items: inherit;
+}
+
+.name {
+    font-size: 0.8rem;
+    margin: 0 0 0 5px;
+}
+
+.imgage {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.svgicon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    overflow: hidden;
+
+}
+
+.navBarLeft {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* .li {
+    float: left;
+} */
+
+.li a {
+    display: block;
+    padding: 8px;
+    /* background-color: white; */
+    text-align: center;
+    color: var(--greydark);
+
+    &:hover {
+        color: orange;
+    }
+
+    &:visited {
+        color: var(--greydark)
+    }
+}
+
+.unhide a {
+    display: block;
+    padding: 8px;
+    /* background-color: white; */
+    text-align: center;
+    color: var(--greydark);
+
+    &:hover {
+        color: orange;
+    }
+
+    &:visited {
+        color: var(--greydark)
+    }
+}
+
+
+.familylogo {
+    display: block;
+    padding: 8px;
+    font-size: 1.7rem;
+    margin: 2px 0 2px 25px;
+    /* margin-left: 25px; */
+
+    background-color: rgb(63, 64, 73);
+    color: white;
+
+}
+
+.loadingContainer {
+    position: relative;
+    top: 70px;
+    width: auto;
+    height: 100px;
+    color: white;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+tr,
+th {
+    text-align: left;
+    padding-left: 20px;
+    font-style: normal;
+    font-weight: lighter;
+    margin: 30px;
+    color: var(--greydark);
+    font-size: 0.9rem;
+}
+
+table>tr:first-child>th {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.header {
+    position: sticky;
+    top: 52px;
+    height: 150px;
+    z-index: 1;
+}

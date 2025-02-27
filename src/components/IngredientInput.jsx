@@ -1,42 +1,110 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import style from "./IngredientInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faTrash, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faCartPlus, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
 
-function Ing(props) {
+
+// function IngrID(props) {
+//   return (
+//     <>
+//       <div className="dd" id="dd" ></div>
+//     </>
+//   );
+// }
+function Quantity(props) {
   return (
     <>
-      <div id="c" className={style.ingredient}>
-        {" "}
-        <FontAwesomeIcon
-          className={style.ingredientIcon}
-          icon={faTrash}
-          onClick={props.onTagDelete}
-        ></FontAwesomeIcon>{" "}
-        {props.ing}
+      <div className={style.quantityIngredient} >{props.quantity}</div>
+    </>
+  );
+}
+
+function Unit(props) {
+  return (
+    <>
+      <div className={style.unitIngredient} >{props.unit}</div>
+    </>
+  );
+}
+
+function Ingredient(props) {
+  return <div className={style.ingIngredient} >{props.ing}</div>;
+}
+function Ing(props) {
+  const component = props.component
+
+
+  function handleIngredientMove(move, ing) {
+    props.ingredientMove(move, ing)
+  }
+
+  return (
+    <>
+      <div className={style.ingredientContent} >
+        {(component === "editcomponent" || component === "newcomponent") && <>
+          <div className={style.upddownbox} >
+            <FontAwesomeIcon
+              className={style.iconDelete}
+              icon={faTrash}
+              onClick={() => {
+                 props.handleIngredientDelete()
+              }}
+
+            ></FontAwesomeIcon>
+          </div>
+          <div >
+            <div className={style.up} onClick={() => {
+               handleIngredientMove(-1, props.ing)
+            }} >&#10095;</div>
+            <div className={style.down} onClick={() => {
+               handleIngredientMove(1, props.ing)
+            }} >&#10094;</div>
+          </div>
+        </>
+        }
+
+
+        <Quantity quantity={props.ing.quantity} />
+        <Unit unit={props.ing.unit[0].unit} />
+        <Ingredient ing={props.ing.ingredient[0].ingredient} />
+
       </div>
     </>
   );
 }
 
 export default function IngredientInput(props) {
-  const [addedTimes, setAddedTimes] = useState(1);
+  const [addedQuantity, setAddedQuantity] = useState(1);
   const [addedUnit, setAddedUnit] = useState("ks");
   const [addedIngredient, setAddedIngredient] = useState("");
+  const component = props.component
+  let ingredientsSet = props.ingredientsList;
 
-  const ingredientsSet = props.ingredientsList;
-  const ingredientSetID = props.ingredientsIDList;
 
-  function addIngredientToTagList() {
-    props.addToIngredientList(addedTimes, addedUnit, addedIngredient);
+
+  let uniqueID = new Date().toISOString()
+
+  function handleAddIngredients() {
+    const VerNum = Number(addedQuantity) * 1;
+    const isFloat = /\d+\.\d+/.test(
+      addedQuantity
+    );
+    if (Number.isInteger(VerNum) || isFloat) {
+       props.addToIngredientList(uniqueID, addedQuantity, addedUnit, addedIngredient)
+    } else {
+      props.handlerSetModalErrorMissing("Vložene množstvo nie je číslo")
+    }
+
     setAddedIngredient("");
-    setAddedTimes(1);
+    setAddedQuantity(1);
     setAddedUnit("ks");
   }
 
-  function handleChangeTimes(event) {
-    setAddedTimes(event.target.value);
+  function handleChangeQuantity(event) {
+
+
+    setAddedQuantity(event.target.value)
   }
 
   function handleChangeUnit(event) {
@@ -46,52 +114,63 @@ export default function IngredientInput(props) {
   function handleChangeIngredient(event) {
     setAddedIngredient(event.target.value);
   }
-  function handleIngredientDelete(ing) {
-    // let tt = b.document.getElementsByClassName("ingredientsList");
-    // let inputVal = tt.document.getElementsByClassName("ingredient");
-    // let c = b.getElementsByClassName("ingredientsList");
-    // let inputVal = c.getElementsByClassName("dd");
-    let b = document.getElementsByClassName("ingredient");
-    console.log("inputVal", b);
-    // let inputVal = document.getElementsByClassName("dd");
-    // let b = (document.getElementById("demo").innerHTML = inputVal[0].id);
-    // console.log("ingrs", b);
-    props.removeFromIngredientList(ing);
+  function handleIngredientDelete(ingre) {
+    props.removeFromIngredientList(ingre);
   }
 
-  let ingredientListArray = [...ingredientsSet];
+  // let ingredientListArray = [...ingredientSetBulk];
   const ingredientListRender = [];
-  let ingreId = 100;
 
-  // const obj = Object.assign({}, ingredientListArray, ingredientSetID);
-  // console.log("obj", obj);
 
-  for (const ingre of ingredientListArray) {
-    ingredientListRender.push(
-      <Ing
-        ing={ingre}
-        key={ingreId}
-        onTagDelete={() => handleIngredientDelete(ingre)}
-      />
-    );
-    ingreId++;
-  }
+  ingredientsSet.map((ingre, index) => {
+    if (ingre.statusDelete === false) {
+
+
+      ingredientListRender.push(
+
+        <Ing
+          ing={ingre}
+          key={ingre.id}
+          index={index}
+          handleIngredientDelete={() => handleIngredientDelete(ingre)}
+          component={component}
+          ingredientMove={props.ingredientMove}
+    
+        />
+
+      )
+    };
+
+  })
 
   return (
     <>
       <div className={style.ingredientMain}>
-        <div className={style.ingredientBox}>
+        {(component == "editcomponent" || component == "newcomponent") && <div className={style.ingredientBox}>
           <input
-            type="number"
-            className={style.times}
+            type="text"
+            className={style.quantity}
+            ref={props.qtRef}
+            onKeyDown={props.qrKeyDown}
             id="tm"
-            value={addedTimes}
-            onChange={handleChangeTimes}
+            value={addedQuantity}
+            onChange={handleChangeQuantity}
+
           />
+          {/* <input
+            type="text"
+            className={style.unit}
+            id="tm"
+            value={addedUnit}
+            onChange={handleChangeUnit}
+          /> */}
           <select
             className={style.unit}
             onChange={handleChangeUnit}
             value={addedUnit}
+            ref={props.unitRef}
+            onKeyDown={props.unitKeyDown}
+
           >
             <option>-</option>
             <option>ks</option>
@@ -105,6 +184,7 @@ export default function IngredientInput(props) {
             <option>čl</option>
             <option>kl</option>
             <option>štipka</option>
+            <option>bal.</option>
           </select>
 
           <input
@@ -112,7 +192,10 @@ export default function IngredientInput(props) {
             className={style.ingredientInput}
             placeholder="Napiste nazov suroviny"
             value={addedIngredient}
+            ref={props.ingrRef}
+            onKeyDown={props.ingKeyDown}
             onChange={handleChangeIngredient}
+
           />
           {/* <div
             className={style.ingredientButton}
@@ -120,15 +203,16 @@ export default function IngredientInput(props) {
           >
             Pridať
           </div> */}
-          <FontAwesomeIcon
-            className={style.ingredientIcon}
-            icon={faCartPlus}
-            onClick={addIngredientToTagList}
-          ></FontAwesomeIcon>
-          <FontAwesomeIcon icon="fa-solid fa-cart-plus" />
+          <div className={style.iconAdd}>
+            <FontAwesomeIcon
+              icon={faBasketShopping}
+              onClick={handleAddIngredients}
+            ></FontAwesomeIcon>
+          </div>
+        </div>}
+        <div className={style.ingredientsList}>
+          {ingredientListRender}
         </div>
-        <div className={style.firstline}></div>
-        <div className={style.ingredientsList}>{ingredientListRender}</div>
       </div>
     </>
   );

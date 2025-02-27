@@ -1,61 +1,239 @@
+body {
+  font-family: rgb(68, 68, 68) "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
 
-.step,.stepIdSet {
+:root {
+  --grey: rgb(209, 209, 209);
+  --greydark: rgb(68, 68, 68);
+  --whitesmoke: whitesmoke;
+  --blue: rgb(192, 217, 255);
+  --bluelight: rgb(241, 245, 250);
+  --orange: rgb(238, 128, 64);
+  --width1st: 670px;
+  /* --marginLeft: 1px; */
+
+}
+
+.stepBox {
+  /* display: flex;
+
+  justify-content: flex-start; */
+  /* width: 670px; */
+  /* border: 1px grey dotted; */
+  /* min-width: 670px; */
+  border-radius: 5px;
+  /* margin-left: 10px; */
+  /* margin: 50px 0 0 10px; */
+  margin-left: var(--marginLeft);
+  margin-top: 5px;
+  font-size: 1rem;
+  background-color: white
+}
+
+.stepBox,
+.stepContainer {
   display: flex;
-  
-  justify-content:flex-start;
-    width: 670px;
-    border: 1px grey dotted;
-    border-radius: 5px;
-    margin-left: 10px;
-    font-size: 14px;
-    background-color: whitesmoke;
+  flex-direction: row;
+  /* justify-content: flex-start; */
+  /* position: relative; */
+  margin-bottom: 20px;
+  /* width: 800px; */
 
-  }
-  .step{
-    margin-top: 10px;
-  }
-  .stepText{margin:5px 0 5px 0;}
-  .stepId{
-    padding-left: 15px;
-    
-  }
+}
+
+.stepTextView,.stepText {
+  width: 645px;
+  max-width: 645px;
+}
+
+.stepText,
+.newStepText {
+  /* margin: 0 0 25px 0; */
+  /* display: flex;
+
+  justify-content: flex-start; */
+  /* width: 670px; */
+  /* margin-left: 10px; */
+  height: 120px;
+  border: 1px var(--orange) dotted;
+  border-radius: 15px;
+  padding-left: 10px;
+  font-size: 1rem;
+  background-color: var(--whitesmoke)
+}
+
+.newStepText {
+  min-width: var(--width1st);
+  max-width: var(--width1st);
+}
+
+.stepTextView,
+.stepText {
+  padding: 0 10px 0 10px;
+
+  border-radius: 15px;
+}
+
+.stepid {
+  margin-left: var(--marginLeft);
+
+ width: 25px;
+  text-align: center;
+}
 
 
-  .stepIdSet {
-    width: 50px;
-    height: 30px;
-  margin-bottom: 10px;}
+.stepIdSet {
+  width: 50px;
+  height: 30px;
+  margin-bottom: 10px;
+}
 
 .addedstep {
-    width: 670px;
-    border: 0px white transparent;
-   
-    margin-bottom: 10px;
-    font-size: 16px;
-    
-    
-  }
+  /* width: var(--width1st); */
+  border: 0px white transparent;
+  margin: 20px 0 10px 0;
+  /* margin-bottom: 10px; */
+  font-size: 1rem;
 
-.ingredientButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #558113;
-    border: 1px solid;
-    border-color: rgb(233, 229, 229);
-    border-radius: 10px;
-    height: 22px;
-    width: 50px;
-    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
-    color: white;
-    font-size: x-small;
-    padding-left: 0px;
-    margin-top: 5px;
-    margin-left: 10px;
-  }
 
-  .ingredientButton:hover {
-    background-color: #81c221;
-    cursor: pointer;
-  }
-  .stepIcon{cursor: pointer}
+}
+
+.OKIcon,
+.cancelIcon,
+.deleteIcon,
+.newStepIcon,
+.editIcon {
+
+  position: relative;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  border-color: rgb(233, 229, 229);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
+  font-size: 1.2rem;
+  padding-left: 0px;
+  margin-top: 2px;
+  margin-left: 10px;
+}
+
+.cancelIcon,
+.deleteIcon,
+.newStepIcon,
+.editIcon {
+  cursor: pointer;
+}
+
+.newStepIcon,
+.deleteIcon,
+.cancelIcon {
+  /* color: grey; */
+  color: var(--greydark)
+}
+
+.editIcon:hover,
+.cancelIcon:hover,
+.newStepIcon:hover,
+.deleteIcon:hover {
+  color: orange;
+}
+
+/* .stepTextInput, */
+.iconBox {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: flex-start;
+
+}
+
+/* .stepTextInput {
+  display: flex;
+  flex-direction: row;
+} */
+
+
+.cancelIcon::before,
+.cancelIcon::after,
+/* .deleteIcon::before,
+.deleteIcon::after, */
+.newStepIcon::before,
+.newStepIcon::after,
+.editIcon::before,
+.editIcon::after {
+  --scale: 0;
+  position: absolute;
+  font-size: .7rem;
+  top: 0.1rem;
+  left: 3rem;
+  transform: translateX(-50%)scale(var(--scale));
+  transition: 150ms tranform;
+
+}
+
+.cancelIcon::before,
+/* .deleteIcon::before, */
+.newStepIcon::before,
+.editIcon::before {
+  content: attr(datatooltip);
+  padding: .3rem;
+  text-align: center;
+  /* width: max-content; */
+  max-width: 60px;
+  color: rgb(68, 68, 68);
+  background-color: white;
+  font-weight: bold;
+  border-radius: .3rem;
+
+}
+
+
+.cancelIcon:hover:before,
+/* .deleteIcon:hover:before, */
+.newStepIcon:hover:before,
+.editIcon:hover:before {
+  --scale: 1;
+}
+
+.upddownbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-left: 5px;
+}
+
+/* .up{margin-top: 10px;} */
+.up,
+.down {
+  transform: rotate(-90deg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  color: rgb(68, 68, 68);
+  /* padding-top: 5px;
+  padding-bottom: 5px; */
+  /* padding: 5px; */
+  /* transition: 0.6s ease; */
+  /* border-radius: .3rem; */
+  border-radius: 50%;
+  user-select: none;
+  -webkit-user-select: none;
+  font-size: 20px;
+  width: 25px;
+  height: 25px;
+  padding: auto;
+
+  /* margin: 5px 0 5px 0; */
+
+}
+
+.up:hover,
+.down:hover {
+  background-color: rgba(187, 185, 185, 0.8);
+  color: orange;
+  cursor: pointer;
+}

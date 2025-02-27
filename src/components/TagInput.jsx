@@ -12,7 +12,7 @@ function Tag(props) {
         icon={faXmark}
         onClick={props.onTagDelete}
       ></FontAwesomeIcon>{" "}
-      {props.tag}
+      {props.tag.foodTag}
     </div>
   );
 }
@@ -24,7 +24,7 @@ export default function TagInput(props) {
   const [filterTagList, setFilterTagList] = props.filterTagListState;
 
   function addSearchTagToTagList() {
-    props.addToTagList(searchedTag);
+    props.searchAddToTagList(searchedTag);
     setSearchedTag("");
   }
 
@@ -50,7 +50,7 @@ export default function TagInput(props) {
       <Tag
         className={style.tagname}
         tag={tag}
-        key={tag}
+        key={tag.id}
         onTagDelete={() => handleTagDelete(tag)}
       />
     );
@@ -59,11 +59,12 @@ export default function TagInput(props) {
   return (
     <>
       <div className={style.searchMain}>
+      <div className={style.searchList}>{tagListRender}</div>
         <div className={style.searchBox}>
           <input
             type="text"
             className={style.searchInput}
-            placeholder="Napiste nazov jedla"
+            placeholder="Hľadať recept ..."
             value={searchedTag}
             onChange={handleChange}
             onKeyPress={handleKeyPress}
@@ -73,7 +74,7 @@ export default function TagInput(props) {
           </div>
         </div>
 
-        <div className={style.searchList}>{tagListRender}</div>
+       
       </div>
     </>
   );

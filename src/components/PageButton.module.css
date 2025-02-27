@@ -1,0 +1,21 @@
+.button {
+    font-size: medium;
+    margin: 1px;
+    border-radius: 50%;
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
+}
+    
+#buttoncurrentpage:hover,
+.button:hover {
+    background-color: orange;
+}
+
+#buttoncurrentpage {
+    color: white;
+    background-color: rgba(26, 25, 25, 0.651);
+    border-radius: 50%;
+    
+    /* background-color: orange; */
+}

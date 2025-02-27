@@ -1,35 +1,44 @@
 .food {
-  background-color: rgb(233, 229, 229);
-  width: 170px;
+  /* background-color: rgb(233, 229, 229);
+  border: 2px solid rgb(233, 229, 229); */
+  /* background-color: rgb(233, 229, 229); */
+  /* border: 2px solid rgb(233, 229, 229); */
+  width: 120px;
+  height: 150px;
   margin: 10px;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   cursor: pointer;
   transition: all .3s ease-in-out;
 }
 
 
 .food:hover {
-  border: 2px solid black;
-  transform: scale(1.01);
+  text-decoration: underline;
+  color:  orange;
+  /* border: 2px solid black;
+  transform: scale(1.01); */
 }
 
 
 
 .image {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   margin-left: 10px;
   margin-top: 10px;
   margin-right: 10px;
-  
+  border-radius: 5px
 }
 
 .foodName {
   box-sizing: border-box;
   font-family: black, "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-size: small;
+  font-size:0.7rem;
+  font-weight: bold;
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 5px;
+  
 }
+

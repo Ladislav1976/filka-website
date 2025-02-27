@@ -1,6 +1,4 @@
-header{
-  background-color: aquamarine;
-}
+
 .App {
   display: flex;
   flex-direction: column;
@@ -9,7 +7,7 @@ header{
 }
 
 .Appheader {
-  position: sticky;
+
   width: 100%;
   top: 0px;
   background-color: rgb(63, 64, 73);
@@ -18,32 +16,37 @@ header{
   font-size: 32px;
   /* font-weight: bold; */
   color: bisque;
-
   font-style: italic;
  
 
 }
 
 .droplist{
-  background-color: transparent;
+  position: sticky;
+  top:202px;
+  background-color: white;
   display: flex;
   flex-direction: row;
   justify-content:flex-end;
-  margin: 10px 0 10px 10px;
+  align-items: center;
+  /* margin: 10px 0 10px 0; */
+  height: 45px;
   padding: 5px;
+  border-bottom: var(--border3px);
+  z-index: 1;
 }
 
-.newFoodButton{  
+.foodButton{  
   
   
   font-family: rgb(95, 93, 93), "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   margin-left: 10px;
-  font-size: 18px;
+  font-size: 16px;
   padding-left: 10px;
   cursor: pointer;
 }
 
-.newFoodButton:hover{color: orange;font-weight: bold;}
+.foodButton:hover{color: orange;}
 
 .main {
   display: flex;
@@ -121,3 +124,60 @@ header{
     }
   .unitIngredient{width: 55px;padding-left:5px ;}
   .ingIngredient{width: 110px;}
+
+  .loadingContainer {
+    width: auto;
+    height: 100vh;
+  
+  font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* .FoodItemList{width: 600px;} */
+
+  .paginationBox {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+/* .paginationbuttons {
+    display: inline-block;
+} */
+
+#buttonenabled:hover {
+
+    background-color: orange;
+    ;
+
+}
+#buttondisabled,
+#buttonenabled {
+    font-size: medium;
+    border-radius: 50%;
+    border:solid 0.5px;
+    background-color: transparent;
+    margin: 1px;
+    
+}
+#buttonenabled {cursor: pointer;}
+
+
+.navdisplay{ display: flex;
+    justify-content:center;
+    font-size: small;
+}
+
+.navigationbar{
+  display: flex;
+    justify-content:center;
+}
+
+.unvisible{
+  /* position: absolute;
+  left: -9999px; */
+  /* visibility: hidden; */
+}

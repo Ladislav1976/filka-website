@@ -32,15 +32,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>
 )
-// const rootElement = document.getElementB
 
-// const root = createRoot(rootElement);
-
-// root.render(
-//   <React.StrictMode>
-//     <RestfulProvider base="http://127.0.0.1:8000">
-//       <App />
-//     </RestfulProvider>
-//   </React.StrictMode>
-// document.getElementById("root")
-// );

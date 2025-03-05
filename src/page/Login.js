@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth"
 import style from "./Register.module.css";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 // import useLocalStorage from '../hooks/useLocalStorage';
 import useInput from '../hooks/useInput';
 import useToggle from '../hooks/useToggle';
@@ -115,7 +115,7 @@ export default function Login() {
         //             </p>
         //         </section>
         //     ) : (
-        <main className={style.App}>
+        <main className={style.MainApp}>
             <section>
                 <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
                 <h1>Prihlásiť sa</h1>
@@ -155,7 +155,7 @@ export default function Login() {
                         required
                     />
                     <button disabled={!validEmail ? true : false}>Odoslať</button>
-                    <div className="persistCheck">
+                    <div className={style.persistCheck}>
                         <input
                             type="checkbox"
                             id="persist"

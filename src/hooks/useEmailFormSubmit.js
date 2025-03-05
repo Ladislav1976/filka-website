@@ -1,29 +1,26 @@
-
-
-
-
-export default function useEmailFormSubmit(dataFood, dataSteps, dataIngredients, dataUrls) {
+export default function useEmailFormSubmit(dataName, dataSteps, dataIngredients, dataUrls) {
   let textingre = ""; 
   let textstep = "";
   let texturls = "";
 
+  const name = `Nazov: \n${dataName}`
 
-  let name = `Nazov: \n${dataFood.name}\n`
-
-  let ingredient = textingre.concat(dataIngredients.map((res, index) => {
+  const ingredient = `Suroviny: \n${textingre.concat(dataIngredients.map((res, index) => {
     return res.unit.map((u) => {
       return res.ingredient.map((i) => {
         return (`${index + 1}. ${res.quantity} ${u.unit}  ${i.ingredient}\n`)
       }
       )
     })
-  }))
+  }))}`
+  
+  
+  const steps = `Postup: \n${textstep.concat(dataSteps.map((res, index) => (`${index + 1}. ${res.step}\n`)))}`
+  const urlsTemp = texturls.concat(dataUrls.map((res, index) => (`${index + 1}. ${res.url}\n`)))
+let urls = ""
+if(urlsTemp){urls =`URL: \n${urlsTemp}`}
 
-  let steps = textstep.concat(dataSteps.map((res, index) => (`${index + 1}. ${res.step}\n`)))
-  let urls = texturls.concat(dataUrls.map((res, index) => (`${index + 1}. ${res.url}\n`)))
-
-  const res = (`Recept: \n\n${name}\n\nSuroviny: \n${ingredient}\n\nPostup: \n${steps}\n\nURL: \n${urls}`).split(",").join("")
-
+  const res = (`Recept: \n\n${name}\n\n${ingredient}\n\n${steps}\n\n${urls}`).split(",").join("")
   return res
 }
 

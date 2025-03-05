@@ -1,18 +1,17 @@
 .foodItemBox {
-    height: 78vh;
-    width: 85vw;
-    overflow: hidden;
-    /* position: fixed; */
+    position: relative;
+    height: 70vh;
+    width: 80vw;
 }
 
 
 .foodItemList {
+    position: relative;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    overflow :auto ;
 }
 .unvisible{
-    /* position: absolute;
-    left: -9999px; */
     visibility: hidden;
   }

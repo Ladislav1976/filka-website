@@ -11,20 +11,11 @@ body {
   --bluelight: rgb(241, 245, 250);
   --orange: rgb(238, 128, 64);
   --width1st: 670px;
-  /* --marginLeft: 1px; */
 
 }
 
 .stepBox {
-  /* display: flex;
-
-  justify-content: flex-start; */
-  /* width: 670px; */
-  /* border: 1px grey dotted; */
-  /* min-width: 670px; */
   border-radius: 5px;
-  /* margin-left: 10px; */
-  /* margin: 50px 0 0 10px; */
   margin-left: var(--marginLeft);
   margin-top: 5px;
   font-size: 1rem;
@@ -35,11 +26,7 @@ body {
 .stepContainer {
   display: flex;
   flex-direction: row;
-  /* justify-content: flex-start; */
-  /* position: relative; */
   margin-bottom: 20px;
-  /* width: 800px; */
-
 }
 
 .stepTextView,.stepText {
@@ -49,12 +36,6 @@ body {
 
 .stepText,
 .newStepText {
-  /* margin: 0 0 25px 0; */
-  /* display: flex;
-
-  justify-content: flex-start; */
-  /* width: 670px; */
-  /* margin-left: 10px; */
   height: 120px;
   border: 1px var(--orange) dotted;
   border-radius: 15px;
@@ -90,10 +71,8 @@ body {
 }
 
 .addedstep {
-  /* width: var(--width1st); */
   border: 0px white transparent;
   margin: 20px 0 10px 0;
-  /* margin-bottom: 10px; */
   font-size: 1rem;
 
 
@@ -106,8 +85,6 @@ body {
 .editIcon {
 
   position: relative;
-  /* display: flex;
-  align-items: center; */
   justify-content: center;
   border-color: rgb(233, 229, 229);
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
@@ -127,7 +104,6 @@ body {
 .newStepIcon,
 .deleteIcon,
 .cancelIcon {
-  /* color: grey; */
   color: var(--greydark)
 }
 
@@ -138,19 +114,13 @@ body {
   color: orange;
 }
 
-/* .stepTextInput, */
+
 .iconBox {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   justify-content: flex-start;
 
 }
-
-/* .stepTextInput {
-  display: flex;
-  flex-direction: row;
-} */
 
 
 .cancelIcon::before,
@@ -210,15 +180,9 @@ body {
   display: flex;
   align-items: center;
   text-align: center;
-  /* display: flex;
-  align-items: center; */
+
   justify-content: center;
   color: rgb(68, 68, 68);
-  /* padding-top: 5px;
-  padding-bottom: 5px; */
-  /* padding: 5px; */
-  /* transition: 0.6s ease; */
-  /* border-radius: .3rem; */
   border-radius: 50%;
   user-select: none;
   -webkit-user-select: none;
@@ -226,9 +190,6 @@ body {
   width: 25px;
   height: 25px;
   padding: auto;
-
-  /* margin: 5px 0 5px 0; */
-
 }
 
 .up:hover,

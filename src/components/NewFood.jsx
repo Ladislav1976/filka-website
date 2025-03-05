@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useLocation} from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
@@ -15,11 +15,10 @@ import Image from "./Image";
 import UrlInput from "./Url";
 import Modal from "../reports/Modal";
 import ModalPreview from "../reports/ModalPreview";
-import { useGet, useMutate } from "restful-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowUp, faSpinner, faBackward, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
-import {  useQueryClient  } from "@tanstack/react-query"
+
 
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -27,28 +26,25 @@ import { useQueriesItems } from "../hooks/Queries/useQueriesItems";
 
 import { usePostFood } from "../hooks/Mutations/usePostFood";
 import { usePostImage } from "../hooks/Mutations/usePostImage";
-import { usePutImage } from "../hooks/Mutations/usePutImage";
-import { useDeleteImage } from "../hooks/Mutations/useDeleteImage";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import { usePostStep } from "../hooks/Mutations/usePostStep";
-import { usePutStep } from "../hooks/Mutations/usePutStep";
-import { useDeleteStep } from "../hooks/Mutations/useDeleteStep";
 import { usePostIngredients } from "../hooks/Mutations/usePostIngredients";
-import { useDeleteIngredients } from "../hooks/Mutations/useDeleteIngredients";
-import { usePutIngredients } from "../hooks/Mutations/usePutIngredients";
 import { usePostIngredient } from "../hooks/Mutations/usePostIngredient";
 import { usePostUnit } from "../hooks/Mutations/usePostUnit";
 import { usePostUrl } from "../hooks/Mutations/usePostUrl";
-import { useDeleteUrl } from "../hooks/Mutations/useDeleteUrl";
-import { usePutUrl } from "../hooks/Mutations/usePutUrl";
 
 
-function NewFood(props) {
+function NewFood() {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate()
     const controller = new AbortController();
     const component = "newcomponent"
     const navigate = useNavigate()
+
+    const location = useLocation();
+    const foods = location.state?.foods.pathname+location.state?.foods.search || "/";
+
+    const goBack = () => navigate(foods);
 
     const postFood = usePostFood(handlerSetModalSave)
     // const deleteFood = useDeleteFood(setModalLoadingFlag, handlerSetModalError, handlerFoodDeleteConfirmed)
@@ -133,11 +129,6 @@ function NewFood(props) {
 
 
 
-    const backEndFoodTags = tagsQf.data ?? [];
-    // const backEndIngredients = ingredientsQf.data ?? [];
-    const backEndIngredient = ingredientQf.data ?? [];
-    const backEndUnit = unitsQf.data ?? [];
-
     function handleFoodSave() {
 
         const filterIngredients = ingredientsList.filter((ingre) => ingre.position != "delete")
@@ -147,7 +138,7 @@ function NewFood(props) {
             foodTagSet.size === 0 &&
             stepsList.length === 0
         ) {
-            // handlerSetModalErrorMissing(["Doplň chýbajúce informácie:", "Nazov jedla", "Suroviny", "Druj jedla", "Postup"])
+   
             handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov jedla, Suroviny, Druj jedla, Postup")
 
         }
@@ -597,9 +588,7 @@ function NewFood(props) {
         }
     }
 
-    function handlerFoodSaveClose() {
-        navigate(`/recepty/?page_size=${20}`);
-    }
+
 
     function handlerSetModalSave() {
         setModalSavedFlag(true)
@@ -615,7 +604,6 @@ function NewFood(props) {
     }
     function handlerSetModalErrorMissing(message) {
         setModalMessage(message)
-        // setModalSaveErrorMissingFlag(true)
         setTimeout(() => {
             setModalMessage("")
         }, 3000)
@@ -691,13 +679,7 @@ function NewFood(props) {
                     spin ></FontAwesomeIcon>
             </div>
         </label>//<h1>Loading...</h1> 
-    //   if (statusFood === 'error') return <h1>{JSON.stringify(errorFoods)}</h1>
-    //   if (statusImagefood === 'error') return <h1>{JSON.stringify(errorImagefood)}</h1>
-    // if (statusFoodTags === 'error') return <h1>{JSON.stringify(errorFoodTags)}</h1>
-    // if (statusIngredients === 'error') return <h1>{JSON.stringify(errorIngredients)}</h1>
-    // if (statusIngredient === 'error') return <h1>{JSON.stringify(errorIngredient)}</h1>
-    // if (statusUnit === 'error') return <h1>{JSON.stringify(errorUnit)}</h1>
-    // if (loadingFood || loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood) return <h1>return Loading...</h1>
+
     return (<>
 
         <div className={style.main}>
@@ -718,7 +700,7 @@ function NewFood(props) {
                     // datatooltip="Spať"
                     >
                         <FontAwesomeIcon
-                            onClick={handlerFoodSaveClose}
+                            onClick={()=>goBack()}
                             icon={faBackward}
                         />
                     </div>

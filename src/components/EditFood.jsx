@@ -10,7 +10,7 @@ import Lightbox from "./Lightbox";
 import style from "./NewFood.module.css";
 import IngredientInput from "./IngredientInput";
 import LeftPanelFilter from "./LeftPanelFilter";
-import React, { Component } from "react";
+
 import Image from "./Image";
 import UrlInput from "./Url";
 import Modal from "../reports/Modal";
@@ -94,7 +94,7 @@ function EditFood(props) {
   const [stepsList, setStepsList] = useState([]);
   const [imageURLsList, setImageURLsList] = useState([])
   const [date, setDate] = useState("")
-  // setUsercont("")
+
 
 
   function ingredientsListDownl(backEndFood, backEndIngredients, backEndUnit, backEndIngredient) {
@@ -311,12 +311,6 @@ function EditFood(props) {
     ;
   }
 
-
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
-
   function foodTagSetCheck(tag) {
     let filter = Array.from(foodTagSet).filter((f) => f.foodTag === tag)
     if (filter != "") {
@@ -412,17 +406,21 @@ function EditFood(props) {
   }
 
   function makeSteptoDelete(step) {
+    console.log("step :",step)
     setStepsList(makeItemDelete(step, stepsList))
   }
 
   function makeUrlToDelete(url) {
+    console.log("url DELETE:",url)
     setUrlList(makeItemDelete(url, urlList))
   }
 
   function makeItemDelete(item, array) {
+    console.log("array 1:",array)
     let itemIDPosition = getPosition(item.id, array);
     let newArray = array.slice();
     newArray.splice(itemIDPosition, 1, { ...item, statusDelete: true })
+    console.log("array 2:",newArray)
     return newArray;
   }
 
@@ -712,11 +710,6 @@ function EditFood(props) {
   }
 
 
-
-  function handlerFoodSaveClose() {
-    navigate(`/recepty/${id.id}/`);
-  }
-
   function handlerFoodDeleteCancel() {
     setModalDeleteFlag(false)
     navigate(`/recepty/${id.id}/edit`)
@@ -862,7 +855,7 @@ function EditFood(props) {
           <div className={style.foodButton}
           >
             <FontAwesomeIcon
-              onClick={handlerFoodSaveClose}
+              onClick={()=>navigate(-1)}
               icon={faBackward}
 
             />
@@ -870,13 +863,14 @@ function EditFood(props) {
         </div>
       </div>
       <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} >
+        <div className={style.leftpanel}>
         <LeftPanelFilter
           onFoodTagSet={foodTagSet}
           handleAddTagToFoodTagsList={foodTagSetCheck}
           foodTagsBox={null}
           component={component}
-  
         />
+        </div>
         <div className={style.secondColumn}>
           <div className={style.ingredients}>
             <p>Suroviny:</p>
@@ -961,7 +955,7 @@ function EditFood(props) {
             onKeyDown={nameKeyDown}
             type="text"
             maxLength="300"
-            onChange={handleNameChange}
+            onChange={(e)=>setName(e.target.value)}
             
                 />
           <div className={style.name}> </div>
@@ -1005,9 +999,6 @@ function EditFood(props) {
         isVisibleEdit={[isVisibleEdit, setIsVisibleEdit]}
         imagePosition={[imagePosition, setImagePosition]}
         imageURLsUpdater={imageURLsUpdater}
-
-        // imageDisplayChange={imageDisplayChange}
-
         component={component}
       >
       </Lightbox>

@@ -7,9 +7,6 @@ export default function Admin() {
         <main className={style.adminmain}>
             <section>
                 <Users />
-                <div className="flexGrow">
-                    <Link to="/">Home</Link>
-                </div>
             </section>
         </main>
     )

@@ -2,9 +2,7 @@ import { getPosition } from "./getPosition"
 
 export const itemMove = (move, item, array) => {
   let position = getPosition(item.id, array)
-  console.log("position :", position,
-    "array.length :", array.length
-  )
+
   let newArray = array.slice()
   if (move > 0) {
     if (position === (-1 + array.length)) { return newArray } else {

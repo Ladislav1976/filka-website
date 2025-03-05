@@ -1,7 +1,7 @@
 import style from "./Image.module.css";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -14,23 +14,24 @@ function Img(props) {
         src={props.image.image}
         loading="lazy"
         onLoad={() => style.displayNone}
-        onClick={() => props.uploader(props.image)}
+  
         alt="Image Preview"
       />
+      <div className={style.imageclicker}
+            onClick={() => props.uploader(props.image)}>
+      <div className={style.imagecross}>
+        <FontAwesomeIcon
+          icon={faXmark} />
+      </div>
+      </div>
       <input
         type="checkbox"
-        // checked={handleFilterTagListArray(tag.tagName)}
-        // name={tag.tagName}
         className={style.checkboxInput}
-      // id={tag.tagName}
-
-      // onChange={() => props.handleAddTagToFoodTagsList(tag.tagName)}
       />
       <div className={props.component == "editcomponent" || props.component == "newcomponent" ? style.deleteIcon
         : style.displayNone}
       >
         <FontAwesomeIcon
-
           icon={faTrash}
           onClick={() => {
             props.makeImageDelete(props.image)
@@ -56,7 +57,7 @@ export default function Image(props) {
   }
   if (imageURLs.length < 1) { return } else {
 
-    let IDs = 0
+
 
     imageURLs.forEach((image, index) => {
 
@@ -70,19 +71,17 @@ export default function Image(props) {
             uploader={uploader}
             component={props.component}
             makeImageDelete={props.makeImageDelete}
-
-
           />
         )
 
       };
-      IDs++
+
     })
   }
   let id = 1000
   return (
     // <div className={imgLoader > 0 ? style.unvisible : style.imagebox}
-<div className={style.imagebox}
+    <div className={style.imagebox}
     >{newImageUrlsRender}</div>
 
   )

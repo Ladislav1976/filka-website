@@ -16,7 +16,7 @@ export default  function SaveSaved(props) {
       id="inpFileIcon"
       />
   </div>
-  {/* <h3>Uložené!</h3> */}
+
   </div>
     </>
     )

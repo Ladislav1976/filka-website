@@ -15,15 +15,6 @@ body {
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-/* .header {
-  background-color: rgb(63, 64, 73);
-
-  font-size: xx-large;
-  font-style: italic;
-  padding: 10px 0px 10px 0px;
-  color: bisque;
-
-} */
 
 .buttonBox {
 
@@ -32,20 +23,20 @@ body {
   align-items: center;
   height: 45px;
   justify-content: flex-end;
-  /* border-bottom:  solid 3px; */
-  
 }
 
 
 .fooodbox {
   position: relative;
+
   display: flex;
   flex-direction: row;
   justify-content: center;
   background-color: white
-    /* background-color: var(--blue) */
+
 }
-.fooodnamebox{
+
+.fooodnamebox {
   position: absolute;
   top: 30px;
   display: flex;
@@ -53,13 +44,13 @@ body {
   align-items: center;
   justify-content: center;
   background-color: white
-    /* background-color: var(--blue) */
-}
-.main {
 
+}
+
+.main {
+  position: relative;
   background-color: white;
-  height: auto;
-  width: auto
+
 }
 
 .imagebox {
@@ -76,16 +67,6 @@ body {
   border-bottom-left-radius: 50% 50%;
 }
 
-
-
-
-/* .foodtypesbox {
-  display: flex;
-  flex-direction: column;
-  background-color:var(--blue); */
-/* background-color: rgb(245, 214, 173); */
-/* width: 150px; */
-/* } */
 
 .food {
   margin: 0px 0px 10px 20px;
@@ -214,23 +195,7 @@ img {
   font-size: smaller;
 }
 
-/* .imagePreview{
-  width:300px;
-  height: 300px;
-  min-height: 100px;
-  border:2px solid #dddddd ;
-  margin-top: 15px;
-  
-  display:flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color:#cccccc;
-} */
-/* .imagePreview__image{
-  display:none;
-  width: 100;
-} */
+
 
 .thirdColumn {
   background-color: rgb(255, 255, 255);
@@ -242,19 +207,16 @@ img {
 }
 
 .name {
-  /* left: 500px; */
-  /* position: absolute; */
+
   font-weight: bolder;
   width: 60px;
 }
-.foodname {
-  /* position: absolute; */
 
+.foodname {
   width: var(--width1st);
   border: 1px var(--orange) dotted;
   background-color: var(--whitesmoke);
   border-radius: 15px;
-  /* margin-left: var(--marginLeft); */
   height: 30px;
   font-size: 20px;
   text-align: center;
@@ -264,29 +226,18 @@ img {
   position: absolute;
   top: 30px;
   font-size: 2.5rem;
-  /* margin-left: var(--marginLeft) */
+
 }
 
-/* .procedure {
-  height: 100px;
-  background-color: whitesmoke;
-} */
+
 
 label {
   margin: 10px;
 }
 
-p {
-  /* margin: 10px; */
-}
 
-/* .timesIngredientBox{
 
-.timesIngredientBoxs{  display: flex;
-  flex-direction: row;
-  justify-content:flex-start;
-   margin-left: 5px;}
-} */
+
 .timesIngredient {
   box-sizing: border-box;
   text-align: right;
@@ -303,14 +254,10 @@ p {
 }
 
 .loadingIcon {
-  /* width:100;
-  margin-left: 100px; */
   font-size: 100px;
-
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  /* background-color: black; */
   color: grey;
 }
 
@@ -329,18 +276,15 @@ p {
   position: absolute;
   right: 0;
   font-size: 0.7rem;
-  /* margin-left: var(--marginLeft); */
   margin-top: 10px;
   margin-right: 10px;
-  line-height:1.3;
+  line-height: 1.3;
 
 }
 
 .foodButton,
 .foodButtonDelete {
   font-family: rgb(95, 93, 93), "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  /* font-weight: bold; */
-  /* margin: 0 5px 0 5px; */
   font-size: 18px;
   padding: 5px 20px 5px 0px;
   cursor: pointer;
@@ -357,53 +301,21 @@ p {
 
 .foodButton,
 .foodButtonDelete {
-
   position: relative;
-  /* display: flex;
-  align-items: center; */
   justify-content: center;
   border-color: rgb(233, 229, 229);
-
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
   font-size: 20px;
   padding-left: 0px;
   margin-top: 2px;
   margin: 0 5px 0 5px;
-  /* margin-left: 10px; */
 }
 
 .foodButton,
 .foodButtonDelete {
-  /* color: grey; */
   color: var(--greydark)
 }
 
-/* .foodButton::before,
-.foodButton::after {
-  --scale: 0;
-  position: absolute;
-  font-size: .7rem;
-  top: 0.1rem;
-  left: 3rem;
-  transform: translateX(-50%)scale(var(--scale));
-  transition: 150ms tranform;
-} */
-
-/* .foodButton::before {
-  content: attr(datatooltip);
-  padding: .3rem;
-  text-align: center; */
-  /* width: max-content; */
-  /* max-width: 60px;
-  color: rgb(68, 68, 68);
-  background-color: white;
-  font-weight: bold;
-  border-radius: .3rem;
-} */
-
-/* .foodButton:hover:before {
-  --scale: 1;
-} */
 
 #foodButtonSave {
   rotate: y 180deg;
@@ -415,24 +327,17 @@ p {
 }
 
 .imageIcon {
-
   position: absolute;
-  /* display: flex;
-  align-items: center; */
   justify-content: center;
   border-color: rgb(233, 229, 229);
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";
   font-size: 20px;
-  /* margin-left: 10px; */
-  /* margin-top: 2px; */
   color: var(--greydark);
   cursor: pointer;
 }
 
 .imageIconBox {
   position: relative;
-  /* display: flex;
-  align-items: center; */
 }
 
 
@@ -452,9 +357,6 @@ p {
   content: attr(datatooltip);
   padding: .3rem;
   margin-left: 30px;
-  /* text-align: center; */
-  /* width: max-content; */
-  /* max-width: 100px; */
   color: var(--greydark);
   background-color: white;
   font-weight: bold;
@@ -466,19 +368,22 @@ p {
 .imageIcon:hover:before {
   --scale: 1;
 }
-.boxcontainer{
+
+.boxcontainer {
   position: sticky;
-  top:202px;
+  top: 202px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border-bottom: var(--border3px);
-  align-items: center;z-index: 1;
+  align-items: center;
+  z-index: 5;
   background-color: white;
+  width: 100%;
 
 }
+
 .messagebox {
-  /* position: absolute; */
   margin-left: var(--marginLeft);
   left: 0px;
   top: 0px;
@@ -511,6 +416,11 @@ p {
   margin-bottom: 0;
 }
 
-.unvisible{
+.unvisible {
   visibility: hidden;
+}
+
+.leftpanel {
+  position: sticky;
+  top: 400px;
 }

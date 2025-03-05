@@ -40,7 +40,7 @@ export default function Reset_password() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        // if button enabled with JS hack
+
          const v1 = PWD_REGEX.test(pwd);
         if (!v1) {
             setErrMsg("Invalid Entry");
@@ -48,24 +48,22 @@ export default function Reset_password() {
         }
         try {
             const response = await axios.post(RESET_URL,
-                // { password: pwd ,confirm_password:matchPwd, reset_id:token.token},
+
                 { password: pwd ,confirm_password:matchPwd, 
                     reset_id:token.token
                 },
-                // JSON.stringify({ first_name: first_name, last_name: last_name, username: user_name, email: email, password: pwd }),
+ 
                 {
                     headers: { 
-                                //    "Accept": "application/json",
+     
                                    "Content-Type": "application/json",
                                    "X-CSRFToken": Cookies.get("csrftoken")
                     },
                     withCredentials: true
                 }
             );
-            console.log(response?.data);
-            console.log("response :",response);
-
-            // console.log(JSON.stringify(response))
+            // console.log(response?.data);
+            // console.log("response :",response);
             setSuccess(true);
             setPwd('');
             setMatchPwd('');
@@ -74,9 +72,7 @@ export default function Reset_password() {
             if (!err?.response) {
                 setErrMsg('No Server Response');
             }
-            // else if (err.response?.status === 409 && err.response?.status === "username") {
-            //     setErrMsg('Tento "username" je uz zaregistrovany');
-            // } 
+
             else if (err.response?.status === 409) {
                 setErrMsg(` ${err.data.message} `);
             }
@@ -93,7 +89,7 @@ export default function Reset_password() {
     return (
         <>
             {success ? (
-                <main className={style.App}>
+                <main className={style.MainApp}>
                     <section>
                         <h1>Success!</h1>
                         <p>
@@ -102,7 +98,7 @@ export default function Reset_password() {
                     </section>
                 </main>
             ) : (
-                <main className={style.App}>
+                <main className={style.MainApp}>
                     <section>
                         <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
                         <h1>Reset Password</h1>

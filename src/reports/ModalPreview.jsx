@@ -2,7 +2,7 @@ import style from "../reports/ModalPreview.module.css";
 
 //props.visible -> says if modal should appear
 export default function ModalPreview(props) {
-  function onModalClose(e) {
+  function onModalClose() {
     console.log("click")
     props.setModalFlag(false);
   }

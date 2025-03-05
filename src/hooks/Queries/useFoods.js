@@ -1,15 +1,11 @@
 
-import { useQuery} from "@tanstack/react-query"
-import {  searchFoodsPageFn, getFoodsPageFn } from "../use-get";
+import { useQuery } from "@tanstack/react-query"
+import { getFoodsPageFn } from "../use-get";
 
-export const useFoods =(location, page)=>{
+export const useFoods = (foodTags__foodTag,search,page,page_size) => {
 
     return useQuery({
-        queryKey: ["foods"],
-        queryFn: () => {
-            if (location?.search != null) {
-                return searchFoodsPageFn(location.search)
-            } else { return getFoodsPageFn(page) }
-        },
+        queryKey: ["foods",foodTags__foodTag,search,page,page_size],
+        queryFn: () =>  getFoodsPageFn(foodTags__foodTag,search,page,page_size)
     })
 }

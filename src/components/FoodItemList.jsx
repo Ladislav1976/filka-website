@@ -6,20 +6,12 @@ import PageButton from "./PageButton"
 export default function FoodItemList(props) {
   const foodItemListRender = []
 
-  // let pageSize = props.pageSize
+
   const [imgLoader,setImgLoader] = props.imgLoader
 
 
 
   let filterTagListArray = [...props.filterTagList];
-
-
-
-
-  // function handlePageSize(event) {
-  //   pageSize = event.target.value;
-  //   props.handleSetPage(page)
-  // }
 
 
   if (props.foods) { 
@@ -47,6 +39,7 @@ export default function FoodItemList(props) {
             food={food}
             key={food.id}
             onImgLoader = {[imgLoader,setImgLoader]}
+            foodsURL={props.foodsURL}
 
           />
 
@@ -56,8 +49,12 @@ export default function FoodItemList(props) {
   }
 
   return <>
-        <div className={imgLoader > 0 ? style.unvisible : style.foodItemBox}>
-    <div className={style.foodItemList} >   {foodItemListRender}</div>
+        {/* <div className={imgLoader > 0 ? style.unvisible : style.foodItemBox}> */}
+        <div className={style.foodItemBox}>
+    <div className={style.foodItemList} >  
+      
+       {foodItemListRender}
+       </div>
 
      
     </div>

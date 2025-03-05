@@ -1,13 +1,13 @@
-// import style from "./PageButton.module.css";
 import style from "./PageButton.module.css";
 
-function PageButton({ pg, page, handleSetPage }) {
+function PageButton(props) {
+    const page = props.page
+    const pg = props.pg
     return <button
         className={style.button}
-        // background={pg == page ? "#558113" : "#fd0000"}
         id={pg === page  ? style["buttoncurrentpage"] : style[""]}
         
-        onClick={() => handleSetPage(pg)}>{pg}
+        onClick={() => props.pageChange(pg)}>{pg}
     </button>
 }
 

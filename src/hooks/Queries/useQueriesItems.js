@@ -14,7 +14,9 @@ export const useQueriesItems = (ID, axiosPrivate, controller) => {
                 initialData: () => {
                     return queryClient.getQueryData(['users'])
                   },
+           
             }
+            
             ,
             {
                 queryKey: ["foods", ID],

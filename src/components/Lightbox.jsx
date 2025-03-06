@@ -1,52 +1,20 @@
 import style from "./Lightbox.module.css";
-import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faPenToSquare, faFloppyDisk, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
-import ImageDeleteError from "../reports/ImageDeleteError";
+import {  faPenToSquare, faFloppyDisk, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 
 export default function Lightbox(props) {
     const [isVisibleEdit, setIsVisibleEdit] = props.isVisibleEdit
     const [imagePosition, setImagePosition] = props.imagePosition
-
     const component = props.component
-    // console.log("isVisibleEdit: ", isVisibleEdit)
-    // console.log("imagePosition 2: ", imagePosition)
-
     const [imageURLsList, setImageURLsList] = props.imageURLsList;
-    // const imageURLsList = props.imageURLsList;
-    console.log("imageURLsList[imagePosition]: ", imageURLsList)
-    // const [imageDispley, setImageDispley] = useState(props.imageDispley)
-    // const imageDispley = props.imageDispley
 
-    // const [currentImageID, setCurrentImageID] = useState(props.currentImageID)
-    // let currentImageID = props.currentImageID
-
-
-
-    //   function getPosition(elementToFind, arrayElements) {
-    //     var i;
-    //     for (i = 0; i < arrayElements.length; i += 1) {
-    //       if (arrayElements[i].id === elementToFind) {
-    //         return i;
-    //       }
-    //     }
-    //     return null; //not found
-    //   }
 
     function makeImagesSave() {
         props.imageURLsUpdater(imageURLsList)
         props.closeModal();
     }
-
-    // function handlerImage(imageToAdd) {
-    //     console.log("imageToAdd  :" ,imageToAdd)
-    //     let position = props.getPosition(imageToAdd.id, imageURLsList)
-    //     console.log("position  :" ,position)
-    //     console.log("imagePosition  :" ,imagePosition)
-    //     setImagePosition(position)
-    // }
 
 
     function imageDisplaydelete(newImageURLsList) {
@@ -89,7 +57,7 @@ export default function Lightbox(props) {
     }
     function imageDisplayMove(move, image, position) {
         const newPosition = position + move
-        // let newImageURLsList = imageURLsList.slice()
+
         if (move > 0) {
 
             if (position < (-1 + imageURLsList.length)) {

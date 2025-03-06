@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { BrowserRouter, Router, Route, Routes, Link, Navigate } from "react-router-dom";
+import { BrowserRouter,  Route, Routes, } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
 import axios from "axios";
 
-// import { RestfulProvider } from "restful-react";
+
 
 import { QueryClientProvider, QueryClient, useQuery } from "@tanstack/react-query"
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import style from "./StepsInput.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPenToSquare, faCartPlus, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faCheck, faXmark, faBasketShopping, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -45,7 +45,7 @@ function Step(props) {
   return (
     <>
       <div className={style.stepContainer}>
-        <div className={style.stepid}>{props.stID}.</div>
+        <div className={style.stepid}>{props.index+1}.</div>
         {/* <div className={style.stepBox}> */}
         {component == "viewcomponent" && <div className={style.stepTextView}>{step.step}</div>}
         {(component == "editcomponent" || component == "newcomponent") && <textarea
@@ -60,7 +60,6 @@ function Step(props) {
           <div className={stepDefault == "" ? style.OKIcon : style.editIcon} datatooltip={stepDefault == "" ? "OK" : "Uložiť"}>
             <FontAwesomeIcon
               color={stepDefault == "" ? "#558113" : "#fd0000"}
-              // className={style.editIcon}
               icon={stepDefault == "" ? faCheck : faFloppyDisk}
               onClick={() => {
                 handleUpdateStepList()
@@ -72,15 +71,14 @@ function Step(props) {
           // datatooltip="Vymazať"
           >
             <FontAwesomeIcon
-              // className={style.deleteIcon}
               icon={faTrash}
               onClick={() => {
-                props.handleStepDelete()
+                props.handleStepDelete(step)
               }}
-            /></div>
+            />
+            </div>
           {stepDefault != "" && <div className={style.cancelIcon} datatooltip="Zrušiť">
             <FontAwesomeIcon
-              // className={style.cancelIcon}
               icon={faXmark}
               onClick={() => handleCancelStep()} /></div>}
         </div>}
@@ -113,15 +111,6 @@ export default function StepsInput(props) {
     setAddedStep(event.target.value);
   }
 
-  // function getPosition(elementToFind, arrayElements) {
-  //   var i;
-  //   for (i = 0; i < arrayElements.length; i += 1) {
-  //     if (arrayElements[i].id === elementToFind) {
-  //       return i;
-  //     }
-  //   }
-  //   return null; //not found
-  // }
 
   function addStep() {
     if (addedStep == "") return
@@ -134,18 +123,17 @@ export default function StepsInput(props) {
   }
 
   const proceduteListRender = [];
-  let Id = 1;
 
-  stepsList?.map((step) => {
+
+  stepsList?.map((step,index) => {
     if (step.statusDelete === false) {
       proceduteListRender.push(
         <Step
           step={step}
-          // stepID={step.id}
-          stID={Id}
+          index={index}
           key={step.id}
           updateStepList={props.updateStepList}
-          handleStepDelete={() => handleStepDelete(step)}
+          handleStepDelete={ handleStepDelete}
           stepMove={props.stepMove}
           component={component}
 
@@ -154,7 +142,7 @@ export default function StepsInput(props) {
       )
     };
 
-    Id++;
+
   })
 
 
@@ -180,8 +168,7 @@ export default function StepsInput(props) {
             onClick={() => {
               addStep()
             }}
-          // onClick={() => { props.handleAddStep({id: uniqueID, step: addedStep, statusDelete: false},stepsList); setAddedStep("") }}
-          ></FontAwesomeIcon>{" "}
+          ></FontAwesomeIcon>
         </div>
       </div>
       <div className={style.addedstep}>{proceduteListRender}</div>

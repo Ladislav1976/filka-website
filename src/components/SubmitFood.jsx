@@ -1,34 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from "react-router-dom";
-import { useQueries, useQuery } from "@tanstack/react-query"
-import { getUrl, getFood, getIngredientsID, getIngredient, getUnit, getStep, getData ,getDataPrivate} from "../hooks/use-get";
+import { useParams, useNavigate } from "react-router-dom";
+
+
 import IngredientInput from './IngredientInput';
 import StepsInput from './StepsInput';
 import UrlInput from './Url';
 import emailjs from '@emailjs/browser';
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-
-// import { useUsersQuery, useFoodQuery } from '../hooks/useQuery';
 import useAuth from "../hooks/useAuth";
 import useEmailFormSubmit from '../hooks/useEmailFormSubmit';
-// import style from "./SubmitFood.module.css";
+import { useQueriesItems } from '../hooks/Queries/useQueriesItems';
+import { useSteps } from '../hooks/Queries/useSteps';
+import { useIngredients } from '../hooks/Queries/useIngredients';
 import style from "../page/Register.module.css";
+import styla from "./NewFood.module.css";
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faInfoCircle, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faInfoCircle, faTimes, faBackward } from "@fortawesome/free-solid-svg-icons";
 
 const EMAIL_URL = 'https://api.emailjs.com/api/v1.0/email/send'
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 
 export default function SubmitFood(props) {
+    const id = useParams()
+    let ID = parseInt(id.id)
     const component = "viewcomponent"
     const axiosPrivate = useAxiosPrivate()
-
+    const navigate = useNavigate();
+    const goBack = () => navigate(-1);
     const controller = new AbortController();
-    const id = useParams()
-    const { auth, setAuth, usercont, setUsercont, csrftoken, setCSRFToken } = useAuth();
-    let ID = parseInt(id.id)
+
+    const { auth } = useAuth();
+    const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
+    const stepsQf = useSteps(foodQf)
+    const ingredientsQf = useIngredients(foodQf, ingredientQf, unitsQf)
+
+
+
+
     const form = useRef();
     const emailRef = useRef();
 
@@ -55,134 +65,62 @@ export default function SubmitFood(props) {
         setValidEmail(EMAIL_REGEX.test(email));
     }, [email])
 
-    const dataUsers = useQuery({
-        queryKey: ["users"],
-        queryFn: (queryKey) => getDataPrivate(axiosPrivate, controller, queryKey.queryKey[0]),
-    })
 
-    function foodHandler(food, userList) {
-        let list1 = []
-        food?.user?.map((f) => {
-            userList?.map((e) => {
+    const [name, setName] = useState("")
+    const [stepsList, setStepsList] = useState([])
+    const [ingredientsList, setIngredientsList] = useState([])
+    const [urlList, setUrlList] = useState([])
+
+    const food_form = useEmailFormSubmit(name, stepsList, ingredientsList, urlList)
+
+    function itemListDownl(backEndFood, backEndItems, sorting) {
+        let returnList = []
+        backEndFood?.forEach((f) => {
+            backEndItems?.map((e) => {
                 if (e.id === f) {
-                    list1.push(e);
+                    returnList.push({
+                        ...e,
+                        statusDelete: false
+                    });
+                    ;
                 }
-            })
+            });
         });
-        return { ...food, user: list1 }
+        //sorting of items from 1 to 999
+        if (sorting) {
+            returnList.sort(function (a, b) {
+                return a.position - b.position;
+            }
+            )
+        };
+        return returnList
     }
 
-    // const dataFood = ()=> {if (!!ID && !!dataUsers){return useFoodQuery(ID,dataUsers)}}
-    const dataFood = useQueries({
-
-        queries: !!ID && !!dataUsers
-
-            ? [{
-                queryKey: ["foods", ID],
-                queryFn: () => getFood(ID),
-                // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-                staleTime: Infinity,
-            }] : [],
-        combine: (results) => {
-            if (!results) return
-            return {
-                data: results?.map((result) => foodHandler(result.data, dataUsers.data)),
-                isPending: results.some((result) => result.isPending),
-                isLoading: results.some((result) => result.isLoading),
-                isSuccess: results.some((result) => result.isSuccess),
-                status: results.some((result) => result.status),
-                isFetched: results.some((result) => result.isFetched),
-            }
-        },
-    })
-
-
-    const dataSteps = useQueries({
-
-        queries: dataFood.isLoading == false
-
-            ? dataFood?.data[0].steps?.map((id) => ({
-                queryKey: ["steps", id],
-                queryFn: () => getStep(id),
-                // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-                staleTime: Infinity,
-
-            })) : [],
-        combine: (results) => {
-            if (!results) return
-            return {
-                data: results?.map((result) => result.data).map((data) => { return Object.assign({ ...data }, { statusDelete: false }) })
-                    .sort(function (a, b) {
-                        return a.position - b.position;
-                    })
-                ,
-                isPending: results.some((result) => result.isPending),
-                isLoading: results.some((result) => result.isLoading),
-                isSuccess: results.some((result) => result.isSuccess),
-                status: results.some((result) => result.status),
-                isFetched: results.some((result) => result.isFetched),
-            }
-        },
-    })
-
-
-    const dataUrl = useQueries({
-
-        queries: dataFood.isLoading == false
-
-            ? dataFood?.data[0].urls?.map((id) => ({
-                queryKey: ["url", id],
-                queryFn: () => getUrl(id),
-                // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-                staleTime: Infinity,
-
-            })) : [],
-        combine: (results) => {
-            if (!results) return
-            return {
-                data: results?.map((result) => result.data).map((data) => { return Object.assign({ ...data }, { statusDelete: false }) }),
-                isPending: results.some((result) => result.isPending),
-                isLoading: results.some((result) => result.isLoading),
-                isSuccess: results.some((result) => result.isSuccess),
-                status: results.some((result) => result.status),
-                isFetched: results.some((result) => result.isFetched),
-            }
-        },
-    })
-
-    const dataIngredient = useQuery({
-        queryKey: ["ingredient"],
-        queryFn: getIngredient,
-    })
-
-    const dataUnit = useQuery({
-        queryKey: ["unit"],
-        queryFn: getUnit
-    })
-
-    function ingredientsDownl(backEndIngredients, backEndUnit, backEndIngredient) {
+    function ingredientsListDownl(backEndFood, backEndIngredients, backEndUnit, backEndIngredient) {
         let ingredients = []
-        backEndIngredients?.map((e) => {
-            backEndUnit?.map((u) => {
-                if (u.id == e.data?.units) {
-                    backEndIngredient?.map((i) => {
-                        if (i.id == e.data.ingredientName) {
-                            ingredients.push({
-                                id: e.data?.id,
-                                quantity: e.data.quantity,
-                                unit: [u],
-                                ingredient: [i],
-                                position: e.data.position,
-                                statusDelete: false
+        backEndFood?.ingredients?.map((datatags) => {
+            backEndIngredients?.map((e) => {
+                if (e?.id == datatags) {
+                    backEndUnit?.map((u) => {
+                        if (u?.id == e?.units) {
+                            backEndIngredient?.map((i) => {
+                                if (i?.id == e?.ingredientName) {
+                                    ingredients.push({
+                                        id: e.id,
+                                        quantity: e.quantity,
+                                        unit: [u],
+                                        ingredient: [i],
+                                        position: e.position,
+                                        statusDelete: false
+                                    })
+                                }
                             })
                         }
                     })
                 }
-            })
-            // }
-        }
-        )
-        // })
+            }
+            )
+        })
         ingredients.sort(function (a, b) {
             return a.position - b.position;
         })
@@ -190,49 +128,26 @@ export default function SubmitFood(props) {
         return ingredients
     }
 
-    const dataIngredients = useQueries({
-
-        queries: dataFood.isLoading == false
-            && dataIngredient.isLoading == false
-            && dataUnit.isLoading == false
-
-            ? dataFood?.data[0].ingredients?.map((id) => ({
-                queryKey: ["ingredients", id],
-                queryFn: () => getIngredientsID(id),
-                // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-                staleTime: Infinity,
-            })) : [],
-        combine: (results) => {
-            if (!results) return
-            return {
-                data: ingredientsDownl(results, dataUnit.data, dataIngredient.data),
-                isPending: results.some((result) => result.isPending),
-                isLoading: results.some((result) => result.isLoading),
-                isSuccess: results.some((result) => result.isSuccess),
-                status: results.some((result) => result.status),
-                isFetched: results.some((result) => result.isFetched),
-            }
-        },
-    })
-
-    const [name, setName] = useState(dataFood.data[0].name)
-    const [stepsList, setStepsList] = useState(dataSteps.data)
-    const [ingredientsList, setIngredientsList] = useState(dataIngredients.data)
-    const [urlList, setUrlList] = useState(dataUrl.data)
-    const food_form = useEmailFormSubmit(dataFood.data[0], dataSteps.data, dataIngredients.data, dataUrl.data)
-
-
     useEffect(() => {
-        setName(dataFood.data[0].name)
-        setStepsList(dataSteps.data);
-        setIngredientsList(dataIngredients.data)
-        setUrlList(dataUrl.data)
+        if (!foodQf.isLoading &&
+            !stepsQf.isLoading &&
+            !ingredientQf.isLoading &&
+            !ingredientsQf.isLoading &&
+            !unitsQf.isLoading &&
+            !urlsQf.isLoading) {
+            setName(foodQf.data.name);
+            setStepsList(itemListDownl(foodQf.data.steps, stepsQf.data, true),);
+            setIngredientsList(ingredientsListDownl(foodQf.data, ingredientsQf.data, unitsQf.data, ingredientQf.data));
+            setUrlList(itemListDownl(foodQf.data.urls, urlsQf.data, false),)
+        }
     },
         [
-            dataFood.data,
-            dataSteps.data,
-            dataIngredients.data,
-            dataUrl.data,
+            foodQf.isLoading,
+            stepsQf.isLoading,
+            ingredientsQf.isLoading,
+            urlsQf.isLoading,
+            ingredientQf.isLoading,
+            unitsQf.isLoading
         ]
     );
     async function sendEmail(e) {
@@ -272,8 +187,6 @@ export default function SubmitFood(props) {
 
             setSuccess(true)
             setIsLoading(false)
-            // navigate(from, { replace: true });
-            // navigate(from, { replace: true });
         }
         catch (err) {
             if (!err?.response) {
@@ -290,35 +203,50 @@ export default function SubmitFood(props) {
     };
 
     return (
-        <>
+        <>       <div className={styla.main}>
+            <div className={styla.boxcontainer}>
+                <div className={style.messagebox}>
+                    { }</div>
+                <div className={styla.buttonBox} >
+
+
+                    <div className={styla.foodButton}
+                    >
+                        <FontAwesomeIcon
+                            onClick={() => navigate(-1)}
+                            icon={faBackward}
+
+                        />
+                    </div>
+                </div>
+            </div>
             {success ? (
                 <main className={style.main}>
                     <section>
                         <h1>Email bol úspešne odoslaný!</h1>
                         <h1>Chce ist spat na recept? </h1>
-
-                        <p>
-                            <a href="recepty">Spat</a>
-                        </p>
+                        <button onClick={goBack}>Späť</button>
+                        {/* <p>
+                            <a href="">Spat</a>
+                        </p> */}
                     </section>
                 </main>
             ) : (
-                <main className={style.App} >
-                     <section>
-                     <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
-                    <h2>Odoslat email</h2>
-                    {/* <div className={isLoading ? style.loadingContainer : style.offscreen}>
+                <div className={style.MainApp} >
+                    <section>
+
+                        {/* <div className={isLoading ? style.loadingContainer : style.offscreen}>
                         <FontAwesomeIcon
                             className={style.loadingIcon}
                             icon={faSpinner}
                             id="inpFileIcon"
                             spin ></FontAwesomeIcon>
                     </div> */}
-                    {/* <div > */}
-                    {/* <div className={!isLoading ? style.onscreen : style.offscreen} > */}
+                        {/* <div > */}
+                        {/* <div className={!isLoading ? style.onscreen : style.offscreen} > */}
                         <form className={!isLoading ? style.onscreen : style.offscreen} ref={form} onSubmit={sendEmail} id='food_form'>
-                            {/* <label>Name</label>
-                        <input type="text" name="user_name" /> */}
+                            <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
+                            <h1>Odoslať email</h1>
                             <label className={style.label} htmlFor="email">
                                 Email :
                                 <FontAwesomeIcon icon={faCheck} className={validEmail ? style.valid : style.hide} />
@@ -347,9 +275,6 @@ export default function SubmitFood(props) {
 
                                 </p>
                             </div>
-
-                            {/* <label>Správa : </label>
-                        <textarea name="message" /> */}
                             <label className={style.label} htmlFor="message">
                                 Správa:
 
@@ -357,73 +282,55 @@ export default function SubmitFood(props) {
                             <div className={style.inputbox} >
                                 <textarea
                                     type="text"
-                                    // className={style.input}
                                     id="message"
-                                    // ref={first_name_Ref}
                                     autoComplete="off"
                                     onChange={(e) => setMessage(e.target.value)}
                                     value={message}
                                     required
-                                    // aria-invalid={validFirst_name ? "false" : "true"}
                                     aria-describedby="uidnote"
-                                // onFocus={() => setFirst_nameFocus(true)}
-                                // onBlur={() => setFirst_nameFocus(false)}
+
                                 />
-                                {/* <p id="uidnote" className={first_nameFocus && first_name && !validFirst_name ? style.instructions : style.offscreen}>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                                4 to 24 characters.<br />
-                                Must begin with a letter.<br />
-                                Letters, numbers, underscores, hyphens allowed.
-                            </p> */}
                             </div>
 
                             <button disabled={!validEmail ? true : false}>Odoslať</button>
-                            <div>Ukážka</div>
-                            <label className={style.label} htmlFor="name">Nazov:</label>
-                            <input
-                                className={style.input}
-                                id="name"
-                                value={name}
-                                type="text"
-                                maxLength="300"
-                            //   onChange={handleNameChange}
-                            // onClick={handleAddToNameTagList}
-                            />
-                            <div style={{width:"500px"}}>
-                            <IngredientInput
-                                ingredientsList={ingredientsList}
-                                component={component}
-                            ></IngredientInput>
-                            <StepsInput
-                                // stepMove={stepMove}
-                                // addStepToTagList={addStepToTagList}
-                                // updateStepInTagList={updateStepInTagList}
-                                stepsList={stepsList}
-                                // stepsSetIDState={stepsSetID}
-                                // deleteStep={makeSteptoDelete}
-                                component={component}
-                            ></StepsInput>
-                            <UrlInput
-                                urlList={urlList}
-                                component={component}
-                            >
-                            </UrlInput>
-                            </div>
-  
-                            {/* <input type="submit" value="Send" /> */}
+
+                             {/* <h4>Ukážka</h4>
+                            <div className={style.foodnameView}>Nazov: {name}
+                            <br />
+                                <br />
+                                Suroviny:
+                                <IngredientInput
+                                    ingredientsList={ingredientsList}
+                                    component={component}
+                                ></IngredientInput>
+                                <br />       <br />
+                                Postup:
+                                <StepsInput
+                                    stepsList={stepsList}
+                                    component={component}
+                                ></StepsInput>
+                                <br />       <br />
+                                URL:
+                                <UrlInput
+                                    urlList={urlList}
+                                    component={component}
+                                >
+                                </UrlInput>
+                         
+                            </div>  */}
                         </form>
+                        {/* <p> */}
+                        {/* Spat na recept?<br /> */}
+                        {/* <span className={style.line}> */}
+                        {/* <button onClick={goBack}>Späť</button> */}
+                        {/* <a onClick={goBack} style={{ cursor: "pointer" }}>Spat</a> */}
+                        {/* </span> */}
+                        {/* </p> */}
                         {/* </div> */}
-                        <p>
-                            Spat na recept?<br />
-                            <span className={style.line}>
-                                {/*put router link here*/}
-                                <a href="login">Spat</a>
-                            </span>
-                        </p>
-                    {/* </div> */}
                     </section>
-                </main>
+                </div>
             )}
+        </div>
         </>
     );
 };

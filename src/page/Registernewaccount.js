@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect ,useReducer} from "react";
-import { faCheck, faTimes, faInfoCircle,faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useRef, useState, useEffect, useReducer } from "react";
+import { faCheck, faTimes, faInfoCircle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "./Register.module.css";
 import axios from "../api/axios";
@@ -58,17 +58,23 @@ export default function RegisterNewAccount() {
         first_name_Ref.current.focus();
     }, [])
 
-    useEffect(() => {
-        last_name_Ref.current.focus();
-    }, [])
 
-    // useEffect(() => {
-    //     user_name_Ref.current.focus();
-    // }, [])
+    function first_nameKeyDown(event) {
+        if (event.key === "Enter") {
+            last_name_Ref.current.focus();
+        }
+    }
 
-    useEffect(() => {
-        emailRef.current.focus();
-    }, [])
+    function last_nameKeyDown(event) {
+        if (event.key === "Enter") {
+            emailRef.current.focus();
+        }
+    }
+
+
+
+
+
 
     useEffect(() => {
         setValidFirst_name(USER_REGEX.test(first_name));
@@ -78,71 +84,55 @@ export default function RegisterNewAccount() {
         setValidLast_name(USER_REGEX.test(last_name));
     }, [last_name])
 
-    // useEffect(() => {
-    //     setValidUser_name(USER_REGEX.test(user_name));
-    // }, [user_name])
+
 
     useEffect(() => {
         setValidEmail(EMAIL_REGEX.test(email));
     }, [email])
 
-    // useEffect(() => {
-    //     setValidPwd(PWD_REGEX.test(pwd));
-    //     setValidMatch(pwd === matchPwd);
-    // }, [pwd, matchPwd])
+
 
     useEffect(() => {
         setErrMsg('');
-    }, [first_name, last_name,  email])
-    // }, [first_name, last_name, user_name, email, pwd, matchPwd])
+    }, [first_name, last_name, email])
+
 
     async function handleSubmit(e) {
         e.preventDefault();
         setIsLoading(true)
         const controller = new AbortController();
-        // if button enabled with JS hack
+
         const v1 = USER_REGEX.test(first_name);
         const v2 = USER_REGEX.test(last_name);
-        // const v3 = USER_REGEX.test(user_name);
-        // const v4 = PWD_REGEX.test(pwd);
-        const v5 = EMAIL_REGEX.test(email);
-        if (!v1 || !v2 ||  !v5) {
+        const v3 = EMAIL_REGEX.test(email);
+        if (!v1 || !v2 || !v3) {
             setErrMsg("Invalid Entry");
             return;
         }
         try {
-            const response = await axiosPrivate.post(REGISTER_URL, 
+            const response = await axiosPrivate.post(REGISTER_URL,
                 JSON.stringify({ first_name: first_name, last_name: last_name, email: email }),
                 {
-                signal: controller.signal
-            })
+                    signal: controller.signal
+                })
             console.log(response);
-            // console.log("response :", response);
-            // console.log(response?.accessToken);
-            console.log(JSON.stringify(response))
             setSuccess(true);
             setIsLoading(false)
-            //clear state and controlled inputs
-            //need value attrib on inputs for this
+
             setFirst_name('');
             setLast_name('');
-            // setUser_name('');
             setEmail('');
-            // setPwd('');
-            // setMatchPwd('');
+ 
         } catch (err) {
 
             if (!err?.response) {
                 setErrMsg('No Server Response');
             }
-            // else if (err.response?.status === 409 && err.response?.status === "username") {
-            //     setErrMsg('Tento "username" je uz zaregistrovany');
-            // } 
             else if (err.response?.status === 409) {
-                setErrMsg(`Tento ${err.response?.data.message} je uz zaregistrovany`);
+                setErrMsg(`Tento ${err.response?.data.message} je už zaregistrovaný`);
             }
             else {
-                setErrMsg('Registration Failed')
+                setErrMsg('Registrácia zlyhala')
             }
             errRef.current.focus();
         }
@@ -170,128 +160,103 @@ export default function RegisterNewAccount() {
                                 icon={faSpinner}
                                 id="inpFileIcon"
                                 spin ></FontAwesomeIcon>
-                        </div> 
+                        </div>
                         <form onSubmit={handleSubmit} className={!isLoading ? style.onscreen : style.offscreen}>
                             <CSRFToken />
                             <div>
-                            <label className={style.label} htmlFor="first_name">
-                                Meno:
-                                <FontAwesomeIcon icon={faCheck} className={validFirst_name ? style.valid : style.hide} />
-                                <FontAwesomeIcon icon={faTimes} className={validFirst_name || !first_name ? style.hide : style.invalid} />
-                            </label>
-                            <div className={style.inputbox} >
-                            <input
-                                type="text"
-                                className={style.input}
-                                id="first_name"
-                                ref={first_name_Ref}
-                                autoComplete="off"
-                                onChange={(e) => setFirst_name(e.target.value)}
-                                value={first_name}
-                                required
-                                aria-invalid={validFirst_name ? "false" : "true"}
-                                aria-describedby="uidnote"
-                                onFocus={() => setFirst_nameFocus(true)}
-                                onBlur={() => setFirst_nameFocus(false)}
-                            />
-                            <p id="uidnote" className={first_nameFocus && first_name && !validFirst_name ? style.instructions : style.offscreen}>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                                4 to 24 characters.<br />
-                                Must begin with a letter.<br />
-                                Letters, numbers, underscores, hyphens allowed.
-                            </p>
-                            </div>
-                            <label className={style.label} htmlFor="last_name">
-                                Priezvisko:
-                                <FontAwesomeIcon icon={faCheck} className={validLast_name ? style.valid : style.hide} />
-                                <FontAwesomeIcon icon={faTimes} className={validLast_name || !last_name ? style.hide : style.invalid} />
-                            </label>
-                            <div className={style.inputbox} >
-                            <input
-                                type="text"
-                                className={style.input}
-                                id="last_name"
-                                ref={last_name_Ref}
-                                autoComplete="off"
-                                onChange={(e) => setLast_name(e.target.value)}
-                                value={last_name}
-                                required
-                                aria-invalid={validLast_name ? "false" : "true"}
-                                aria-describedby="uidnote"
-                                onFocus={() => setLast_nameFocus(true)}
-                                onBlur={() => setLast_nameFocus(false)}
-                            />
-                            <p id="uidnote" className={last_nameFocus && last_name && !validLast_name ? style.instructions : style.offscreen}>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                                4 to 24 characters.<br />
-                                Must begin with a letter.<br />
-                                Letters, numbers, underscores, hyphens allowed.
-                            </p>
-                            </div>
-                            {/* <label className={style.label} htmlFor="user_name">
-                                Meno:
-                                <FontAwesomeIcon icon={faCheck} className={validUser_name ? style.valid : style.hide} />
-                                <FontAwesomeIcon icon={faTimes} className={validUser_name || !user_name ? style.hide : style.invalid} />
-                            </label>
-                            <div className={style.inputbox} >
-                            <input
-                                type="text"
-                                className={style.input}
-                                id="user_name"
-                                ref={user_name_Ref}
-                                autoComplete="off"
-                                onChange={(e) => setUser_name(e.target.value)}
-                                value={user_name}
-                                required
-                                aria-invalid={validUser_name ? "false" : "true"}
-                                aria-describedby="uidnote"
-                                onFocus={() => setUser_nameFocus(true)}
-                                onBlur={() => setUser_nameFocus(false)}
-                            />
-                            <p id="uidnote" className={user_nameFocus && user_name && !validUser_name ? style.instructions : style.offscreen}>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                                4 to 24 characters.<br />
-                                Must begin with a letter.<br />
-                                Letters, numbers, underscores, hyphens allowed.
-                            </p>
-                            </div> */}
-                            <label className={style.label} htmlFor="email">
-                                Email:
-                                <FontAwesomeIcon icon={faCheck} className={validEmail ? style.valid : style.hide} />
-                                <FontAwesomeIcon icon={faTimes} className={validEmail || !email ? style.hide : style.invalid} />
-                            </label>
-                            <div className={style.inputbox} >
-                            <input
-                                type="email"
-                                className={style.input}
-                                id="email"
-                                ref={emailRef}
-                                placeholder="email@gmail.com"
-                                autoComplete="off"
-                                onChange={(e) => setEmail(e.target.value)}
-                                value={email}
-                                required
-                                aria-invalid={validEmail ? "false" : "true"}
-                                aria-describedby="uidnote"
-                                onFocus={() => setEmailFocus(true)}
-                                onBlur={() => setEmailFocus(false)}
-                            />
-                            <p id="uidnote" className={emailFocus && email && !validEmail ? style.instructions : style.offscreen}>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                                Povolené znaky: <br />- písmená, číslice, bodky<br />- symbol „@“,<br />
-                                - .sk .com, .org, .cc<br />
+                                <label className={style.label} htmlFor="first_name">
+                                    Meno:
+                                    <FontAwesomeIcon icon={faCheck} className={validFirst_name ? style.valid : style.hide} />
+                                    <FontAwesomeIcon icon={faTimes} className={validFirst_name || !first_name ? style.hide : style.invalid} />
+                                </label>
+                                <div className={style.inputbox} >
+                                    <input
+                                        type="text"
+                                        className={style.input}
+                                        id="first_name"
+                                        ref={first_name_Ref}
+                                        onKeyDown={first_nameKeyDown}
+                                        autoComplete="off"
+                                        onChange={(e) => setFirst_name(e.target.value)}
+                                        value={first_name}
+                                        required
+                                        aria-invalid={validFirst_name ? "false" : "true"}
+                                        aria-describedby="uidnote"
+                                        onFocus={() => setFirst_nameFocus(true)}
+                                        onBlur={() => setFirst_nameFocus(false)}
+                                    />
+                                    <p id="uidnote" className={first_nameFocus && first_name && !validFirst_name ? style.instructions : style.offscreen}>
+                                        <FontAwesomeIcon icon={faInfoCircle} />
+                                        4 to 24 characters.<br />
+                                        Must begin with a letter.<br />
+                                        Letters, numbers, underscores, hyphens allowed.
+                                    </p>
+                                </div>
+                                <label className={style.label} htmlFor="last_name">
+                                    Priezvisko:
+                                    <FontAwesomeIcon icon={faCheck} className={validLast_name ? style.valid : style.hide} />
+                                    <FontAwesomeIcon icon={faTimes} className={validLast_name || !last_name ? style.hide : style.invalid} />
+                                </label>
+                                <div className={style.inputbox} >
+                                    <input
+                                        type="text"
+                                        className={style.input}
+                                        id="last_name"
+                                        ref={last_name_Ref}
+                                        onKeyDown={last_nameKeyDown}
+                                        autoComplete="off"
+                                        onChange={(e) => setLast_name(e.target.value)}
+                                        value={last_name}
+                                        required
+                                        aria-invalid={validLast_name ? "false" : "true"}
+                                        aria-describedby="uidnote"
+                                        onFocus={() => setLast_nameFocus(true)}
+                                        onBlur={() => setLast_nameFocus(false)}
+                                    />
+                                    <p id="uidnote" className={last_nameFocus && last_name && !validLast_name ? style.instructions : style.offscreen}>
+                                        <FontAwesomeIcon icon={faInfoCircle} />
+                                        4 to 24 characters.<br />
+                                        Must begin with a letter.<br />
+                                        Letters, numbers, underscores, hyphens allowed.
+                                    </p>
+                                </div>
+                                <label className={style.label} htmlFor="email">
+                                    Email:
+                                    <FontAwesomeIcon icon={faCheck} className={validEmail ? style.valid : style.hide} />
+                                    <FontAwesomeIcon icon={faTimes} className={validEmail || !email ? style.hide : style.invalid} />
+                                </label>
+                                <div className={style.inputbox} >
+                                    <input
+                                        type="email"
+                                        className={style.input}
+                                        id="email"
+                                        ref={emailRef}
+                                        placeholder="email@gmail.com"
+                                        autoComplete="off"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        value={email}
+                                        required
+                                        aria-invalid={validEmail ? "false" : "true"}
+                                        aria-describedby="uidnote"
+                                        onFocus={() => setEmailFocus(true)}
+                                        onBlur={() => setEmailFocus(false)}
+                                    />
+                                    <p id="uidnote" className={emailFocus && email && !validEmail ? style.instructions : style.offscreen}>
+                                        <FontAwesomeIcon icon={faInfoCircle} />
+                                        Povolené znaky: <br />- písmená, číslice, bodky<br />- symbol „@“,<br />
+                                        - .sk .com, .org, .cc<br />
 
-                            </p>
+                                    </p>
+                                </div>
                             </div>
-                            </div>
-                            <button disabled={!validFirst_name || !validLast_name || !validEmail  ? true : false}>Odoslať</button>
+                            <button disabled={!validFirst_name || !validLast_name || !validEmail ? true : false}>Odoslať</button>
                         </form>
-    
+
                         {/* <p>
                             Ste už registrovaný?<br />
                             <span className={style.line}> */}
-                                {/*put router link here*/}
-                                {/* <a href="login">Prihlásiť sa</a>
+                        {/*put router link here*/}
+                        {/* <a href="login">Prihlásiť sa</a>
                             </span>
                         </p> */}
                     </section></main>

@@ -1,6 +1,7 @@
 .button {
     font-size: medium;
     margin: 1px;
+    width: 40px;
     border-radius: 50%;
     background-color: transparent;
     border-color: transparent;
@@ -16,6 +17,4 @@
     color: white;
     background-color: rgba(26, 25, 25, 0.651);
     border-radius: 50%;
-    
-    /* background-color: orange; */
 }

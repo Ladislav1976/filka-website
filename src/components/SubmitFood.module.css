@@ -1,15 +1,11 @@
 .main {
     display: flex;
     min-width: 100vw;
-    /* min-height: 100vh; */
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: auto;
     padding: 1rem 0.5rem;
-    /* background-color: rgb(228, 249, 255); */
-    /* background-image: url(D:\SCRIPTS\filka-website\filka-website\src\image\1685519116-asian-cuisine-ingredients-food-background-ginger-2023-05-09-20-34-33-utc.webp);
-    background-size: cover; */
 }
 
 
@@ -52,14 +48,11 @@ button {
 .instructions {
     position: absolute;
     top: 38px;
-    /* z-index:100; */
     font-size: 0.75rem;
     border-radius: 0.5rem;
     background: #000;
     color: #fff;
     padding: 0.25rem;
-    /* position: relative; */
-    /* bottom: 40px; */
     width: 280px;
     z-index: 1;
 }

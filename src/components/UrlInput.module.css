@@ -27,34 +27,19 @@
 }
 
 .urlEditView {
-  /* margin: 0;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%)translateX(-100%); */
-
-  /* margin: 0;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%); */
   width: 645px;
-
 }
 
-/* .urlEditView{
-    margin-top: 15px;
-  } */
 
 .urlid {
-  /* margin-left */
-  /* height: 30px; */
   text-align: center;
-
+  margin-left: var(--marginLeft);
+  margin-right: 10px;
 }
 
-.urlid,
+
 .urlTextView {
-  margin-left: var(--marginLeft);
+  padding-left: 10px;
   width: 25px;
 
 }
@@ -66,9 +51,6 @@
 
 a:link,
 a:visited {
-  /* background-color: #f44336; */
-  /* color: white; */
-  /* padding: 10px 10px; */
   text-align: start;
   text-decoration: none;
   display: inline-block;
@@ -82,10 +64,6 @@ a:active {
   color: var(--orange);
 }
 
-/* .urlBox {
-    display: flex;
-    flex-direction: column;
-  } */
 
 .formLabel {
   margin: auto;
@@ -94,6 +72,7 @@ a:active {
 .urlTextContainer {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .urlContainer,
@@ -107,7 +86,6 @@ a:active {
 }
 
 .urlBox {
-  /* width: 670px; */
   border-radius: 5px;
   font-size: 14px;
   background-color: white
@@ -122,9 +100,7 @@ a:active {
 .iconBox {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   justify-content: flex-start;
-
 }
 
 
@@ -133,10 +109,7 @@ a:active {
 .deleteIcon,
 .newUrlIcon,
 .editIcon {
-
   position: relative;
-  /* display: flex;
-  align-items: center; */
   justify-content: center;
   border-color: rgb(233, 229, 229);
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande";

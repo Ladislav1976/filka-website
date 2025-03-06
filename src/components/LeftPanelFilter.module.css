@@ -11,17 +11,14 @@
 }
 
 .firstColumn {
+
     display: flex;
     flex-direction: column;
     background-color: white;
-    height: 100%;
-    /* background-color: var(--whitesmoke); */
-    /* background-color: rgb(245, 214, 173); */
     min-width: 210px;
-    overflow: hidden;
-position: sticky;
-    left:0;top:255px; 
-
+    /* flex-grow: 1; */
+    
+    border-right: var(--border3px);
 }
 
 .food {
@@ -116,20 +113,6 @@ position: sticky;
     }
 }
 
-/* .checkboxContainer:hover {
-    background-color: rgb(255, 228, 177);
-} */
-
-
-/* .checkBoxOpennerDown{
-    opacity: 1;
-}
-.checkBoxOpennerUp{
-    visibility: hidden;
-    transition: all 2s ease-out;
-    opacity: 0;  
-
-} */
 
 
 .checkboxContainerChild,
@@ -140,8 +123,6 @@ position: sticky;
     height: 34px;
     align-items: center;
     padding: auto;
-    /* margin: 0px 0px 0px 40px; */
-
 }
 
 .checkboxContainerChild:hover {
@@ -160,9 +141,6 @@ position: sticky;
     border-bottom: var(--border)
 }
 
-/* .checkboxContainerChild:hover {
-    background-color: orange;
-} */
 
 
 .labelView,
@@ -179,12 +157,9 @@ position: sticky;
 .labelParentsActive,
 .labelParentsNoNActive {
     position: absolute;
-    /* top: auto; */
     font-size: 14px;
     min-width: 180px;
-    /* padding:auto;
-    margin: auto; */
-    /* cursor: pointer;  */
+
 }
 
 .labelParentsActive {
@@ -195,20 +170,13 @@ position: sticky;
 
 .down,
 .up {
-
     position: relative;
     display: flex;
     align-items: center;
     text-align: center;
-    /* display: flex;
-    align-items: center; */
+
     justify-content: center;
     color: rgb(68, 68, 68);
-    /* padding-top: 5px;
-    padding-bottom: 5px; */
-    /* padding: 5px; */
-    /* transition: 0.6s ease; */
-    /* border-radius: .3rem; */
     border-radius: 50%;
     user-select: none;
     -webkit-user-select: none;
@@ -257,90 +225,11 @@ position: sticky;
 }
 
 
-
-
 .checkboxInput {
     display: none;
 }
-
-/* .foodMaso {
-    margin: 0px 0px 0px 40px;
-} */
 
 .tagQuantity {
     font-size: 8px;
 }
 
-.inputbox {
-    /* display: flex; */
-    /* justify-content:space-between; */
-    /* flex-direction: column; */
-}
-
-/* .container {
-    display: flex;
-    justify-content: space-around;
-    width: 992px;
-}
-
-.btn {
-    padding: 0.5rem 1.5rem;
-    border: none;
-    outline: none;
-    background-color: #0f81fb;
-    color: #f3f3f3;
-    border-radius: 3px;
-}
-
-.btn.active {
-    box-shadow: 0 0 0 0.125rem rgba(13, 128, 250, 0.5);
-}
-
-.dropwrapper {
-    position: relative;
-}
-
-.dropmenu {
-    display: none;
-    position: absolute;
-    width: 150px;
-    border: 1px solid #ccc;
-    box-shadow: 1px 1px 3px 0 #ccc;
-}
-
-.dropmenu:active {
-    display: block;
-}
-
-.dropdown {
-    top: 100%;
-    margin-top: 0.125rem;
-}
-
-li {
-    list-style-type: none;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-a {
-    color: var(--text-color);
-    text-decoration: none;
-}
-
-.navbar {
-    height: var(--nav-size);
-    background-color: var(--bg);
-    padding: 0 1rem;
-    border-bottom: var(--border);
-}
-
-.navbarnav {
-    max-width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: flex-end;
-
-
-} */

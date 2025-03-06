@@ -10,7 +10,6 @@ function Url(props) {
     const [url, setUrl] = useState(props.url);
 
 
-
     function handleUpdateUrl(event) {
         if (urlDefault == "") {
             setUrlDefault(url)
@@ -41,6 +40,7 @@ function Url(props) {
         {props.component === "viewcomponent" &&
             <>
                 <div className={style.urlTextContainer}>
+                <div className={style.urlid} >{props.index + 1}.</div>
                     <div >
                         <a
                             className={style.urlTextView}
@@ -53,9 +53,6 @@ function Url(props) {
         {(props.component === "editcomponent" || props.component === "newcomponent") &&
             <>
                 <div className={style.urlid} >{props.index + 1}.</div>
-
-                {/* <form > */}
-                {/* <label className={style.formLabel} htmlFor="url"></label> */}
                 <input
                     className={style.urlEditView}
                     value={url.url}
@@ -65,13 +62,7 @@ function Url(props) {
                     name="url"
                     size={50}
                     onChange={handleUpdateUrl}
-
-
                 />
-                {/* </form> */}
-
-
-
                 <div className={style.iconBox} >
                     <div className={urlDefault == "" ? style.OKIcon : style.editIcon} datatooltip={urlDefault == "" ? "OK" : "Uložiť"} >
                         <FontAwesomeIcon
@@ -132,20 +123,21 @@ export default function UrlInput(props) {
     }
     let urlListRender = []
 
-    let id = 0
+   
     urlList?.map((url, index) => {
         if (url.statusDelete === false) {
             urlListRender.push(
                 <Url
                     url={url}
-                    key={id}
+                    key={url.id}
                     index={index}
+                    urlList={urlList}
                     component={component}
                     handleUrlDelete={handleUrlDelete}
                     updateUrlList={props.updateUrlList}
                  
                 />)
-            id++;
+         
         }
     })
 

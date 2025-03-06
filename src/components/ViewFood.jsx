@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate,useLocation } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
-import ImageDeleteError from "../reports/ImageDeleteError";
 import SaveError from "../reports/SaveError";
 import Lightbox from "./Lightbox";
 import style from "./NewFood.module.css";
@@ -15,20 +13,12 @@ import Image from "./Image";
 import UrlInput from "./Url";
 import Modal from "../reports/Modal";
 import ModalPreview from "../reports/ModalPreview";
-import { useGet, useMutate } from "restful-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faFloppyDisk, faPenToSquare, faBackward, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faPenToSquare, faBackward, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
-
-
-
-
 import useAuth from "../hooks/useAuth";
-
-import useGetAuth from "../hooks/use-get-auth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useQueriesItems } from "../hooks/Queries/useQueriesItems";
-
 import { useSteps } from "../hooks/Queries/useSteps";
 import { useIngredients } from "../hooks/Queries/useIngredients";
 import { useImages } from "../hooks/Queries/useImages";
@@ -54,8 +44,11 @@ function ViewFood(props) {
 
     const component = "viewcomponent"
     const navigate = useNavigate()
+    const location = useLocation();
+    const foods = location.state?.foods.pathname+location.state?.foods.search || "/";
 
-
+    const goBack = () => navigate(foods);
+    
 
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
@@ -65,7 +58,7 @@ function ViewFood(props) {
     const [imgLoader, setImgLoader] = useState(0)
     const [isVisibleEdit, setIsVisibleEdit] = useState(false)
 
-console.log("imgLoader :",imgLoader)
+
 
 
 
@@ -143,7 +136,7 @@ console.log("imgLoader :",imgLoader)
             setImgLoader(imagesQf.data.length)
 
         }
-    }, [ imagesQf.data
+    }, [imagesQf.data
     ])
 
     useEffect(() => {
@@ -199,19 +192,21 @@ console.log("imgLoader :",imgLoader)
     }
 
 
-    if (usersQf.isLoading || foodQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading || urlsQf.isLoading || tagsQf.isLoading || stepsQf.isLoading || ingredientsQf.isLoading || imagesQf.isLoading ) return     <div className={style.loadingContainer}>
-            <FontAwesomeIcon
-                className={style.loadingIcon}
-                icon={faSpinner}
-                id="inpFileIcon"
-                spin ></FontAwesomeIcon>
-        </div>
-
-
 
     return (<>
 
-        <div className={style.main}>
+        {(usersQf.isLoading || foodQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading || urlsQf.isLoading || tagsQf.isLoading || stepsQf.isLoading || ingredientsQf.isLoading || imagesQf.isLoading) ? (
+                
+                <div className={style.loadingContainer}>
+                    <FontAwesomeIcon
+                        className={style.loadingIcon}
+                        icon={faSpinner}
+                        id="inpFileIcon"
+                        spin ></FontAwesomeIcon>
+                </div>
+           ): 
+            
+            (<div className={style.main}>
             {/* <div className={style.header}>RECEPT</div> */}
             <div className={style.boxcontainer}>
                 <div className={style.messagebox}>
@@ -225,12 +220,12 @@ console.log("imgLoader :",imgLoader)
 
                         />
                     </div>
-                   
+
                     <div className={style.foodButton}>
                         {/* datatooltip="Upraviť" */}
                         <FontAwesomeIcon
                             onClick={() => navigate(`/recepty/${id.id}/edit`)}
-                    
+
                             icon={faPenToSquare}
 
                         />
@@ -238,22 +233,20 @@ console.log("imgLoader :",imgLoader)
                     <div className={style.foodButton} >
                         {/* datatooltip="Upraviť" */}
                         <FontAwesomeIcon
-                            onClick={() => navigate(`/recepty/?page_size=${20}`)}
+                            onClick={() => goBack()}//`/recepty/?page_size=${20}`
                             icon={faBackward}
-
                         />
                     </div>
                 </div>
             </div>
             <div className={style.fooodbox} >
-            {/* <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} > */}
+                {/* <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} > */}
                 <LeftPanelFilter
                     onFoodTagSet={foodTagSet}
                     foodTagsBox={null}
                     component={component}
-
+                    handleAddTagToFoodTagsList={() => { return }}
                 />
-
                 <div className={style.secondColumn}>
                     <div className={style.ingredients}>
                         <p>Suroviny:</p>
@@ -262,96 +255,29 @@ console.log("imgLoader :",imgLoader)
                             component={component}
                         ></IngredientInput>
                     </div>
-                            {/* <div className={style.images} id="imagePreview">
-                    {imagePreview}
-                    <span className={style.imagePreview__defaultText}>
-                    Image Preview
-                    </span>
-                </div> */}
 
-                    {/* {component === "editcomponent" && <input
-                        // className={style.imageinput}
-                        className={style.imageinput}
-                        type="file"
-                        multiple
-                        accept="image/jpeg,image/png,image/gif"
-                        id="inpFile"
-                        // id="image-input"
-                        onChange={onImageChange}
-                        display="none"
-                    />} */}
-                    {/* {component === "editcomponent" && <label htmlFor="inpFile" className={style.imageIcon}
-                        datatooltip="Pridať fotografiu">
-                        <FontAwesomeIcon
+                    <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component}></Image>
 
-                            icon={faCircleArrowUp}
-                            // onClick={props.onTagDelete}
-                            id="inpFileIcon"
-                        ></FontAwesomeIcon>
-                    </label>}
-                    {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
-                        No Files chosen
-                    </p>} */}
-                    <div className={style.imagebox}>
-                        <Image  onImgLoader = {[imgLoader,setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component}></Image>
-                    </div>
                 </div>
                 <div className={style.thirdColumn}>
-                    {/* <div>
-                        <p>Nazov:</p>
-                    </div> */}
-                    {/* <div className={style.foodnameView}>{name}</div> */}
-                    {/* <input
-                        className={style.foodname}
-                        value={name}
-                        type="text"
-                        maxlength="25"
-                        onChange={handleNameChange}
-                        onClick={handleAddToNameTagList}
-                    /> */}
-
                     <div className={style.date}></div>
-
                     <div className={style.urlName}>
                         <p>URL :</p>
                     </div>
-
                     <UrlInput
                         urlList={urlList}
                         component={component}
                     >
                     </UrlInput>
-                    {/* URL: 
-                    </div>
-                    <div><a className={style.foodurlView}  href="https://www.w3schools.com/cssref/atrule_import.php" target="_blank">
-                     {"Link 1"}
-                    </a> */}
-
                     <div className={style.urlName}>
                         <p>Postup :</p>
                     </div>
                     <StepsInput
-                        // stepMove={stepMove}
-                        // addStepToTagList={addStepToTagList}
-                        // updateStepInTagList={updateStepInTagList}
                         stepsList={stepsList}
-                        // deleteStep={makeSteptoDelete}
                         component={component}
                     ></StepsInput>
                 </div>
                 <div className={style.foodnameView}>{name}</div>
-
-                                {/* <label className={style.name} htmlFor="name">Nazov:</label>
-                            <input
-                            className={style.foodname}
-                            id="name"
-                            value={name}
-                            type="text"
-                            maxLength="300"
-                            onChange={(e)=>setGetname(e.target.value)}
-                            /> */}
-
-
                 <div className={style.date}>
                     Vytvorené: <br /> {user?.map(res => res.first_name)} {user?.map(res => res.last_name)}<br />
                     {new Date(date).toLocaleDateString('sk-SK')}
@@ -359,7 +285,7 @@ console.log("imgLoader :",imgLoader)
 
             </div>
 
-        </div>
+        </div>)}
         <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
             <SaveLoading
             ></SaveLoading>
@@ -379,14 +305,9 @@ console.log("imgLoader :",imgLoader)
                 closeModal={closeModal}
                 handlerImage={handlerImage}
                 getPosition={getPosition}
-
-
-
                 modalImageDeleteErrorFlag={modalImageDeleteErrorFlag}
                 isVisibleEdit={[isVisibleEdit, setIsVisibleEdit]}
                 imagePosition={[imagePosition, setImagePosition]}
-                // putImagefood={putImagefood}
-                // pageReload={pageReload}
                 component={component}
             >
             </Lightbox>

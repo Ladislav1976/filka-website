@@ -6,7 +6,7 @@ const Layout2 = () => {
 
     return (
         <main className={style.layout}>
-            <div className={style.navsticky} >
+            <div className={style.navheader} >
                 <Navbar />
             </div>
             <Outlet />

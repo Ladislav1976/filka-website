@@ -1,13 +1,8 @@
 .loadingIcon {
-    /* display: flex;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto; */
-    /* width:100px; */
-    /* margin-left: 100px; */
+
     font-size: 3rem;
-    color: rgb(83, 75, 75);
-    /* color:white; */
+    /* color: rgb(83, 75, 75); */
+    color:white;
 
 }
 
@@ -18,14 +13,6 @@
     background-color: rgba(124, 124, 124, 0);
 }
 
-
-/* .icon{ 
-         margin-top: 100px; 
-         width:100px; 
-         margin-left: 100px; 
-         font-size: 70px;
-        color:grey ; 
-     }  */
 
 .box {
     display: flex;
@@ -41,7 +28,7 @@ h3 {
 
     text-align: center;
     color: #0f1111;
-    /* padding-bottom: 20px; */
+
 }
 
 .saveIcon {
@@ -50,23 +37,10 @@ h3 {
 }
 
 .errorIcon {
-    /* margin-top: 100px; */
-    /* width: 100px; */
-    /* margin-left: 100px; */
+
     font-size: 70px;
     color: red;
 }
-
-/* .deleteButton{  
-    font-family: rgb(95, 93, 93), "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-    font-weight: bold;
-    margin-left: 10px;
-    font-size: 16px;
-    padding: 5px 20px 5px 0px;
-    cursor: pointer;
-  }
-  .deleteButton:hover{color: rgb(255, 165, 0); } */
-
 
 
 
@@ -94,13 +68,13 @@ h3 {
     width: 100px;
 }
 
-.button13:hover {
-    background-color: #f7fafa;
+/* .button13:hover {
+    background-color: #4ba5a5;
+} */
+#yes_button13:hover {
+    background-color: rgb(235, 153, 153);
+}
+#nobutton13:hover {
+    background-color: rgb(154, 194, 121);
 }
 
-.button13:focus {
-    border-color: #008296;
-    /* box-shadow: rgba(255, 165, 0, .5) 0 2px 5px 0; */
-    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
-    outline: 0;
-}

@@ -13,8 +13,8 @@ export default function DeleteConfirm(props) {
   
       <h3>Vymazať ? </h3>
       <div>
-        <button className={style.button13} onClick={() => props.foodDelete()}>ANO</button>
-        <button className={style.button13} onClick={() => props.handlerFoodDeleteCancel()}>NIE</button>
+        <button id={style.yes_button13} className={style.button13}  onClick={() => props.foodDelete()}>ANO</button>
+        <button id={style.nobutton13} className={style.button13}  onClick={() => props.handlerFoodDeleteCancel()}>NIE</button>
 
       </div></div>
   </>

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-//just a component
+
 function Tag(props) {
   return (
     <div className={style.tag} onClick={props.onTagDelete}>
@@ -17,8 +17,7 @@ function Tag(props) {
   );
 }
 
-//also a component
-// TODO: style everytnig
+
 export default function TagInput(props) {
   const [searchedTag, setSearchedTag] = useState("");
   const [filterTagList, setFilterTagList] = props.filterTagListState;
@@ -67,7 +66,7 @@ export default function TagInput(props) {
             placeholder="Hľadať recept ..."
             value={searchedTag}
             onChange={handleChange}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
           <div className={style.searchButton} onClick={addSearchTagToTagList}>
             <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>

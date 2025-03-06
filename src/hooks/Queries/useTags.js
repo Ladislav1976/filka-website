@@ -4,5 +4,6 @@ export const useTags = () => {
     return useQuery({
         queryKey: ["foodTags"],
         queryFn: (queryKey) => getData(queryKey.queryKey[0]),
+        
     });
 };

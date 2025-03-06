@@ -25,7 +25,7 @@ export default function Navbar() {
                         <NavLink className={style.navlik} to="/" >
                             Home
                         </NavLink>
-                        <NavLink className={style.navlik} to="/recepty" >
+                        <NavLink className={style.navlik} to="/recepty?page=1&page_size=2" >
                             Recepty
                         </NavLink>
                         <div className={auth?.userRes?.is_superuser ? style.dropdown : style.hide} >

@@ -113,7 +113,7 @@ export default function Reset() {
                     <section>
                         <h1>Žiadosť bola odoslana!</h1>
                         <p>
-                            {/* <a href="recepty">Sign In</a> */}
+                            <a href="login">Prihlásiť sa</a>
                         </p>
                     </section>
                 </main>

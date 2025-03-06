@@ -30,13 +30,10 @@ body {
 
 .ingredientInput {
   background-color: whitesmoke;
-  /* width: 350px; */
   min-width: 230px;
   height: 30px;
   border: 1px var(--orange) dotted;
   border-radius: 15px;
-  /* font-size: 16px; */
-  /* margin-top: 5px; */
   margin-left: 5px;
 
 }
@@ -70,8 +67,6 @@ body {
   box-sizing: border-box;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  /* font-size: 16px; */
-  /* color: green; */
   padding: 5px;
 }
 
@@ -90,13 +85,9 @@ body {
   justify-content: left;
   flex-direction: row;
   color: rgb(68, 68, 68);
-  /* height: 35px; */
-  /* margin-top:5px;
-  margin-bottom: 5px; */
-  /* border-bottom: 1px solid grey; */
   border-bottom:var(--border)
 
-  /* padding-bottom: 5px; */
+
 }
 .upddownbox{
   /* font-size: 1.1rem; */
@@ -134,18 +125,9 @@ position: relative;
   display: flex;
   align-items: center;
   text-align: center;
-  /* display: flex;
-  align-items: center; */
   justify-content: center;
   color: rgb(68, 68, 68);
-  /* padding-top: 5px;
-  padding-bottom: 5px; */
-  /* padding: 5px; */
-  /* transition: 0.6s ease; */
-  /* border-radius: .3rem; */
   border-radius: 50%;
-  /* user-select: none;
-  -webkit-user-select: none; */
   font-size: 20px;
   width: 25px;
   height: 25px;

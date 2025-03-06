@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faCheck,faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import style from "../reports/Save.module.css";
 function Message(props) {
     return (<div>{props.mess }</div>)

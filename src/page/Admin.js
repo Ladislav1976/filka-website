@@ -4,13 +4,10 @@ import Users from "./Users";
 
 export default function Admin() {
     return (
-        <main className={style.adminmain}>
-            <section>
+        <main className={style.layout}>
+      
                 <Users />
-                <div className="flexGrow">
-                    <Link to="/">Home</Link>
-                </div>
-            </section>
+
         </main>
     )
 }

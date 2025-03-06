@@ -82,7 +82,6 @@ function PanelButton(props) {
     function setterOpenTagList(array) {
         if (!props.filterTagListArray) return
         if (!array.tagChildren) return
-        if (component === "foodscomponent") { return (false) }
         if (component === "newcomponent") { return (true) }
         if (component === "editcomponent" || "viewcomponent") {
             let result = false

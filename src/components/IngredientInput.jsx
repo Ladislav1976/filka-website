@@ -5,13 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCartPlus, faBasketShopping } from "@fortawesome/free-solid-svg-icons";
 
 
-// function IngrID(props) {
-//   return (
-//     <>
-//       <div className="dd" id="dd" ></div>
-//     </>
-//   );
-// }
+
 function Quantity(props) {
   return (
     <>
@@ -43,7 +37,7 @@ function Ing(props) {
     <>
       <div className={style.ingredientContent} >
         {(component === "editcomponent" || component === "newcomponent") && <>
-          <div className={style.upddownbox} >
+          {/* <div className={style.upddownbox} > */}
             <FontAwesomeIcon
               className={style.iconDelete}
               icon={faTrash}
@@ -52,7 +46,7 @@ function Ing(props) {
               }}
 
             ></FontAwesomeIcon>
-          </div>
+          {/* </div> */}
           <div >
             <div className={style.up} onClick={() => {
                handleIngredientMove(-1, props.ing)
@@ -118,7 +112,6 @@ export default function IngredientInput(props) {
     props.removeFromIngredientList(ingre);
   }
 
-  // let ingredientListArray = [...ingredientSetBulk];
   const ingredientListRender = [];
 
 

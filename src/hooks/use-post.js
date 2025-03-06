@@ -1,4 +1,3 @@
-import { useQuery, useMutation } from "@tanstack/react-query"
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -212,4 +211,15 @@ console.log("email :",email)
             )))
 
 }
+
+export async function putDataPrivate(axiosPrivate, controller, user) {
+    console.log("queryKey :",user)
+    const res = await axiosPrivate.put(`users/${user.id}/`, user,{
+      signal: controller.signal,
+    }).then(res => res.data)
+    controller.abort();
+  
+    return await res
+  
+  }
 

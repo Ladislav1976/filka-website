@@ -294,7 +294,7 @@ export default function SubmitFood(props) {
 
                             <button disabled={!validEmail ? true : false}>Odoslať</button>
 
-                             <h4>Ukážka</h4>
+                             {/* <h4>Ukážka</h4>
                             <div className={style.foodnameView}>Nazov: {name}
                             <br />
                                 <br />
@@ -317,7 +317,7 @@ export default function SubmitFood(props) {
                                 >
                                 </UrlInput>
                          
-                            </div> 
+                            </div>  */}
                         </form>
                         {/* <p> */}
                         {/* Spat na recept?<br /> */}

@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import CSRFToken from './CSFRToken';
 import Cookies from 'js-cookie';
 
+
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const RESET_URL = "reset-password/";
 
@@ -15,6 +16,7 @@ export default function Reset_password() {
     const token = useParams()
 
     const errRef = useRef();
+
 
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
@@ -41,7 +43,7 @@ export default function Reset_password() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-         const v1 = PWD_REGEX.test(pwd);
+        const v1 = PWD_REGEX.test(pwd);
         if (!v1) {
             setErrMsg("Invalid Entry");
             return;
@@ -49,15 +51,16 @@ export default function Reset_password() {
         try {
             const response = await axios.post(RESET_URL,
 
-                { password: pwd ,confirm_password:matchPwd, 
-                    reset_id:token.token
-                },
- 
                 {
-                    headers: { 
-     
-                                   "Content-Type": "application/json",
-                                   "X-CSRFToken": Cookies.get("csrftoken")
+                    password: pwd, confirm_password: matchPwd,
+                    reset_id: token.token
+                },
+
+                {
+                    headers: {
+
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": Cookies.get("csrftoken")
                     },
                     withCredentials: true
                 }
@@ -79,8 +82,9 @@ export default function Reset_password() {
             else if (err.response?.status === 408) {
                 setErrMsg(`${err.data.message}`);
             }
-            else {console.log(err)
-                setErrMsg( `${err.message}`)
+            else {
+                console.log(err)
+                setErrMsg(`${err.message}`)
             }
             errRef.current.focus();
         }
@@ -101,11 +105,11 @@ export default function Reset_password() {
                 <main className={style.MainApp}>
                     <section>
                         <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
-                        <h1>Reset Password</h1>
+                        <h1>Zmeniť heslo</h1>
                         <form onSubmit={handleSubmit}>
-                               <CSRFToken />
+                            <CSRFToken />
                             <label htmlFor="password">
-                                Password:
+                                Heslo:
                                 <FontAwesomeIcon icon={faCheck} className={validPwd ? style.valid : style.hide} />
                                 <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? style.hide : style.invalid} />
                             </label>
@@ -130,7 +134,7 @@ export default function Reset_password() {
 
 
                             <label htmlFor="confirm_pwd">
-                                Confirm Password:
+                                Potvrdiť heslo:
                                 <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? style.valid : style.hide} />
                                 <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? style.hide : style.invalid} />
                             </label>
@@ -151,13 +155,13 @@ export default function Reset_password() {
                                 Must match the first password input field.
                             </p>
 
-                            <button disabled={!validPwd || !validMatch ? true : false}>Reset Password</button>
+                            <button disabled={!validPwd || !validMatch ? true : false}>Odoslať</button>
                         </form>
                         <p>
-                            Remember your password ?<br />
+                            Chcete sa prihlásiť ?<br />
                             <span className={style.line}>
                                 {/*put router link here*/}
-                                <a href="login">Sign In</a>
+                                <a href="/login">Prihlásiť</a>
                             </span>
                         </p>
                     </section></main>

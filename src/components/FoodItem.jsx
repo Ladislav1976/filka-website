@@ -20,7 +20,7 @@ export default function FoodItem(props) {
   }
   return (
     <>
-      {<div className={style.food} onClick={() => navigate(`/recepty/${id}${food.name}/`, { state: { foods: props.foodsURL } })}>
+      {<div className={style.food} onClick={() => navigate(`/recepty/${id}/`, { state: { foods: props.foodsURL } })}>
         <img
           className={style.image}
           loading="lazy"

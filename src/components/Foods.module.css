@@ -51,6 +51,8 @@
 .main {
   display: flex;
   flex-direction: row;
+
+  height: 100vh;
 }
 
 .tags {
@@ -137,12 +139,21 @@
   /* .FoodItemList{width: 600px;} */
 
   .paginationBox {
-    position: absolute;
-    bottom: 40px;
- left: 50%;
+ /* position: absolute; 
+ left: 0; 
+ right: 0; 
+ bottom: 40px; */
+ /* margin-inline: auto;  */
+ /* width: fit-content; */
+ /* right:50%; */
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px
+
     /* width: 100%; */
 }
 
@@ -173,6 +184,7 @@
     align-items: center;
     font-size: small;
     margin-top: 5px;
+    border-left: var();
 }
 
 .navigationbar{

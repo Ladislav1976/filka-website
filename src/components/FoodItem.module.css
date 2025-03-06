@@ -3,9 +3,9 @@
   border: 2px solid rgb(233, 229, 229); */
   /* background-color: rgb(233, 229, 229); */
   /* border: 2px solid rgb(233, 229, 229); */
-  width: 120px;
-  height: 150px;
-  margin: 10px;
+  width: 145px;
+  height: 140px;
+  margin: 10px 17px 10px 17px;
   /* border-radius: 5px; */
   cursor: pointer;
   transition: all .3s ease-in-out;

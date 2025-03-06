@@ -81,7 +81,7 @@ function EditFood(props) {
   const unitRef = useRef()
   const ingrRef = useRef()
 
-  
+
 
 
 
@@ -214,36 +214,36 @@ function EditFood(props) {
   const putUrl = usePutUrl()
 
 
-  function nameKeyDown(event){
-    if(event.key ==="Enter"){
+  function nameKeyDown(event) {
+    if (event.key === "Enter") {
       urlRef.current.focus();
     }
   }
-  function urlKeyDown(event){
-    if(event.key ==="Enter"){
+  function urlKeyDown(event) {
+    if (event.key === "Enter") {
       stepRef.current.focus();
     }
   }
-  function stepKeyDown(event){
-    if(event.key ==="Enter"){
+  function stepKeyDown(event) {
+    if (event.key === "Enter") {
       qtRef.current.focus();
     }
   }
 
-  function qrKeyDown(event){
-    if(event.key ==="Enter"){
+  function qrKeyDown(event) {
+    if (event.key === "Enter") {
       unitRef.current.focus();
     }
   }
 
-  function unitKeyDown(event){
-    if(event.key ==="Enter"){
+  function unitKeyDown(event) {
+    if (event.key === "Enter") {
       ingrRef.current.focus();
     }
   }
 
-  function ingKeyDown(event){
-    if(event.key ==="Enter"){
+  function ingKeyDown(event) {
+    if (event.key === "Enter") {
       nameRef.current.focus();
     }
   }
@@ -406,21 +406,21 @@ function EditFood(props) {
   }
 
   function makeSteptoDelete(step) {
-    console.log("step :",step)
+    console.log("step :", step)
     setStepsList(makeItemDelete(step, stepsList))
   }
 
   function makeUrlToDelete(url) {
-    console.log("url DELETE:",url)
+    console.log("url DELETE:", url)
     setUrlList(makeItemDelete(url, urlList))
   }
 
   function makeItemDelete(item, array) {
-    console.log("array 1:",array)
+    console.log("array 1:", array)
     let itemIDPosition = getPosition(item.id, array);
     let newArray = array.slice();
     newArray.splice(itemIDPosition, 1, { ...item, statusDelete: true })
-    console.log("array 2:",newArray)
+    console.log("array 2:", newArray)
     return newArray;
   }
 
@@ -691,7 +691,7 @@ function EditFood(props) {
 
   function itemMove(move, item, array) {
     let position = getPosition(item.id, array)
-      let newArray = array.slice()
+    let newArray = array.slice()
     if (move > 0) {
       if (position === (-1 + array.length)) { return newArray } else {
         newArray.splice(position, 1);
@@ -803,12 +803,12 @@ function EditFood(props) {
 
 
   if (!usersQf.isSuccess || !foodQf.isSuccess || !ingredientQf.isSuccess || !unitsQf.isSuccess || !urlsQf.isSuccess || !tagsQf.isSuccess || !stepsQf.isSuccess || !ingredientsQf.isSuccess || !imagesQf.isSuccess) return <div className={style.loadingContainer}>
-      <FontAwesomeIcon
-        className={style.loadingIcon}
-        icon={faSpinner}
-        // id="inpFileIcon"
-        spin ></FontAwesomeIcon>
-    </div>
+    <FontAwesomeIcon
+      className={style.loadingIcon}
+      icon={faSpinner}
+      // id="inpFileIcon"
+      spin ></FontAwesomeIcon>
+  </div>
 
   //<h1>Loading...</h1> 
   // if (statusPostFood === 'error') return <h1>{JSON.stringify(errorFoods.message)}</h1>
@@ -821,11 +821,11 @@ function EditFood(props) {
   // if (loadingFood || loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood) return <h1>return Loading...</h1>
   return (<>
 
-    <form className={style.main} 
+    <form className={style.main}
     // onSubmit={(e) => {
     //   e.preventDefault();
-      // const formData = new FormData(e.currentTarget);
-      // const formValues = Object.fromEntries(formData)
+    // const formData = new FormData(e.currentTarget);
+    // const formValues = Object.fromEntries(formData)
     //   handleFoodSave(e);
     // }}
     >
@@ -840,7 +840,7 @@ function EditFood(props) {
           // datatooltip="Uloziť"
           >
             <FontAwesomeIcon
-              onClick={(e)=>handleFoodSave(e)}
+              onClick={(e) => handleFoodSave(e)}
               icon={faCartPlus}
 
             />
@@ -855,7 +855,7 @@ function EditFood(props) {
           <div className={style.foodButton}
           >
             <FontAwesomeIcon
-              onClick={()=>navigate(-1)}
+              onClick={() => navigate(-1)}
               icon={faBackward}
 
             />
@@ -864,12 +864,12 @@ function EditFood(props) {
       </div>
       <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} >
         <div className={style.leftpanel}>
-        <LeftPanelFilter
-          onFoodTagSet={foodTagSet}
-          handleAddTagToFoodTagsList={foodTagSetCheck}
-          foodTagsBox={null}
-          component={component}
-        />
+          <LeftPanelFilter
+            onFoodTagSet={foodTagSet}
+            handleAddTagToFoodTagsList={foodTagSetCheck}
+            foodTagsBox={null}
+            component={component}
+          />
         </div>
         <div className={style.secondColumn}>
           <div className={style.ingredients}>
@@ -903,7 +903,7 @@ function EditFood(props) {
               datatooltip="Pridať fotografiu">
               <FontAwesomeIcon
                 icon={faCircleArrowUp}
-                 id="inpFileIcon"
+                id="inpFileIcon"
               ></FontAwesomeIcon>
             </label>
           </div>
@@ -945,7 +945,7 @@ function EditFood(props) {
           ></StepsInput>
         </div>
         <div className={style.fooodnamebox} >
-           <label className={style.name} htmlFor="name">Nazov:</label>
+          <label className={style.name} htmlFor="name">Nazov:</label>
           <input
             className={style.foodname}
             id="name"
@@ -955,9 +955,9 @@ function EditFood(props) {
             onKeyDown={nameKeyDown}
             type="text"
             maxLength="300"
-            onChange={(e)=>setName(e.target.value)}
-            
-                />
+            onChange={(e) => setName(e.target.value)}
+
+          />
           <div className={style.name}> </div>
         </div>
         <div className={style.date}>

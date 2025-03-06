@@ -209,7 +209,8 @@ function Foods(props) {
         }
     }
 
-    const pagesArray = Array(foodsQf?.data?.TotalNumOfPages).fill().map((_, index) => index + 1)
+    // const pagesArray = Array(foodsQf?.data?.TotalNumOfPages).fill().map((_, index) => index + 1)
+
     return (
         <>
             {(foodsQf.isLoading || imagesQf.isLoading || tagsQf.isLoading) ? (<label htmlFor="inpFile">
@@ -221,7 +222,9 @@ function Foods(props) {
                         spin ></FontAwesomeIcon>
                 </div>
             </label>)
-                : (<> <div className={style.searchbox}>
+                : (<> 
+             
+                <div className={style.searchbox}>
 
                     <TagInput
                         filterTagListState={[filterTagSet, setFilterTagSet]}
@@ -250,9 +253,15 @@ function Foods(props) {
                                 filterTagList={filterTagSet}
                                 foodsURL={foodsURL}
 
-
+                                pageSizeChange={pageSizeChange}
+                                pageChange={pageChange}
+                                page={page}
+                                pageSize={pageSize}
+                                foodsQf={foodsQf}
                             ></FoodItemList>
-                            <div className={style.paginationBox}>
+
+                        </div>
+                        {/* <div className={style.paginationBox}>
                                 <nav className={style.navigationbar}>
                                     <button className={style.button} onClick={() => pageChange(page - 1)} disabled={!foodsQf?.data?.previous || page === 1} id={!foodsQf?.data?.previous || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
                                     {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page} pageChange={pageChange} />)}
@@ -269,17 +278,20 @@ function Foods(props) {
                                         <option>4</option>
                                         <option>6</option>
                                         <option>8</option>
-                                        <option>10</option>
+                                        <option>20</option>
+                                        <option>30</option>
+                                        <option>40</option>
 
                                     </select>
                                 </div>
-                            </div>
-                        </div>
+                            </div> */}
                     </div>
+
                     <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                         <SaveError
                         ></SaveError>
-                    </Modal></>)}
+                    </Modal>
+                    </>)}
         </>
     );
 }

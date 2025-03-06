@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-import { useQueries, useQuery } from "@tanstack/react-query"
-import { getUrl, getFood, getIngredientsID, getIngredient, getUnit, getStep, getData, getDataPrivate } from "../hooks/use-get";
+
+
 import IngredientInput from './IngredientInput';
 import StepsInput from './StepsInput';
 import UrlInput from './Url';
 import emailjs from '@emailjs/browser';
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-
-// import { useUsersQuery, useFoodQuery } from '../hooks/useQuery';
 import useAuth from "../hooks/useAuth";
 import useEmailFormSubmit from '../hooks/useEmailFormSubmit';
 import { useQueriesItems } from '../hooks/Queries/useQueriesItems';
 import { useSteps } from '../hooks/Queries/useSteps';
 import { useIngredients } from '../hooks/Queries/useIngredients';
 import style from "../page/Register.module.css";
+import styla from "./NewFood.module.css";
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faInfoCircle, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faInfoCircle, faTimes, faBackward } from "@fortawesome/free-solid-svg-icons";
 
 const EMAIL_URL = 'https://api.emailjs.com/api/v1.0/email/send'
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -204,7 +203,21 @@ export default function SubmitFood(props) {
     };
 
     return (
-        <>
+        <>      <div className={styla.boxcontainer}>
+                    <div className={style.messagebox}>
+                    {}</div>
+            <div className={styla.buttonBox} >
+
+               
+                <div className={styla.foodButton}
+                >
+                    <FontAwesomeIcon
+                        onClick={() => navigate(-1)}
+                        icon={faBackward}
+
+                    />
+                </div>
+            </div> </div>
             {success ? (
                 <main className={style.main}>
                     <section>
@@ -217,7 +230,7 @@ export default function SubmitFood(props) {
                     </section>
                 </main>
             ) : (
-                <main className={style.App} >
+                <div className={style.App} >
                     <section>
 
                         {/* <div className={isLoading ? style.loadingContainer : style.offscreen}>
@@ -230,8 +243,8 @@ export default function SubmitFood(props) {
                         {/* <div > */}
                         {/* <div className={!isLoading ? style.onscreen : style.offscreen} > */}
                         <form className={!isLoading ? style.onscreen : style.offscreen} ref={form} onSubmit={sendEmail} id='food_form'>
-                        <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
-                        <h1>Odoslať email</h1>
+                            <p ref={errRef} className={errMsg ? style.errmsg : style.offscreen} aria-live="assertive">{errMsg}</p>
+                            <h1>Odoslať email</h1>
                             <label className={style.label} htmlFor="email">
                                 Email :
                                 <FontAwesomeIcon icon={faCheck} className={validEmail ? style.valid : style.hide} />
@@ -267,28 +280,18 @@ export default function SubmitFood(props) {
                             <div className={style.inputbox} >
                                 <textarea
                                     type="text"
-                                    // className={style.input}
                                     id="message"
-                                    // ref={first_name_Ref}
                                     autoComplete="off"
                                     onChange={(e) => setMessage(e.target.value)}
                                     value={message}
                                     required
-                                    // aria-invalid={validFirst_name ? "false" : "true"}
                                     aria-describedby="uidnote"
-                                // onFocus={() => setFirst_nameFocus(true)}
-                                // onBlur={() => setFirst_nameFocus(false)}
+
                                 />
-                                {/* <p id="uidnote" className={first_nameFocus && first_name && !validFirst_name ? style.instructions : style.offscreen}>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                                4 to 24 characters.<br />
-                                Must begin with a letter.<br />
-                                Letters, numbers, underscores, hyphens allowed.
-                            </p> */}
                             </div>
 
                             <button disabled={!validEmail ? true : false}>Odoslať</button>
-                    
+
                             {/* <h4>Ukážka</h4>
                             <div className={style.foodnameView}>Nazov: {name}
                             <br />
@@ -314,16 +317,16 @@ export default function SubmitFood(props) {
                          
                             </div> */}
                         </form>
-                        <p>
-                            Spat na recept?<br />
-                            <span className={style.line}>
+                        {/* <p> */}
+                            {/* Spat na recept?<br /> */}
+                            {/* <span className={style.line}> */}
                                 {/* <button onClick={goBack}>Späť</button> */}
-                                <a onClick={goBack} style={{ cursor: "pointer" }}>Spat</a>
-                            </span>
-                        </p>
+                                {/* <a onClick={goBack} style={{ cursor: "pointer" }}>Spat</a> */}
+                            {/* </span> */}
+                        {/* </p> */}
                         {/* </div> */}
                     </section>
-                </main>
+                </div>
             )}
         </>
     );

@@ -177,8 +177,8 @@ export default function Users() {
                 </div>
 
             )
-                : (<main className={style.App}>
-                    <section>
+                : (<main className={style.MainApp}>
+              
                         <h2>Zoznam užívateľov</h2>
                         {users?.length
                             ?
@@ -207,7 +207,7 @@ export default function Users() {
 
 
 
-                    </section>
+            
                     <div className={style.popisky}>
 
 

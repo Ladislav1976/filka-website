@@ -802,171 +802,164 @@ function EditFood(props) {
   }
 
 
-  if (!usersQf.isSuccess || !foodQf.isSuccess || !ingredientQf.isSuccess || !unitsQf.isSuccess || !urlsQf.isSuccess || !tagsQf.isSuccess || !stepsQf.isSuccess || !ingredientsQf.isSuccess || !imagesQf.isSuccess) return <div className={style.loadingContainer}>
-    <FontAwesomeIcon
-      className={style.loadingIcon}
-      icon={faSpinner}
-      // id="inpFileIcon"
-      spin ></FontAwesomeIcon>
-  </div>
-
-  //<h1>Loading...</h1> 
-  // if (statusPostFood === 'error') return <h1>{JSON.stringify(errorFoods.message)}</h1>
-  // if (statusImagefood === 'error') return <h1>{JSON.stringify(errorImagefood.message)}</h1>
-  // if (statusFoodTags === 'error') return <h1>{JSON.stringify(errorFoodTags.message)}</h1>
-  // if (stepsquery.statusError === 'error') return <h1>{JSON.stringify(errorSteps.message)}</h1>
-  // if (statusIngredients === 'error') return <h1>{JSON.stringify(errorIngredients.message)}</h1>
-  // if (statusIngredient === 'error') return <h1>{JSON.stringify(errorIngredient.message)}</h1>
-  // if (statusUnit === 'error') return <h1>{JSON.stringify(errorUnit.message)}</h1>
-  // if (loadingFood || loadingFoodTags || loadingSteps || loadingIngredients || loadingIngredient || loadingUnit || loadingImageFood) return <h1>return Loading...</h1>
   return (<>
+    {(!usersQf.isSuccess || !foodQf.isSuccess || !ingredientQf.isSuccess || !unitsQf.isSuccess || !urlsQf.isSuccess || !tagsQf.isSuccess || !stepsQf.isSuccess || !ingredientsQf.isSuccess || !imagesQf.isSuccess) ? (
 
-    <form className={style.main}
-    // onSubmit={(e) => {
-    //   e.preventDefault();
-    // const formData = new FormData(e.currentTarget);
-    // const formValues = Object.fromEntries(formData)
-    //   handleFoodSave(e);
-    // }}
-    >
+      <div className={style.loadingContainer}>
+        <FontAwesomeIcon
+          className={style.loadingIcon}
+          icon={faSpinner}
+          id="inpFileIcon"
+          spin ></FontAwesomeIcon>
+      </div>
+    ) : (
+      <form className={style.main}
+      // onSubmit={(e) => {
+      //   e.preventDefault();
+      // const formData = new FormData(e.currentTarget);
+      // const formValues = Object.fromEntries(formData)
+      //   handleFoodSave(e);
+      // }}
+      >
 
-      <div className={style.boxcontainer}>
-        <div className={style.messagebox}>
-          {modalMessage}</div>
+        <div className={style.boxcontainer}>
+          <div className={style.messagebox}>
+            {modalMessage}</div>
 
-        <div className={style.buttonBox} >
+          <div className={style.buttonBox} >
 
-          <div className={style.foodButton} id={style.foodButtonSave}
-          // datatooltip="Uloziť"
-          >
-            <FontAwesomeIcon
-              onClick={(e) => handleFoodSave(e)}
-              icon={faCartPlus}
+            <div className={style.foodButton} id={style.foodButtonSave}
+            // datatooltip="Uloziť"
+            >
+              <FontAwesomeIcon
+                onClick={(e) => handleFoodSave(e)}
+                icon={faCartPlus}
 
-            />
-          </div>
-          <div className={style.foodButtonDelete}
-          // datatooltip="Vymazať"
-          >
-            <FontAwesomeIcon
-              icon={faTrash}
-              onClick={handleFoodDelete}
-            /></div>
-          <div className={style.foodButton}
-          >
-            <FontAwesomeIcon
-              onClick={() => navigate(-1)}
-              icon={faBackward}
+              />
+            </div>
+            <div className={style.foodButtonDelete}
+            // datatooltip="Vymazať"
+            >
+              <FontAwesomeIcon
+                icon={faTrash}
+                onClick={handleFoodDelete}
+              /></div>
+            <div className={style.foodButton}
+            >
+              <FontAwesomeIcon
+                onClick={() => navigate(-1)}
+                icon={faBackward}
 
-            />
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} >
-        <div className={style.leftpanel}>
+        <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} >
+
           <LeftPanelFilter
             onFoodTagSet={foodTagSet}
             handleAddTagToFoodTagsList={foodTagSetCheck}
             foodTagsBox={null}
             component={component}
           />
-        </div>
-        <div className={style.secondColumn}>
-          <div className={style.ingredients}>
-            <p>Suroviny:</p>
-            <IngredientInput
-              addToIngredientList={addToIngredientList}
-              ingredientMove={ingredientMove}
-              ingredientsList={ingredientsList}
-              handlerSetModalErrorMissing={handlerSetModalErrorMissing}
-              removeFromIngredientList={makeIngredientsDelete}
+
+          <div className={style.secondColumn}>
+            <div className={style.ingredients}>
+              <p>Suroviny:</p>
+              <IngredientInput
+                addToIngredientList={addToIngredientList}
+                ingredientMove={ingredientMove}
+                ingredientsList={ingredientsList}
+                handlerSetModalErrorMissing={handlerSetModalErrorMissing}
+                removeFromIngredientList={makeIngredientsDelete}
+                component={component}
+                qtRef={qtRef}
+                unitRef={unitRef}
+                ingrRef={ingrRef}
+                qrKeyDown={qrKeyDown}
+                unitKeyDown={unitKeyDown}
+                ingKeyDown={ingKeyDown}
+              ></IngredientInput>
+            </div>
+            <input
+              className={style.imageinput}
+              type="file"
+              multiple
+              accept="image/jpeg,image/png,image/gif"
+              id="inpFile"
+              onChange={onImageChange}
+              display="none"
+            />
+            <div className={style.imageIconBox}>
+              <label htmlFor="inpFile" className={style.imageIcon}
+                datatooltip="Pridať fotografiu">
+                <FontAwesomeIcon
+                  icon={faCircleArrowUp}
+                  id="inpFileIcon"
+                ></FontAwesomeIcon>
+              </label>
+            </div>
+            {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
+              No Files chosen
+            </p>}
+            <div className={style.imagebox}>
+              <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} makeImageDelete={makeImageDelete} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component} ></Image>
+            </div>
+          </div>
+          <div className={style.thirdColumn}>
+
+            <div className={style.urlName}>
+              <p>URL :</p>
+            </div>
+            <UrlInput
+              urlList={urlList}
               component={component}
-              qtRef={qtRef}
-              unitRef={unitRef}
-              ingrRef={ingrRef}
-              qrKeyDown={qrKeyDown}
-              unitKeyDown={unitKeyDown}
-              ingKeyDown={ingKeyDown}
-            ></IngredientInput>
-          </div>
-          <input
-            className={style.imageinput}
-            type="file"
-            multiple
-            accept="image/jpeg,image/png,image/gif"
-            id="inpFile"
-            onChange={onImageChange}
-            display="none"
-          />
-          <div className={style.imageIconBox}>
-            <label htmlFor="inpFile" className={style.imageIcon}
-              datatooltip="Pridať fotografiu">
-              <FontAwesomeIcon
-                icon={faCircleArrowUp}
-                id="inpFileIcon"
-              ></FontAwesomeIcon>
-            </label>
-          </div>
-          {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
-            No Files chosen
-          </p>}
-          <div className={style.imagebox}>
-            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} makeImageDelete={makeImageDelete} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component} ></Image>
-          </div>
-        </div>
-        <div className={style.thirdColumn}>
+              deleteUrl={makeUrlToDelete}
+              updateUrlList={updateUrlList}
+              handleAddUrl={handleAddUrl}
+              urlRef={urlRef}
+              urlKeyDown={urlKeyDown}
+            >
 
-          <div className={style.urlName}>
-            <p>URL :</p>
+            </UrlInput>
+            <div className={style.urlName}>
+              <p>Postup :</p>
+            </div>
+            <StepsInput
+              stepMove={stepMove}
+              handleAddStep={handleAddStep}
+              updateStepList={updateStepList}
+              stepsList={stepsList}
+              deleteStep={makeSteptoDelete}
+              component={component}
+              stepRef={stepRef}
+              stepKeyDown={stepKeyDown}
+            ></StepsInput>
           </div>
-          <UrlInput
-            urlList={urlList}
-            component={component}
-            deleteUrl={makeUrlToDelete}
-            updateUrlList={updateUrlList}
-            handleAddUrl={handleAddUrl}
-            urlRef={urlRef}
-            urlKeyDown={urlKeyDown}
-          >
+          <div className={style.fooodnamebox} >
+            <label className={style.name} htmlFor="name">Nazov:</label>
+            <input
+              className={style.foodname}
+              id="name"
+              name="name"
+              ref={nameRef}
+              value={name}
+              onKeyDown={nameKeyDown}
+              type="text"
+              maxLength="300"
+              onChange={(e) => setName(e.target.value)}
 
-          </UrlInput>
-          <div className={style.urlName}>
-            <p>Postup :</p>
+            />
+            <div className={style.name}> </div>
           </div>
-          <StepsInput
-            stepMove={stepMove}
-            handleAddStep={handleAddStep}
-            updateStepList={updateStepList}
-            stepsList={stepsList}
-            deleteStep={makeSteptoDelete}
-            component={component}
-            stepRef={stepRef}
-            stepKeyDown={stepKeyDown}
-          ></StepsInput>
-        </div>
-        <div className={style.fooodnamebox} >
-          <label className={style.name} htmlFor="name">Nazov:</label>
-          <input
-            className={style.foodname}
-            id="name"
-            name="name"
-            ref={nameRef}
-            value={name}
-            onKeyDown={nameKeyDown}
-            type="text"
-            maxLength="300"
-            onChange={(e) => setName(e.target.value)}
+          <div className={style.date}>
+            Vytvorené: <br /> {user.map(res => res.first_name)} {user.map(res => res.last_name)}<br />{new Date(date).toLocaleDateString('sk-SK')}
+          </div>
+          {/* </div> */}
 
-          />
-          <div className={style.name}> </div>
         </div>
-        <div className={style.date}>
-          Vytvorené: <br /> {user.map(res => res.first_name)} {user.map(res => res.last_name)}<br />{new Date(date).toLocaleDateString('sk-SK')}
-        </div>
-        {/* </div> */}
-
-      </div>
-    </form>
+      </form>
+    )}
     <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
       <SaveLoading
       ></SaveLoading>

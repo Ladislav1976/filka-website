@@ -3,12 +3,9 @@ import Navbar from "./Navbar"
 import style from "./Register.module.css";
 const Layout = () => {
     return (
-        <main className={style.layout}>
-            {/* <div className={style.sticky} >
-            <Navbar />
-            </div> */}
+        <div className={style.body}>
             <Outlet />
-        </main>
+        </div>
     )
 }
 

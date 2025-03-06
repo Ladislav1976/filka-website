@@ -12,10 +12,30 @@ html {
     color: #fff; */
 }
 
-body {
+.body {
+    margin: 0;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mainlayout {
+    flex-grow: 1;
+
+    /* min-height: 100vh; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
 
     /* background-color: dodgerblue; */
+}
+
+
+
+.mainlayout {
+    flex-grow: 1;
+    justify-content: flex-end;
 }
 
 :root {
@@ -26,7 +46,12 @@ body {
 }
 
 .layout {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* height: calc(100vh -60px); */
+    flex-grow: 1;
+    justify-content: flex-start;
+
 }
 
 
@@ -37,19 +62,15 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-width: 100vw;
+    flex-grow: 1;
     padding: 1rem 0.5rem;
     /* z-index: 1; */
 
 }
 
-.MainApp {
-    height: 100vh;
-}
+.MainApp {}
 
-.App {
-    height: 700px;
-}
+
 
 .adminmain {
     position: relative;
@@ -124,7 +145,7 @@ body {
 
     margin: 0;
     text-align: center;
-  
+
 }
 
 
@@ -274,7 +295,7 @@ a {
 .navheader {
     position: sticky;
     background-color: white;
-    width: 100%;
+    width: 100vw;
     z-index: 10;
     height: 52px;
     top: 0px;
@@ -453,7 +474,8 @@ button {
     font-size: 1rem;
     /* font-weight: bold; */
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: 30px;
+    margin-right:20px ;
     color: var(--greydark);
     background-color: rgb(243, 243, 243);
 
@@ -499,6 +521,7 @@ button {
 .imgage {
     width: 1.8rem;
     height: 1.8rem;
+    margin-right: 5px;
 }
 
 .svgicon {
@@ -670,4 +693,3 @@ td {
     justify-content: center;
     align-items: center;
 }
-

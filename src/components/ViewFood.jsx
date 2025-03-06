@@ -192,19 +192,21 @@ function ViewFood(props) {
     }
 
 
-    if (usersQf.isLoading || foodQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading || urlsQf.isLoading || tagsQf.isLoading || stepsQf.isLoading || ingredientsQf.isLoading || imagesQf.isLoading) return <div className={style.loadingContainer}>
-        <FontAwesomeIcon
-            className={style.loadingIcon}
-            icon={faSpinner}
-            id="inpFileIcon"
-            spin ></FontAwesomeIcon>
-    </div>
-
-
 
     return (<>
 
-        <div className={style.main}>
+        {(usersQf.isLoading || foodQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading || urlsQf.isLoading || tagsQf.isLoading || stepsQf.isLoading || ingredientsQf.isLoading || imagesQf.isLoading) ? (
+                
+                <div className={style.loadingContainer}>
+                    <FontAwesomeIcon
+                        className={style.loadingIcon}
+                        icon={faSpinner}
+                        id="inpFileIcon"
+                        spin ></FontAwesomeIcon>
+                </div>
+           ): 
+            
+            (<div className={style.main}>
             {/* <div className={style.header}>RECEPT</div> */}
             <div className={style.boxcontainer}>
                 <div className={style.messagebox}>
@@ -283,7 +285,7 @@ function ViewFood(props) {
 
             </div>
 
-        </div>
+        </div>)}
         <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
             <SaveLoading
             ></SaveLoading>

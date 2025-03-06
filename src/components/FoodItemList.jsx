@@ -48,6 +48,8 @@ export default function FoodItemList(props) {
       }
     }
   }
+
+ 
   const page = props.page
   const foodsQf = props.foodsQf
   const pagesArray = Array(foodsQf?.data?.TotalNumOfPages).fill().map((_, index) => index + 1)
@@ -55,8 +57,8 @@ export default function FoodItemList(props) {
     {/* <div className={imgLoader > 0 ? style.unvisible : style.foodItemBox}> */}
     <div className={style.foodItemBox}>
       <div className={style.foodItemList} >
-
-        {foodItemListRender}   </div>
+        {foodItemListRender}   
+        </div>
       <div className={styla.paginationBox}>
         <nav className={styla.navigationbar}>
           <button className={styla.button} onClick={() => props.pageChange(page - 1)} disabled={!foodsQf?.data?.previous || page === 1} id={!foodsQf?.data?.previous || page === 1 ? styla["buttondisabled"] : styla["buttonenabled"]}>&lt;&lt;</button>

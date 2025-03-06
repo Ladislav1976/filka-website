@@ -66,7 +66,7 @@ export default function TagInput(props) {
             placeholder="Hľadať recept ..."
             value={searchedTag}
             onChange={handleChange}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
           <div className={style.searchButton} onClick={addSearchTagToTagList}>
             <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>

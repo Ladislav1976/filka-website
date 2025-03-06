@@ -203,21 +203,23 @@ export default function SubmitFood(props) {
     };
 
     return (
-        <>      <div className={styla.boxcontainer}>
-                    <div className={style.messagebox}>
-                    {}</div>
-            <div className={styla.buttonBox} >
+        <>       <div className={styla.main}>
+            <div className={styla.boxcontainer}>
+                <div className={style.messagebox}>
+                    { }</div>
+                <div className={styla.buttonBox} >
 
-               
-                <div className={styla.foodButton}
-                >
-                    <FontAwesomeIcon
-                        onClick={() => navigate(-1)}
-                        icon={faBackward}
 
-                    />
+                    <div className={styla.foodButton}
+                    >
+                        <FontAwesomeIcon
+                            onClick={() => navigate(-1)}
+                            icon={faBackward}
+
+                        />
+                    </div>
                 </div>
-            </div> </div>
+            </div>
             {success ? (
                 <main className={style.main}>
                     <section>
@@ -230,7 +232,7 @@ export default function SubmitFood(props) {
                     </section>
                 </main>
             ) : (
-                <div className={style.App} >
+                <div className={style.MainApp} >
                     <section>
 
                         {/* <div className={isLoading ? style.loadingContainer : style.offscreen}>
@@ -292,7 +294,7 @@ export default function SubmitFood(props) {
 
                             <button disabled={!validEmail ? true : false}>Odoslať</button>
 
-                            {/* <h4>Ukážka</h4>
+                             <h4>Ukážka</h4>
                             <div className={style.foodnameView}>Nazov: {name}
                             <br />
                                 <br />
@@ -315,19 +317,20 @@ export default function SubmitFood(props) {
                                 >
                                 </UrlInput>
                          
-                            </div> */}
+                            </div> 
                         </form>
                         {/* <p> */}
-                            {/* Spat na recept?<br /> */}
-                            {/* <span className={style.line}> */}
-                                {/* <button onClick={goBack}>Späť</button> */}
-                                {/* <a onClick={goBack} style={{ cursor: "pointer" }}>Spat</a> */}
-                            {/* </span> */}
+                        {/* Spat na recept?<br /> */}
+                        {/* <span className={style.line}> */}
+                        {/* <button onClick={goBack}>Späť</button> */}
+                        {/* <a onClick={goBack} style={{ cursor: "pointer" }}>Spat</a> */}
+                        {/* </span> */}
                         {/* </p> */}
                         {/* </div> */}
                     </section>
                 </div>
             )}
+        </div>
         </>
     );
 };

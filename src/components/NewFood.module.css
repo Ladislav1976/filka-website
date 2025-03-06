@@ -27,29 +27,30 @@ body {
 
 
 .fooodbox {
-  position: relative;
-
+  /* position: relative; */
+  flex-grow: 1;
   display: flex;
   flex-direction: row;
   justify-content: center;
   background-color: white
-
 }
 
 .fooodnamebox {
   position: absolute;
-  top: 30px;
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   background-color: white
-
 }
 
 .main {
-  position: relative;
+  /* position: relative; */
+  display: flex;
+  flex-direction: column;
   background-color: white;
+  flex-grow: 1;
 
 }
 
@@ -224,8 +225,11 @@ img {
 
 .foodnameView {
   position: absolute;
-  top: 30px;
+  /* left: 0px; */
+  /* right: 0px; */
   font-size: 2.5rem;
+  margin-top: 20px;
+  color: var(--greydark);
 
 }
 
@@ -264,9 +268,8 @@ label {
 
 .loadingContainer {
   width: auto;
-  height: 100vh;
-
-
+  flex-grow: 1;
+  font-size: xx-large;
   display: flex;
   justify-content: center;
   align-items: center;

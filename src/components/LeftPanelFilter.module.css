@@ -16,6 +16,8 @@
     flex-direction: column;
     background-color: white;
     min-width: 210px;
+    /* flex-grow: 1; */
+    
     border-right: var(--border3px);
 }
 

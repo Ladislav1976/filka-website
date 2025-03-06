@@ -213,7 +213,8 @@ function Foods(props) {
 
     return (
         <>
-            {(foodsQf.isLoading || imagesQf.isLoading || tagsQf.isLoading) ? (<label htmlFor="inpFile">
+            {(foodsQf.isLoading || imagesQf.isLoading || tagsQf.isLoading) ? (
+                
                 <div className={style.loadingContainer}>
                     <FontAwesomeIcon
                         className={style.loadingIcon}
@@ -221,9 +222,9 @@ function Foods(props) {
                         id="inpFileIcon"
                         spin ></FontAwesomeIcon>
                 </div>
-            </label>)
+           )
                 : (<> 
-             
+             <div className={style.foodsmain}>
                 <div className={style.searchbox}>
 
                     <TagInput
@@ -233,7 +234,7 @@ function Foods(props) {
                     />
 
                     <div className={style.foodButton} onClick={() => navigate(`/recepty/novy_recept/`, { state: { foods: foodsURL } })}>
-                        NOVY RECEPT
+                    Nový recept
                     </div>
                 </div>
                     <div className={style.main}>
@@ -246,7 +247,7 @@ function Foods(props) {
                             component={component}
                         />
 
-                        <div  >
+          
                             <FoodItemList
                                 foods={foods}
                                 imgLoader={[imgLoader, setImgLoader]}
@@ -260,7 +261,7 @@ function Foods(props) {
                                 foodsQf={foodsQf}
                             ></FoodItemList>
 
-                        </div>
+               
                         {/* <div className={style.paginationBox}>
                                 <nav className={style.navigationbar}>
                                     <button className={style.button} onClick={() => pageChange(page - 1)} disabled={!foodsQf?.data?.previous || page === 1} id={!foodsQf?.data?.previous || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
@@ -291,7 +292,7 @@ function Foods(props) {
                         <SaveError
                         ></SaveError>
                     </Modal>
-                    </>)}
+                    </div> </>)}
         </>
     );
 }

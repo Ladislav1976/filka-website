@@ -78,3 +78,11 @@ h3 {
     background-color: rgb(154, 194, 121);
 }
 
+#yes_button13:focus {
+    background-color: rgb(235, 153, 153);
+}
+#nobutton13:focus {
+    background-color: rgb(154, 194, 121);
+
+}
+

@@ -14,7 +14,7 @@ const LOGIN_URL = 'login';
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default function Login() {
-    const { setAuth, setCSRFToken } = useAuth();
+    const { setAuth, setCSRFToken ,setPage,  setPageSize, setOrdering} = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -77,6 +77,9 @@ export default function Login() {
             console.log("response", response?.data)
             setAuth({ userRes, pwd, access_token });
             setCSRFToken(CSRFToken)
+            setPage(1);
+            setPageSize(20);
+            setOrdering("date");
             resetEmail();
             setPwd('');
             window.localStorage.setItem("IsLogedIn", true)

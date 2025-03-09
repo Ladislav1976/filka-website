@@ -138,10 +138,10 @@ export async function getDataPrivate(axiosPrivate, controller, queryKey) {
 
 
 
-export async function getFoodsPageFn(foodTags__foodTag,search,page,page_size) {
+export async function getFoodsPageFn(foodTags__foodTag,search,ordering,page,page_size) {
   return (await axios.get(`http://127.0.0.1:8000/foods/`, {
     // params: {foodTags__foodTag: foodTags__foodTag, page:page, search:search ,page_size :pageSize},
-    params: { foodTags__foodTag, page, search ,page_size},
+    params: { foodTags__foodTag,search, ordering, page  ,page_size,},
   }
   ).then((res) => res.data))
 }

@@ -20,7 +20,9 @@
     
     border-right: var(--border3px);
 }
-
+.displayNoN {
+    display: none;
+  }
 .food {
     margin: 0px 0px 0px 0px;
 }
@@ -105,6 +107,20 @@
     border-bottom: var(--border);
 }
 
+.checkboxContainerView:nth-of-type(2), .checkboxContainer:nth-of-type(2){
+    border-top: solid 1px;
+    border-top: var(--border);
+}
+
+
+/* .orderinglabel{
+    justify-content: flex-start;
+    padding-left: 25px;
+    font-weight: bold;
+  
+} */
+
+
 .checkboxContainer {
     cursor: pointer;
 
@@ -123,6 +139,7 @@
     height: 34px;
     align-items: center;
     padding: auto;
+    color: var(--greydark);
 }
 
 .checkboxContainerChild:hover {
@@ -153,6 +170,7 @@
     height: 26px;
 
 }
+
 
 .labelParentsActive,
 .labelParentsNoNActive {
@@ -233,3 +251,71 @@
     font-size: 8px;
 }
 
+.main_container{
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    padding-top: 5px;
+}
+.select_container{
+    
+}
+.select_body{
+    position: relative;
+    right: 0;
+    width: 205px;
+    height: 35px;
+    margin: 5px 0 60px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.select_body select{
+    height: 100%;
+    width: 100%;
+    font-size: 14px;
+    border-right: none;
+    border-left: none;
+    border-top: solid 1px;
+    border-top: var(--border);
+    border-bottom: solid 1px;
+    border-bottom: var(--border);
+    appearance: none;
+    padding: 0 30px 0 25px;
+    color: black;
+    cursor: pointer;
+    background-color: white;
+}
+
+
+.select_container label{
+    color: black;
+    font-size: 14px;
+    text-align: center;
+    padding-left: 15px;
+}
+.select_icon{
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition-duration: var(--transDuration);
+    display: flex;
+    align-items: center;
+    text-align: right;
+    justify-content: center;
+    pointer-events: none;
+    font-size: 14px;
+    color: var(--greydark);
+}
+
+.icon_up{
+   
+    transform: rotate(-90deg);
+    transition-duration: var(--transDuration);
+}
+.icon_down{
+  
+    transform: rotate(90deg);
+    transition-duration: var(--transDuration);
+}

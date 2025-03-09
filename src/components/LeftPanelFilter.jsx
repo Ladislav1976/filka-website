@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import style from "./LeftPanelFilter.module.css";
+import useAuth from "../hooks/useAuth";
 
 function PanelTag(props) {
     const component = props.component
@@ -113,7 +114,7 @@ function PanelButton(props) {
 
     function setterOpen() {
         if (component === "editcomponent" || component === "foodscomponent" || component === "newcomponent") {
-            setOpen(!open)
+            if (!result) { setOpen(!open) } else { setOpen(true) }
         }
     }
     function sumQt(array) {
@@ -167,6 +168,8 @@ export default function LeftPanelFilter(props) {
 
     const filterTagListArray = [...props.onFoodTagSet]
     const handleAddTagToFoodTagsList = props.handleAddTagToFoodTagsList
+
+    const { page, setPage, pageSize, setPageSize, ordering, setOrdering } = useAuth();
 
     let tagList = [
         {
@@ -280,9 +283,43 @@ export default function LeftPanelFilter(props) {
         )
         id++;
     })
+    const [open, setOpen] = useState(false)
+    console.log("open :", open)
+
+
+
 
     return (<>
         <div className={style.firstColumn} >
+            <div className={component == "foodscomponent" ? style.main_container : style.displayNoN}>
+                <div className={style.select_container}>
+                    <label className={component == "foodscomponent" ? style.select_label : style.displayNoN} for="select_ordering" >ZORADIŤ :</label>
+                    <div id={style.select_ordering_container} className={component == "foodscomponent" ? style.select_body : style.displayNoN} >
+                        <select
+                            name="ordering" id="select_ordering"
+                            onChange={(e) => props.orderingHandler(e)}
+                            value={ordering}
+                            onBlur={() => setOpen(false)}
+                            onClick={() => setOpen(!open)}
+
+                        >
+                            <option  value="date">Dátumu (najnovší)</option>
+                            <option  value="-date">Dátumu (najstarší)</option>
+                            <option  value="name">Vzostupne (od A po Z)</option>
+                            <option  value="-name">Zostupne (od Z po A)</option>
+                        </select>
+                        <div id={style.icon} className={style.select_icon}
+                      
+                        >
+                            <div className={!open ? style.icon_up : style.icon_down}
+                            >&#10094;</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
             {tagListRender}
         </div>
     </>

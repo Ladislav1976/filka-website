@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
@@ -45,10 +45,10 @@ function ViewFood(props) {
     const component = "viewcomponent"
     const navigate = useNavigate()
     const location = useLocation();
-    const foods = location.state?.foods.pathname+location.state?.foods.search || "/";
+    const foods = location.state?.foods.pathname + location.state?.foods.search || "/";
 
     const goBack = () => navigate(foods);
-    
+
 
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
@@ -196,96 +196,99 @@ function ViewFood(props) {
     return (<>
 
         {(usersQf.isLoading || foodQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading || urlsQf.isLoading || tagsQf.isLoading || stepsQf.isLoading || ingredientsQf.isLoading || imagesQf.isLoading) ? (
-                
-                <div className={style.loadingContainer}>
-                    <FontAwesomeIcon
-                        className={style.loadingIcon}
-                        icon={faSpinner}
-                        id="inpFileIcon"
-                        spin ></FontAwesomeIcon>
-                </div>
-           ): 
-            
+
+            <div className={style.loadingContainer}>
+                <FontAwesomeIcon
+                    className={style.loadingIcon}
+                    icon={faSpinner}
+                    id="inpFileIcon"
+                    spin ></FontAwesomeIcon>
+            </div>
+        ) :
+
             (<div className={style.main}>
-            {/* <div className={style.header}>RECEPT</div> */}
-            <div className={style.boxcontainer}>
-                <div className={style.messagebox}>
+                {/* <div className={style.header}>RECEPT</div> */}
+                <div className={style.boxcontainer}>
+                    <div className={style.messagebox}>
+                    </div>
+                    <div className={style.buttonBox} >
+                        <div className={style.foodButton}>
+                            {/* datatooltip="Upraviť" */}
+                            <FontAwesomeIcon
+                                onClick={() => navigate(`/recepty/${id.id}/email`)}
+                                icon={faEnvelope}
+
+                            />
+                        </div>
+
+                        <div className={style.foodButton}>
+                            {/* datatooltip="Upraviť" */}
+                            <FontAwesomeIcon
+                                onClick={() => navigate(`/recepty/${id.id}/edit`)}
+
+                                icon={faPenToSquare}
+
+                            />
+                        </div>
+                        <div className={style.foodButton} >
+                            {/* datatooltip="Upraviť" */}
+                            <FontAwesomeIcon
+                                onClick={() => goBack()}//`/recepty/?page_size=${20}`
+                                icon={faBackward}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className={style.buttonBox} >
-                    <div className={style.foodButton}>
-                        {/* datatooltip="Upraviť" */}
-                        <FontAwesomeIcon
-                            onClick={() => navigate(`/recepty/${id.id}/email`)}
-                            icon={faEnvelope}
-
-                        />
-                    </div>
-
-                    <div className={style.foodButton}>
-                        {/* datatooltip="Upraviť" */}
-                        <FontAwesomeIcon
-                            onClick={() => navigate(`/recepty/${id.id}/edit`)}
-
-                            icon={faPenToSquare}
-
-                        />
-                    </div>
-                    <div className={style.foodButton} >
-                        {/* datatooltip="Upraviť" */}
-                        <FontAwesomeIcon
-                            onClick={() => goBack()}//`/recepty/?page_size=${20}`
-                            icon={faBackward}
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className={style.fooodbox} >
-                {/* <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} > */}
-                <LeftPanelFilter
-                    onFoodTagSet={foodTagSet}
-                    foodTagsBox={null}
-                    component={component}
-                    handleAddTagToFoodTagsList={() => { return }}
-                />
-                <div className={style.secondColumn}>
-                    <div className={style.ingredients}>
-                        <p>Suroviny:</p>
-                        <IngredientInput
-                            ingredientsList={ingredientsList}
+                <div className={style.fooodbox} >
+                    <div className={style.fooodboxMidpanel} >
+                        {/* <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} > */}
+                        <LeftPanelFilter
+                            onFoodTagSet={foodTagSet}
+                            foodTagsBox={null}
                             component={component}
-                        ></IngredientInput>
+                            handleAddTagToFoodTagsList={() => { return }}
+                        />
+                        <div className={style.secondColumn}>
+                            <div className={style.ingredients}>
+                                <p>Suroviny:</p>
+                                <IngredientInput
+                                    ingredientsList={ingredientsList}
+                                    component={component}
+                                ></IngredientInput>
+                            </div>
+
+                            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component}></Image>
+
+                        </div>
+                        <div className={style.thirdColumn}>
+                  
+                            <div className={style.urlName}>
+                                <p>URL :</p>
+                            </div>
+                            <UrlInput
+                                urlList={urlList}
+                                component={component}
+                            >
+                            </UrlInput>
+                            <div className={style.urlName}>
+                                <p>Postup :</p>
+                            </div>
+                            <StepsInput
+                                stepsList={stepsList}
+                                component={component}
+                            ></StepsInput>
+
+                        </div>
+                        <div className={style.foodnameView}>{name}</div>
+                        <div className={style.date}>
+                                Vytvorené: <br /> {user?.map(res => res.first_name)} {user?.map(res => res.last_name)}<br />
+                                {new Date(date).toLocaleDateString('sk-SK')}
+                            </div>
+
                     </div>
-
-                    <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component}></Image>
-
-                </div>
-                <div className={style.thirdColumn}>
-                    <div className={style.date}></div>
-                    <div className={style.urlName}>
-                        <p>URL :</p>
-                    </div>
-                    <UrlInput
-                        urlList={urlList}
-                        component={component}
-                    >
-                    </UrlInput>
-                    <div className={style.urlName}>
-                        <p>Postup :</p>
-                    </div>
-                    <StepsInput
-                        stepsList={stepsList}
-                        component={component}
-                    ></StepsInput>
-                </div>
-                <div className={style.foodnameView}>{name}</div>
-                <div className={style.date}>
-                    Vytvorené: <br /> {user?.map(res => res.first_name)} {user?.map(res => res.last_name)}<br />
-                    {new Date(date).toLocaleDateString('sk-SK')}
                 </div>
 
-            </div>
-
-        </div>)}
+            </div>)}
         <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
             <SaveLoading
             ></SaveLoading>

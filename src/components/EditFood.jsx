@@ -855,6 +855,7 @@ function EditFood(props) {
           </div>
         </div>
         <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} >
+        <div className={style.fooodboxMidpanel} >
 
           <LeftPanelFilter
             onFoodTagSet={foodTagSet}
@@ -957,6 +958,7 @@ function EditFood(props) {
           </div>
           {/* </div> */}
 
+        </div>
         </div>
       </form>
     )}

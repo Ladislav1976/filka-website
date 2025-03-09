@@ -14,26 +14,31 @@ export default function FoodItemList(props) {
 
   let filterTagListArray = [...props.filterTagList];
 
-
+  console.log("food :", props.foods)
   if (props.foods) {
     for (const food of props.foods) {
       const filterTagsListRender = [];
-      for (const filterTag of filterTagListArray) {
-        if (
-          !food.foodTags
-            .map((str) => str.foodTag.toLowerCase())
-            .includes(filterTag.foodTag.toLowerCase()) &&
-          !food.name.toLowerCase().includes(filterTag.foodTag.toLowerCase())
-        ) {
+      // for (const filterTag of filterTagListArray) {
+      //   if (
+      //     !food.foodTags
+      //       .map((str) => str.foodTag.toLowerCase())
+      //       .includes(filterTag.foodTag.toLowerCase()) &&
 
-          filterTagsListRender.push(filterTag);
-        } else {
+      //     !food.name.toLowerCase().includes(filterTag.foodTag.toLowerCase())
+      //     // &&
+      //     // !food.steps
+      //     //   .map((str) => str.step.toLowerCase())
+      //     //   .includes(filterTag.foodTag.toLowerCase())
+      //   ) {
 
-        }
-      }
+      //     filterTagsListRender.push(filterTag);
+      //   } else {
 
-      if (filterTagsListRender.length === 0) {
+      //   }
+      // }
 
+      // if (filterTagsListRender.length === 0) {
+      //   console.log("food :", food)
         foodItemListRender.push(
 
           <FoodItem
@@ -47,9 +52,9 @@ export default function FoodItemList(props) {
         );
       }
     }
-  }
+  // }
 
- 
+
   const page = props.page
   const foodsQf = props.foodsQf
   const pagesArray = Array(foodsQf?.data?.TotalNumOfPages).fill().map((_, index) => index + 1)
@@ -57,8 +62,8 @@ export default function FoodItemList(props) {
     {/* <div className={imgLoader > 0 ? style.unvisible : style.foodItemBox}> */}
     <div className={style.foodItemBox}>
       <div className={style.foodItemList} >
-        {foodItemListRender}   
-        </div>
+        {foodItemListRender}
+      </div>
       <div className={styla.paginationBox}>
         <nav className={styla.navigationbar}>
           <button className={styla.button} onClick={() => props.pageChange(page - 1)} disabled={!foodsQf?.data?.previous || page === 1} id={!foodsQf?.data?.previous || page === 1 ? styla["buttondisabled"] : styla["buttonenabled"]}>&lt;&lt;</button>

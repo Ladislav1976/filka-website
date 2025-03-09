@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function useRefreshToken() {
 
-    const { auth, setAuth, csrftoken, setCSRFToken } = useAuth();
+    const { auth, setAuth, csrftoken, setCSRFToken ,setPage,  setPageSize, setOrdering} = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const refresh = async () => {
@@ -20,6 +20,10 @@ export default function useRefreshToken() {
                 }
             })
             setCSRFToken(response?.headers["x-csrftoken"])
+            setPage(1);
+            setPageSize(20);
+            setOrdering("date");
+
             return { accessToken: response.data.access.access, csrfToken: response.headers["x-csrftoken"] }
         } catch (err) {
             if (err?.response?.status === 401) {

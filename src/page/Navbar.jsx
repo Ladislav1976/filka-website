@@ -14,9 +14,10 @@ import {  faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 
 export default function Navbar() {
 
-    const { auth } = useAuth();
+    const { auth, page,  pageSize, ordering } = useAuth();
 
-
+    const nav=`/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}`
+      
     return (
         <>
             {auth.userRes ? <div className={style.navbar}>
@@ -25,7 +26,7 @@ export default function Navbar() {
                         <NavLink className={style.navlik} to="/" >
                             Home
                         </NavLink>
-                        <NavLink className={style.navlik} to="/recepty?page=1&page_size=2" >
+                        <NavLink className={style.navlik} to={nav} >
                             Recepty
                         </NavLink>
                         <div className={auth?.userRes?.is_superuser ? style.dropdown : style.hide} >

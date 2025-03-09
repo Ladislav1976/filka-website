@@ -1,20 +1,39 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowUp, faSpinner, faCheck } from "@fortawesome/free-solid-svg-icons";
 import style from "./Save.module.css";
+import { useRef } from "react";
 
 export default function DeleteConfirm(props) {
 
+  const deleteRef = useRef()
+  const cancelRef = useRef()
 
+  cancelRef.current?.focus();
 
+  function delKeyDown(event) {
+    if (event.key === "ArrowRight") {
+      cancelRef.current.focus();
+    }
+    if (event.key === "Enter") {
+      props.foodDelete();
+    }
+  }
 
+  function canKeyDown(event) {
+    console.log(event.key)
+    if (event.key === "ArrowLeft") {
+      deleteRef.current.focus();
+    }
+    if (event.key === "Enter") {
+      props.handlerFoodDeleteCancel();
+    }
+  }
   return (<>
     <div></div>
     <div className={style.box}>
   
       <h3>Vymazať ? </h3>
       <div>
-        <button id={style.yes_button13} className={style.button13}  onClick={() => props.foodDelete()}>ANO</button>
-        <button id={style.nobutton13} className={style.button13}  onClick={() => props.handlerFoodDeleteCancel()}>NIE</button>
+        <button ref={deleteRef} onKeyDown={delKeyDown} id={style.yes_button13} className={style.button13}  onClick={props.foodDelete}>ANO</button>
+        <button ref={cancelRef} onKeyDown={canKeyDown} id={style.nobutton13} className={style.button13}  onClick={props.handlerFoodDeleteCancel}>NIE</button>
 
       </div></div>
   </>

@@ -19,7 +19,8 @@ import { useFoods } from "../hooks/Queries/useFoods";
 import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
-
+import useAuth from "../hooks/useAuth";
+import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
 
 
 function Foods(props) {
@@ -31,37 +32,48 @@ function Foods(props) {
     const searchPar = searchParams.get('search')
     const pageSizePar = searchParams.get('page_size')
     const pagePar = searchParams.get('page')
+    const orderingPar = searchParams.get('ordering')
 
-    const [page, setPage] = useState(pagePar ? parseInt(pagePar) : 1)
-    const [pageSize, setPageSize] = useState(pageSizePar ? pageSizePar : 2)
+    const { page,setPage, pageSize, setPageSize,ordering, setOrdering} = useAuth();
+
 
 
     const location = useLocation()
     const foodsURL = location
 
 
-    const foodsQf = useFoods(foodTags__foodTagPar, searchPar, pagePar, pageSizePar)
+    const foodsQf = useFoods(foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
     const imagesQf = useImagesList(foodsQf)
     const tagsQf = useTags()
 
-
+    console.log("foodQf :",foodsQf)
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)
 
 
     useEffect(() => {
-        if (tagsQf.isSuccess) { searchLoader() }
-    }, [])
+        if (tagsQf.data !=undefined) { searchLoader() }
+    }, [tagsQf.data])
 
     function paramsUpdater(params) {
         if (foodTags__foodTagPar != null) { return params.foodTags__foodTag = foodTags__foodTagPar }
         if (searchPar != null) { return params.search = searchPar }
     }
 
+function orderingHandler(e){
+    setOrdering(e.target.value)
+    let params = {}
+    paramsUpdater(params)
+    params.ordering = e.target.value
+    params.page = 1
+    params.page_size = pageSize
 
+    setSearchParams(params)
+}
     function pageSizeChange(e) {
         setPageSize(e.target.value)
         let params = {}
         paramsUpdater(params)
+        params.ordering = ordering
         params.page = 1
         params.page_size = e.target.value
         setSearchParams(params)
@@ -72,6 +84,7 @@ function Foods(props) {
         setPage(newpage)
         let params = {}
         paramsUpdater(params)
+        params.ordering = ordering
         params.page = newpage
         params.page_size = pageSize
         setSearchParams(params)
@@ -143,7 +156,7 @@ function Foods(props) {
         let newTagList = new Set(filterTagSet);
         newTagList.add(tag);
         let foodTags__foodTag = Array.from(newTagList).map(res => res.foodTag).join("&")
-        setSearchParams({ foodTags__foodTag: foodTags__foodTag, page: 1, page_size: pageSize })
+        setSearchParams({ foodTags__foodTag: foodTags__foodTag, ordering: ordering ,page: 1, page_size: pageSize })
         setFilterTagSet(newTagList);
         setPage(1)
     }
@@ -163,11 +176,11 @@ function Foods(props) {
         newFilterTagSet.delete(tag)
         setFilterTagSet(newFilterTagSet);
         if (newFilterTagSet.size == 0) {
-            setSearchParams({ page: 1, page_size: pageSize })
+            setSearchParams({ordering: ordering , page: 1, page_size: pageSize })
         }
         else {
             let foodTags__foodTag = (`${Array.from(newFilterTagSet).map(res => res.foodTag).join("&")}`)
-            setSearchParams({ foodTags__foodTag: foodTags__foodTag, page: 1, page_size: pageSize })
+            setSearchParams({ foodTags__foodTag: foodTags__foodTag, ordering: ordering ,page: 1, page_size: pageSize })
         }
 
     }
@@ -226,7 +239,20 @@ function Foods(props) {
                 : (<> 
              <div className={style.foodsmain}>
                 <div className={style.searchbox}>
+                
+                {/* <div>Zoradit podla</div>
+                <select
+            className={style.ordering}
+            onChange={(e) => orderingHandler(e)}
+            value={ordering}
+          >
+            <option value="date">Najnovsi</option>
+            <option value="-date">Najstarsi</option>
+            <option value="name">A-Z</option>
+            <option value="-name">Z-A</option>
+ 
 
+          </select> */}
                     <TagInput
                         filterTagListState={[filterTagSet, setFilterTagSet]}
                         searchAddToTagList={searchAddToTagList}
@@ -244,6 +270,7 @@ function Foods(props) {
                             handleAddTagToFoodTagsList={filterTagSetCheck}
                             // handleAddTagToFoodTagsList2={foodTagListCheck2}
                             foodTagsContainer={foodsQf?.data?.tags_list}
+                            orderingHandler={orderingHandler}
                             component={component}
                         />
 

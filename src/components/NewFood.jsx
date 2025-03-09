@@ -706,7 +706,8 @@ function NewFood() {
                     </div>
                 </div>
             </div>
-            <div className={style.fooodbox} id="fooodbox">
+            <div className={style.fooodbox} >
+            <div className={style.fooodboxMidpanel} >
                 <LeftPanelFilter
                     onFoodTagSet={foodTagSet}
                     handleAddTagToFoodTagsList={foodTagListCheck}
@@ -812,6 +813,7 @@ function NewFood() {
                 </div>
                 <div className={style.date}>
                 </div>
+            </div>
             </div>
 
         </div>

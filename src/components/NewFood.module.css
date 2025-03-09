@@ -27,14 +27,25 @@ body {
 
 
 .fooodbox {
-  /* position: relative; */
+  display: flex;
+  justify-content: center;
+  border-bottom: var(--border3px);
+  background-color: var(--whitesmoke);
   flex-grow: 1;
+}
+
+.fooodboxMidpanel{
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background-color: white
-}
+  background-color: white;
+  
+  border-left: var(--border3px);
+  border-right: var(--border3px);
 
+  /* flex-grow: 0.6; */
+}
 .fooodnamebox {
   position: absolute;
   margin-top: 20px;
@@ -46,10 +57,12 @@ body {
 }
 
 .main {
-  /* position: relative; */
+
   display: flex;
   flex-direction: column;
   background-color: white;
+  justify-content: center;
+  /* padding-bottom: 0; */
   flex-grow: 1;
 
 }
@@ -127,6 +140,7 @@ body {
   min-width: 390px;
   width: 390px;
   margin: 100px 20px 0 20px;
+  /* flex-grow: 2; */
   /* margin-left: 10px; */
 }
 
@@ -199,12 +213,14 @@ img {
 
 
 .thirdColumn {
+  position: relative;
   background-color: rgb(255, 255, 255);
   ;
-  min-width: 760px;
-  max-width: 760px;
+  /* min-width: 760px;
+  max-width: 760px; */
   margin-top: 100px;
   border-radius: 10px;
+ flex-grow:1;
 }
 
 .name {
@@ -278,6 +294,7 @@ label {
 .date {
   position: absolute;
   right: 0;
+  /* top: 20px; */
   font-size: 0.7rem;
   margin-top: 10px;
   margin-right: 10px;
@@ -427,3 +444,4 @@ label {
   position: sticky;
   top: 400px;
 }
+

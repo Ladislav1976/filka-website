@@ -14,7 +14,7 @@ export default function FoodItemList(props) {
 
   let filterTagListArray = [...props.filterTagList];
 
-  console.log("food :", props.foods)
+
   if (props.foods) {
     for (const food of props.foods) {
       const filterTagsListRender = [];

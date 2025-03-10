@@ -66,7 +66,7 @@ function orderingHandler(e){
     params.ordering = e.target.value
     params.page = 1
     params.page_size = pageSize
-
+    setPage(1)
     setSearchParams(params)
 }
     function pageSizeChange(e) {

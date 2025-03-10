@@ -1,12 +1,15 @@
 import style from "./Save.module.css";
-import { useRef } from "react";
+import { useRef,useEffect } from "react";
 
 export default function DeleteConfirm(props) {
 
   const deleteRef = useRef()
   const cancelRef = useRef()
 
-  cancelRef.current?.focus();
+  useEffect(()=>{
+    cancelRef.current.focus();
+  },[])
+
 
   function delKeyDown(event) {
     if (event.key === "ArrowRight") {

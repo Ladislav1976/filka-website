@@ -303,8 +303,8 @@ export default function LeftPanelFilter(props) {
                             onClick={() => setOpen(!open)}
 
                         >
-                            <option  value="date">Dátumu (najnovší)</option>
-                            <option  value="-date">Dátumu (najstarší)</option>
+                            <option  value="date">Dátumu (najstarší)</option>
+                            <option  value="-date">Dátumu (najnovší)</option>
                             <option  value="name">Vzostupne (od A po Z)</option>
                             <option  value="-name">Zostupne (od Z po A)</option>
                         </select>

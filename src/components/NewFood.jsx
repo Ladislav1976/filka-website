@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
-import { useNavigate ,useLocation} from "react-router-dom";
+
+import { useNavigate, useLocation } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
@@ -19,7 +19,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowUp, faSpinner, faBackward, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 
-
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useQueriesItems } from "../hooks/Queries/useQueriesItems";
@@ -33,7 +32,6 @@ import { usePostIngredient } from "../hooks/Mutations/usePostIngredient";
 import { usePostUnit } from "../hooks/Mutations/usePostUnit";
 import { usePostUrl } from "../hooks/Mutations/usePostUrl";
 
-
 function NewFood() {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate()
@@ -42,7 +40,7 @@ function NewFood() {
     const navigate = useNavigate()
 
     const location = useLocation();
-    const foods = location.state?.foods.pathname+location.state?.foods.search || "/";
+    const foods = location.state?.foods.pathname + location.state?.foods.search || "/";
 
     const goBack = () => navigate(foods);
 
@@ -56,13 +54,11 @@ function NewFood() {
     const postUnit = usePostUnit()
     const postUrl = usePostUrl()
 
-
     const [name, setName] = useState("")
     const [ingredientsList, setIngredientsList] = useState([]);
     const [urlList, setUrlList] = useState([])
     const [stepsList, setStepsList] = useState([]);
     const [foodTagSet, setFoodTagSet] = useState(new Set());
-
 
     const [images, setImages] = useState("");
     const [imageURLsList, setImageURLsList] = useState([])
@@ -81,17 +77,21 @@ function NewFood() {
     const id = useParams()
     let ID = parseInt(id.id)
 
-    const nameRef = useRef()
-    const urlRef = useRef()
-    const stepRef = useRef()
-    const qtRef = useRef()
-    const unitRef = useRef()
-    const ingrRef = useRef()
+    const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
 
+    const nameRef = useRef();
+    const urlRef = useRef();
+    const stepRef = useRef();
+    const qtRef = useRef();
+    const unitRef = useRef();
+    const ingrRef = useRef();
 
     useEffect(() => {
-        nameRef.current?.focus();
-    }, [])
+        if (!ingredientQf.isLoading &&
+            !unitsQf.isLoading &&
+            !tagsQf.isLoading) { nameRef.current.focus(); }
+    }, [ingredientQf.data, unitsQf.data, tagsQf.data])
+
     function nameKeyDown(event) {
         if (event.key === "Enter") {
             urlRef.current.focus();
@@ -119,13 +119,12 @@ function NewFood() {
             ingrRef.current.focus();
         }
     }
-    function ingKeyDown(event){
-        if(event.key ==="Enter"){
-          nameRef.current.focus();
+    function ingKeyDown(event) {
+        if (event.key === "Enter") {
+            nameRef.current.focus();
         }
-      }
+    }
 
-    const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
 
 
 
@@ -138,7 +137,7 @@ function NewFood() {
             foodTagSet.size === 0 &&
             stepsList.length === 0
         ) {
-   
+
             handlerSetModalErrorMissing("Doplň chýbajúce informácie: Nazov jedla, Suroviny, Druj jedla, Postup")
 
         }
@@ -188,7 +187,6 @@ function NewFood() {
         setName(event.target.value);
     }
 
-
     function foodTagListCheck(tag) {
         let filter = Array.from(foodTagSet).filter((f) => f.foodTag === tag)
         if (filter != "") {
@@ -197,7 +195,6 @@ function NewFood() {
             handleAddToFoodTagList(tag);
         }
     }
-
 
     function ingredientsCheckPost(ing) {
 
@@ -271,7 +268,6 @@ function NewFood() {
         setFoodTagSet(newFoodTagSet);
     }
 
-
     function addToIngredientList(id, quantity, unit, ing) {
         if (ing === "") {
             return;
@@ -331,19 +327,16 @@ function NewFood() {
         setUrlList(addItem(url, urlList))
     }
 
-
     function handleAddStep(step, stepsList) {
         if (step.step == "") return
         setStepsList(addItem(step, stepsList))
     }
-
 
     function addItem(itemObj, array) {
         let newArray = array.slice();
         newArray.push(itemObj)
         return newArray;
     }
-
 
     function handleAddToFoodTagList(foodTag) {
         let filterFoodTag = tagsQf?.data?.filter((element) => element.foodTag == foodTag);
@@ -357,7 +350,6 @@ function NewFood() {
         newFoodTagSet.delete(tag);
         setFoodTagSet(newFoodTagSet);
     }
-
 
     function handleDataID(res) {
         let array = []
@@ -470,15 +462,12 @@ function NewFood() {
             handlerSetModalError()
         })
 
-
     }
-
 
     async function imagiesForPostHandler(food) {
 
         const date = new Date(food.date).toISOString().substring(0, 10)
         const seconds = new Date(food.date).getUTCMilliseconds()
-
 
         return Promise.all(
             imageURLsList?.map((res, index) => {
@@ -497,7 +486,6 @@ function NewFood() {
                     id: imageID,
                     imageForm: form
                 }
-
 
                 // if (Number.isInteger(res.id) && res.position === "delete") {
                 //     return deleteImagefood.mutateAsync(formdataPut)
@@ -523,7 +511,6 @@ function NewFood() {
         })
 
     }
-
 
     async function makeFoodRecord(food) {
         setModalLoadingFlag(true)
@@ -554,11 +541,9 @@ function NewFood() {
             })
     }
 
-
     function imageURLsUpdater(imageURLsList) {
         setImageURLsList(imageURLsList);
     }
-
 
     function stepMove(move, step) {
         setStepsList(itemMove(move, step, stepsList))
@@ -589,7 +574,6 @@ function NewFood() {
     }
 
 
-
     function handlerSetModalSave() {
         setModalSavedFlag(true)
         setTimeout(() => {
@@ -618,7 +602,6 @@ function NewFood() {
         setModalLightboxFlag(false)
         setIsVisibleEdit(false)
     }
-
 
     function getPosition(elementToFind, arrayElements) {
         var i;
@@ -663,11 +646,9 @@ function NewFood() {
 
     }, [images]);
 
-
     function onImageChange(e) {
         setImages([...e.target.files]);
     }
-
 
     if (tagsQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading)
         return <label htmlFor="inpFile">
@@ -682,7 +663,7 @@ function NewFood() {
 
     return (<>
 
-        <div className={style.main}>
+        <form className={style.main}>
             <div className={style.boxcontainer}>
                 <div className={style.messagebox}>
                     {modalMessage}</div>
@@ -700,123 +681,121 @@ function NewFood() {
                     // datatooltip="Spať"
                     >
                         <FontAwesomeIcon
-                            onClick={()=>goBack()}
+                            onClick={() => goBack()}
                             icon={faBackward}
                         />
                     </div>
                 </div>
             </div>
             <div className={style.fooodbox} >
-            <div className={style.fooodboxMidpanel} >
-                <LeftPanelFilter
-                    onFoodTagSet={foodTagSet}
-                    handleAddTagToFoodTagsList={foodTagListCheck}
-                    foodTagsBox={null}
-                    component={component}
-                />
+                <div className={style.fooodboxMidpanel} >
+                    <LeftPanelFilter
+                        onFoodTagSet={foodTagSet}
+                        handleAddTagToFoodTagsList={foodTagListCheck}
+                        foodTagsBox={null}
+                        component={component}
+                    />
 
+                    {/* <div className={style.ingreProcedureBox}> */}
+                    <div className={style.secondColumn}>
+                        <div className={style.ingredients}>
+                            <p>Suroviny:</p>
+                            <IngredientInput
+                                addToIngredientList={addToIngredientList}
+                                ingredientsList={ingredientsList}
+                                handlerSetModalErrorMissing={handlerSetModalErrorMissing}
+                                ingredientMove={ingredientMove}
+                                removeFromIngredientList={makeIngredientsDelete}
+                                component={component}
+                                qtRef={qtRef}
+                                unitRef={unitRef}
+                                ingrRef={ingrRef}
+                                qrKeyDown={qrKeyDown}
+                                unitKeyDown={unitKeyDown}
+                                ingKeyDown={ingKeyDown}
+                            ></IngredientInput>
+                        </div>
 
-                {/* <div className={style.ingreProcedureBox}> */}
-                <div className={style.secondColumn}>
-                    <div className={style.ingredients}>
-                        <p>Suroviny:</p>
-                        <IngredientInput
-                            addToIngredientList={addToIngredientList}
-                            ingredientsList={ingredientsList}
-                            handlerSetModalErrorMissing={handlerSetModalErrorMissing}
-                            ingredientMove={ingredientMove}
-                            removeFromIngredientList={makeIngredientsDelete}
+                        <input
+
+                            className={style.imageinput}
+                            type="file"
+                            multiple
+                            accept="image/jpeg,image/png,image/gif"
+                            id="inpFile"
+                            onChange={onImageChange}
+                            display="none"
+                        />
+                        <div className={style.imageIconBox}>
+                            <label htmlFor="inpFile" className={style.imageIcon}
+                                datatooltip="Pridať fotografiu">
+                                <FontAwesomeIcon
+
+                                    icon={faCircleArrowUp}
+                                    // onClick={props.onTagDelete}
+                                    id="inpFileIcon"
+                                ></FontAwesomeIcon>
+                            </label>
+                        </div>
+                        {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
+                            No Files chosen
+                        </p>}
+                        <div className={style.imagebox}>
+                            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
+                        </div>
+                    </div>
+                    <div className={style.thirdColumn}>
+
+                        <div className={style.urlName}>
+                            <p>URL :</p>
+                        </div>
+                        <UrlInput
+                            urlList={urlList}
                             component={component}
-                            qtRef={qtRef}
-                            unitRef={unitRef}
-                            ingrRef={ingrRef}
-                            qrKeyDown={qrKeyDown}
-                            unitKeyDown={unitKeyDown}
-                            ingKeyDown={ingKeyDown}
-                        ></IngredientInput>
+                            deleteUrl={makeUrlToDelete}
+                            updateUrlList={updateUrlList}
+                            handleAddUrl={handleAddUrl}
+                            urlRef={urlRef}
+                            urlKeyDown={urlKeyDown}
+                        >
+
+                        </UrlInput>
+                        <div className={style.urlName}>
+                            <p>Postup:</p>
+                        </div>
+                        <StepsInput
+                            stepMove={stepMove}
+                            handleAddStep={handleAddStep}
+                            updateStepList={updateStepList}
+                            stepsList={stepsList}
+                            deleteStep={makeSteptoDelete}
+                            component={component}
+                            stepRef={stepRef}
+                            stepKeyDown={stepKeyDown}
+                        ></StepsInput>
+
                     </div>
+                    <div className={style.fooodnamebox} >
+                        <div className={style.name}>
+                            Nazov:
+                        </div>
 
-
-                    <input
-
-                        className={style.imageinput}
-                        type="file"
-                        multiple
-                        accept="image/jpeg,image/png,image/gif"
-                        id="inpFile"
-                        onChange={onImageChange}
-                        display="none"
-                    />
-                    <div className={style.imageIconBox}>
-                        <label htmlFor="inpFile" className={style.imageIcon}
-                            datatooltip="Pridať fotografiu">
-                            <FontAwesomeIcon
-
-                                icon={faCircleArrowUp}
-                                // onClick={props.onTagDelete}
-                                id="inpFileIcon"
-                            ></FontAwesomeIcon>
-                        </label>
+                        <input
+                            className={style.foodname}
+                            ref={nameRef}
+                            value={name}
+                            onKeyDown={nameKeyDown}
+                            type="text"
+                            maxLength="25"
+                            onChange={handleNameChange}
+                        />
                     </div>
-                    {!imageURLsList && <p className={style.numOfFiles} id="numOfFiles">
-                        No Files chosen
-                    </p>}
-                    <div className={style.imagebox}>
-                        <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
+                    <div className={style.date}>
                     </div>
-                </div>
-                <div className={style.thirdColumn}>
-
-                    <div className={style.urlName}>
-                        <p>URL :</p>
-                    </div>
-                    <UrlInput
-                        urlList={urlList}
-                        component={component}
-                        deleteUrl={makeUrlToDelete}
-                        updateUrlList={updateUrlList}
-                        handleAddUrl={handleAddUrl}
-                        urlRef={urlRef}
-                        urlKeyDown={urlKeyDown}
-                    >
-
-                    </UrlInput>
-                    <div className={style.urlName}>
-                        <p>Postup:</p>
-                    </div>
-                    <StepsInput
-                        stepMove={stepMove}
-                        handleAddStep={handleAddStep}
-                        updateStepList={updateStepList}
-                        stepsList={stepsList}
-                        deleteStep={makeSteptoDelete}
-                        component={component}
-                        stepRef={stepRef}
-                        stepKeyDown={stepKeyDown}
-                    ></StepsInput>
-
-                </div>
-                <div className={style.fooodnamebox} >
-                    <div className={style.name}>
-                        Nazov:
-                    </div>
-
-                    <input
-                        className={style.foodname}
-                        ref={nameRef}
-                        value={name}
-                        onKeyDown={nameKeyDown}
-                        type="text"
-                        maxLength="25"
-                        onChange={handleNameChange}
-                    />
-                </div>
-                <div className={style.date}>
                 </div>
             </div>
-            </div>
 
-        </div>
+        </form>
         <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
             <SaveLoading
             ></SaveLoading>

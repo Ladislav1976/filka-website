@@ -62,7 +62,7 @@ body {
   flex-direction: column;
   background-color: white;
   justify-content: center;
-  /* padding-bottom: 0; */
+  padding-bottom: 0;
   flex-grow: 1;
 
 }

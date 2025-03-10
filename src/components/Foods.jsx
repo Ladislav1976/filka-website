@@ -46,7 +46,7 @@ function Foods(props) {
     const imagesQf = useImagesList(foodsQf)
     const tagsQf = useTags()
 
-    console.log("foodQf :",foodsQf)
+
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)
 
 

@@ -6,7 +6,7 @@ export const useImagesList =(foodsQf)=>{
 
     return useQueries({
         queries: foodsQf.isLoading == false
-            ? foodsQf.data.img_list.map((id) => ({
+            ? [...new Set (foodsQf.data.img_list)].map((id) => ({
                 queryKey: ["imagefood", id],
                 queryFn: () => getImage(id),
             })) : [],

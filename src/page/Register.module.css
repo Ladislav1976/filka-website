@@ -607,16 +607,28 @@ button {
     border: solid 1px black;
     border-spacing: 0;
     border-collapse: collapse;
-    /* width: 100%; */
+
+
 }
 
-tr {}
+tbody tr th{
+    background-color: var(--greydark);
+    color: white;
+}
+tbody tr th , tbody tr td
+{
+padding-left: 20px
+}
+/* .tableusers tr th{
+    background-color: yellow;
+margin-inline: 100px;
+} */
 
 tr,
 th,
 td {
     text-align: left;
-    padding-left: 20px;
+    /* padding-left: 20px; */
     font-style: normal;
     font-weight: lighter;
     /* margin: 30px; */
@@ -650,6 +662,7 @@ td {
 .rolebox {
     display: flex;
     flex-direction: row;
+    width: 190px;
     /* justify-content: flex-start; */
 }
 

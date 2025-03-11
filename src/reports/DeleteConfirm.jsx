@@ -30,7 +30,7 @@ export default function DeleteConfirm(props) {
     }
   }
   return (<>
-    <div></div>
+
     <div className={style.box}>
   
       <h3>Vymazať ? </h3>

@@ -90,7 +90,7 @@ function Role(props) {
                     onClick={roleDefault != "" ? handlePostRole : () => { return false }}
                 /></div>
 
-            <div className={style.deleteIcon} hidden={role === "Admin" ? true : false}>
+            <div className={style.deleteIcon} hidden={roleDefault === "" ? true : false}>
                 <FontAwesomeIcon
                     // className={style.cancelIcon}
                     icon={faXmark}

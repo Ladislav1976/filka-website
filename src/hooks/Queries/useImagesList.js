@@ -1,14 +1,15 @@
 
 import { useQueries} from "@tanstack/react-query"
-import {  getImage } from "../use-get";
+import {  getImage ,getDataPrivateID} from "../use-get";
 
-export const useImagesList =(foodsQf)=>{
+export const useImagesList =(axiosPrivate, controller,foodsQf)=>{
 
     return useQueries({
         queries: foodsQf.isLoading == false
             ? [...new Set (foodsQf.data.img_list)].map((id) => ({
                 queryKey: ["imagefood", id],
-                queryFn: () => getImage(id),
+                queryFn: (queryKey) => getDataPrivateID (axiosPrivate, controller, queryKey.queryKey),
+                // queryFn: () => getImage(id),
             })) : [],
 
         combine: (results) => {

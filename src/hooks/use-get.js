@@ -124,16 +124,30 @@ export async function getData( queryKey) {
 }
 
 export async function getDataPrivate(axiosPrivate, controller, queryKey) {
-  console.log("queryKey :",queryKey)
   const res = await axiosPrivate.get(`${queryKey}/`, {
     signal: controller.signal,
-
-
   }).then(res => res.data)
   controller.abort();
-
   return await res
+}
 
+export async function getDataPrivateID(axiosPrivate, controller, queryKey) {
+  console.log("queryKey",`${queryKey[0]}/${queryKey[1]}`)
+  const res = await axiosPrivate.get(`${queryKey[0]}/${queryKey[1]}/`, {
+    signal: controller.signal,
+  }).then(res => res.data)
+  controller.abort();
+  return await res
+}
+
+export async function getDataPrivateParams(axiosPrivate, controller,queryKey,foodTags__foodTag,search,ordering,page,page_size) {
+  console.log("queryKey",`${queryKey[0]}/`)
+  const res = await axiosPrivate.get(`${queryKey[0]}/`, {
+    params: { foodTags__foodTag,search, ordering, page  ,page_size,},
+    signal: controller.signal,
+  }).then(res => res.data)
+  controller.abort();
+  return await res
 }
 
 

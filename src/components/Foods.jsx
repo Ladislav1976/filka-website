@@ -25,6 +25,8 @@ import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
 
 function Foods(props) {
     const component = "foodscomponent"
+      const axiosPrivate = useAxiosPrivate()
+      const controller = new AbortController();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -42,9 +44,9 @@ function Foods(props) {
     const foodsURL = location
 
 
-    const foodsQf = useFoods(foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
-    const imagesQf = useImagesList(foodsQf)
-    const tagsQf = useTags()
+    const foodsQf = useFoods(axiosPrivate, controller,foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
+    const imagesQf = useImagesList(axiosPrivate, controller,foodsQf)
+    const tagsQf = useTags(axiosPrivate, controller)
 
 
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)
@@ -120,7 +122,8 @@ function orderingHandler(e){
     const [foods, setFoods] = useState([])
     const [imgLoader, setImgLoader] = useState(0)
 
-
+console.log("foodsQf :",foodsQf)
+console.log("imagesQf :",imagesQf)
     useEffect(() => {
 
         let foods = []

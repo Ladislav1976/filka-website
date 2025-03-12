@@ -13,16 +13,16 @@ function Img(props) {
         className={style.foodimage}
         src={props.image.image}
         loading="lazy"
-        onLoad={() => style.displayNone}
-  
+        onLoad={() => props.setImgLoader(prev => prev + 1)}
+
         alt="Image Preview"
       />
       <div className={style.imageclicker}
-            onClick={() => props.uploader(props.image)}>
-      <div className={style.imagecross}>
-        <FontAwesomeIcon
-          icon={faXmark} />
-      </div>
+        onClick={() => props.uploader(props.image)}>
+        <div className={style.imagecross}>
+          <FontAwesomeIcon
+            icon={faXmark} />
+        </div>
       </div>
       <input
         type="checkbox"
@@ -43,9 +43,16 @@ function Img(props) {
 export default function Image(props) {
   const newImageUrlsRender = [];
 
-  const [imgLoader, setImgLoader] = useState(props.imageURLs.length)
+  const [imgLoader, setImgLoader] = useState(0)
+  const [load, setLoad] = useState(false);
   let imageURLs = props.imageURLs.filter((e => e.statusDelete != true))
 
+
+  useEffect(() => {
+    if (imgLoader === props.imageURLs.length) {
+      setLoad(true);
+    }
+  }, [imgLoader, props.imageURLs.length]);
 
   function uploader(image) {
     props.handlerImage(image)
@@ -65,7 +72,7 @@ export default function Image(props) {
 
         newImageUrlsRender.push(
           <Img
-            onLoad={() => setImgLoader(prev => prev - 1)}
+            setImgLoader={setImgLoader}
             key={image.id}
             image={image}
             uploader={uploader}
@@ -79,11 +86,11 @@ export default function Image(props) {
     })
   }
   let id = 1000
-  return (
-    // <div className={imgLoader > 0 ? style.unvisible : style.imagebox}
-    <div className={style.imagebox}
-    >{newImageUrlsRender}</div>
+  return (<>
+    {!load ? (<p>Loading images...</p>) : (<div className={style.imagebox}
+    >{newImageUrlsRender}</div>)}
 
+  </>
   )
 
 }

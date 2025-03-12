@@ -1,7 +1,7 @@
 import { sendForm } from "@emailjs/browser";
-import { getDataId, } from "../use-get";
+import { getDataId,getDataPrivateID } from "../use-get";
 import { useQueries,useQueryClient } from "@tanstack/react-query"
-export const useSteps = (food) => {
+export const useSteps = (axiosPrivate, controller,food) => {
     const queryClient = useQueryClient();
     return useQueries({
 
@@ -9,7 +9,8 @@ export const useSteps = (food) => {
 
             ? food?.data?.steps?.map((id) => ({
                 queryKey: ["steps", id],
-                queryFn: (queryKey) => getDataId(queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivateID (axiosPrivate, controller, queryKey.queryKey),
+                // queryFn: (queryKey) => getDataId(queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["steps", id])
                   },

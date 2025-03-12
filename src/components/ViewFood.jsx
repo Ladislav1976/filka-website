@@ -37,7 +37,7 @@ function ViewFood(props) {
 
     const { setUsercont } = useAuth();
     const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
-    const stepsQf = useSteps(foodQf)
+    const stepsQf = useSteps(axiosPrivate, controller,foodQf)
     const ingredientsQf = useIngredients(foodQf, ingredientQf, unitsQf)
     const imagesQf = useImages(foodQf)
 

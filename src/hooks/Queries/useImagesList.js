@@ -8,8 +8,9 @@ export const useImagesList =(axiosPrivate, controller,foodsQf)=>{
         queries: foodsQf.isLoading == false
             ? [...new Set (foodsQf.data.img_list)].map((id) => ({
                 queryKey: ["imagefood", id],
-                queryFn: (queryKey) => getDataPrivateID (axiosPrivate, controller, queryKey.queryKey),
-                // queryFn: () => getImage(id),
+                // queryFn: (queryKey) => getDataPrivateID (axiosPrivate, controller, queryKey.queryKey),
+             
+                queryFn: () => getImage(id),
             })) : [],
 
         combine: (results) => {

@@ -293,7 +293,7 @@ export default function LeftPanelFilter(props) {
         <div className={style.firstColumn} >
             <div className={component == "foodscomponent" ? style.main_container : style.displayNoN}>
                 <div className={style.select_container}>
-                    <label className={component == "foodscomponent" ? style.select_label : style.displayNoN} for="select_ordering" >ZORADIŤ PODĽA:</label>
+                    <label className={component == "foodscomponent" ? style.select_label : style.displayNoN} htmlFor="select_ordering" >ZORADIŤ PODĽA:</label>
                     <div id={style.select_ordering_container} className={component == "foodscomponent" ? style.select_body : style.displayNoN} >
                         <select
                             name="ordering" id="select_ordering"

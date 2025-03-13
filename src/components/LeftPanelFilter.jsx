@@ -284,7 +284,7 @@ export default function LeftPanelFilter(props) {
         id++;
     })
     const [open, setOpen] = useState(false)
-    console.log("open :", open)
+
 
 
 

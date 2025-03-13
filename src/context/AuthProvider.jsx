@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
     const [ordering, setOrdering] = useState("")
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, usercont, setUsercont, csrftoken, setCSRFToken ,page, setPage, pageSize, setPageSize,ordering, setOrdering}}>
+        <AuthContext.Provider value={{ auth, setAuth, usercont, setUsercont, csrftoken, setCSRFToken, page, setPage, pageSize, setPageSize, ordering, setOrdering }}>
             {children}
         </AuthContext.Provider>
     )

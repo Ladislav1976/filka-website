@@ -71,7 +71,7 @@ function NewFood() {
     const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] = useState(false);
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
     const [isVisibleEdit, setIsVisibleEdit] = useState(false)
-    const [imgLoader, setImgLoader] = useState(0)
+
 
 
     const id = useParams()
@@ -741,7 +741,7 @@ function NewFood() {
                             No Files chosen
                         </p>}
                         <div className={style.imagebox}>
-                            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
+                            <Image  imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
                         </div>
                     </div>
                     <div className={style.thirdColumn}>

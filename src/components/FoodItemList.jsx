@@ -2,10 +2,15 @@ import FoodItem from "./FoodItem";
 import style from "./FoodItemList.module.css";
 import styla from "./Foods.module.css";
 import PageButton from "./PageButton"
+import { useState,useEffect } from "react";
 
 export default function FoodItemList(props) {
   const foodItemListRender = []
-  const [imgLoader, setImgLoader] = props.imgLoader
+  const [imgLoader, setImgLoader] = props.onImgLoader
+ 
+
+console.log("imgLoader :",imgLoader,"foods.length :",props.foods.length)
+
 
   if (props.foods) {
     for (const food of props.foods) {
@@ -13,8 +18,8 @@ export default function FoodItemList(props) {
           <FoodItem
             food={food}
             key={food.id}
-            onImgLoader={[imgLoader, setImgLoader]}
-            foodsURL={props.foodsURL}
+            setImgLoader={ setImgLoader}
+            location={props.location}
           />
 
         );
@@ -29,9 +34,11 @@ export default function FoodItemList(props) {
   return <>
     {/* <div className={imgLoader > 0 ? style.unvisible : style.foodItemBox}> */}
     <div className={style.foodItemBox}>
-      <div className={style.foodItemList} >
+    {!props.load ? (
+        <p>Loading images...</p>
+      ) : ( <div className={style.foodItemList} >
         {foodItemListRender}
-      </div>
+      </div>)}
       <div className={styla.paginationBox}>
         <nav className={styla.navigationbar}>
           <button className={styla.button} onClick={() => props.pageChange(page - 1)} disabled={!foodsQf?.data?.previous || page === 1} id={!foodsQf?.data?.previous || page === 1 ? styla["buttondisabled"] : styla["buttonenabled"]}>&lt;&lt;</button>

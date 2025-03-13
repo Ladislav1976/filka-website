@@ -54,9 +54,9 @@ function Foods(props) {
           setLoad(true); 
         }
       }, [imgLoader, foods.length]);
-    useEffect(() => {
-        setImgLoader(foods.length)
-      }, [foods.length]);
+
+
+
 
     function paramsUpdater(params) {
         if (foodTags__foodTagPar != null) { return params.foodTags__foodTag = foodTags__foodTagPar }
@@ -82,7 +82,7 @@ function Foods(props) {
         params.page_size = e.target.value
         setSearchParams(params)
         setPage(1)
-        // setImgLoader(0)
+
     }
 
     function pageChange(newpage) {
@@ -141,6 +141,7 @@ function Foods(props) {
                 })
             })
             setFoods(foods)
+            setImgLoader(foods.length)
 
         }
     }, [foodsQf.data, imagesQf.data, tagsQf.data])

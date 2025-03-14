@@ -2,15 +2,16 @@
 import { useQueries} from "@tanstack/react-query"
 import {  getImage ,getDataPrivateID} from "../use-get";
 
-export const useImagesList =(axiosPrivate, controller,foodsQf)=>{
+export const useImagesList =(axiosPrivate, foodsQf)=>{
 
     return useQueries({
         queries: foodsQf.isLoading == false
             ? [...new Set (foodsQf.data.img_list)].map((id) => ({
                 queryKey: ["imagefood", id],
-                // queryFn: (queryKey) => getDataPrivateID (axiosPrivate, controller, queryKey.queryKey),
-             
-                queryFn: () => getImage(id),
+                queryFn: (queryKey) => getDataPrivateID (axiosPrivate, queryKey.queryKey),
+                // enabled: !!id,
+                // staleTime: 5000
+                // queryFn: () => getImage(id),
             })) : [],
 
         combine: (results) => {
@@ -23,7 +24,9 @@ export const useImagesList =(axiosPrivate, controller,foodsQf)=>{
                 status: results.some((result) => result.status),
                 isFetched: results.some((result) => result.isFetched),
                 fetchStatus: results.some((result) => result.fetchStatus),
-                error: results.some((result) => result.error)
+                error: results.some((result) => result.error),
+                isFetchedAfterMount: results.some((result) => result.isFetchedAfterMount)
+                
 
             }
         },

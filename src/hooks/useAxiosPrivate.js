@@ -17,8 +17,7 @@ export default function useAxiosPrivate(props) {
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
-                    config.headers['Authorization'] = `Bearer${auth?.access_token}`;
-                    // config.headers['Content-Type']= 'application/json';
+                    config.headers['Authorization'] = `Bearer ${auth?.access_token}`;
                     config.headers['X-CSRFToken'] = csrftoken
 
                 }
@@ -36,7 +35,6 @@ export default function useAxiosPrivate(props) {
                     const { csrfToken: newCSRFToken, accessToken: newAccessToken } = await refresh();
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     prevRequest.headers['X-CSRFToken'] = newCSRFToken;
-                    // prevRequest.headers['Content-Type']= 'application/json';
                     return axiosPrivate(prevRequest);
                 } return Promise.reject(error)
             }
@@ -47,6 +45,6 @@ export default function useAxiosPrivate(props) {
             axiosPrivate.interceptors.response.eject(responseIntercept);
         }
 
-    }, [auth, refresh])
+    }, [auth, refresh,csrftoken])
     return axiosPrivate
 }

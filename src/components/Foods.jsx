@@ -20,13 +20,13 @@ import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import useAuth from "../hooks/useAuth";
-import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
+
 
 
 function Foods(props) {
     const component = "foodscomponent"
       const axiosPrivate = useAxiosPrivate()
-      const controller = new AbortController();
+
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -44,9 +44,9 @@ function Foods(props) {
     const foodsURL = location
 
 
-    const foodsQf = useFoods(axiosPrivate, controller,foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
-    const imagesQf = useImagesList(axiosPrivate, controller,foodsQf)
-    const tagsQf = useTags(axiosPrivate, controller)
+    const foodsQf = useFoods(axiosPrivate, foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
+    const imagesQf = useImagesList(axiosPrivate, foodsQf)
+    const tagsQf = useTags(axiosPrivate)
 
 
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)

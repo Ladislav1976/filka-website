@@ -10,12 +10,12 @@ import {  useNavigate, useLocation } from 'react-router-dom';
 export default function useGetAuth({queryKey}){
     // console.log("URL :",(queryKey[0]))
     const [users, setUsers] = useState([])
-    console.log( "URL :",queryKey[0])
+
     const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    console.log( "users 1 :",users)
+
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();

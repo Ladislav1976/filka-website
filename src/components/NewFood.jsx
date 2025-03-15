@@ -35,7 +35,7 @@ import { usePostUrl } from "../hooks/Mutations/usePostUrl";
 function NewFood() {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate()
-    const controller = new AbortController();
+
     const component = "newcomponent"
     const navigate = useNavigate()
 
@@ -77,7 +77,7 @@ function NewFood() {
     const id = useParams()
     let ID = parseInt(id.id)
 
-    const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
+    const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate)
 
     const nameRef = useRef();
     const urlRef = useRef();
@@ -741,7 +741,7 @@ function NewFood() {
                             No Files chosen
                         </p>}
                         <div className={style.imagebox}>
-                            <Image  imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
+                            <Image imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} makeImageDelete={makeImageDelete}></Image>
                         </div>
                     </div>
                     <div className={style.thirdColumn}>

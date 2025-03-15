@@ -55,7 +55,6 @@ function ViewFood(props) {
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
     const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] = useState(false);
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
-    const [imgLoader, setImgLoader] = useState(0)
     const [isVisibleEdit, setIsVisibleEdit] = useState(false)
 
 
@@ -128,16 +127,7 @@ function ViewFood(props) {
         };
         return returnList
     }
-    useEffect(() => {
 
-        if (
-            !imagesQf.isLoading) {
-
-            setImgLoader(imagesQf.data.length)
-
-        }
-    }, [imagesQf.data
-    ])
 
     useEffect(() => {
 
@@ -160,9 +150,7 @@ function ViewFood(props) {
             setImageURLsList(itemListDownl(foodQf.data.images, imagesQf.data, true),);
             setUser(itemListDownl(foodQf.data.user, usersQf.data, false),)
             setUsercont(foodQf.data.user)
-            setImgLoader(imagesQf.data.length)
-
-        }
+            }
     }, [usersQf.data, foodQf.data, ingredientQf.data, unitsQf.data, urlsQf.data, tagsQf.data, stepsQf.data, ingredientsQf.data, imagesQf.data
     ])
 
@@ -257,7 +245,7 @@ function ViewFood(props) {
                                 ></IngredientInput>
                             </div>
 
-                            <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component}></Image>
+                            <Image  imageURLs={imageURLsList} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component}></Image>
 
                         </div>
                         <div className={style.thirdColumn}>

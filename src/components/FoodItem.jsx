@@ -8,7 +8,7 @@ import default_image from "../image/default_image1.jpg"
 export default function FoodItem(props) {
   const navigate = useNavigate()
 
-  const [imgLoader, setImgLoader] = props.onImgLoader
+
   const food = props.food
   const id = props.food.id
 
@@ -20,14 +20,14 @@ export default function FoodItem(props) {
   }
   return (
     <>
-      {<div className={style.food} onClick={() => navigate(`/recepty/${id}/`, { state: { foods: props.foodsURL } })}>
+      {<div className={style.food} onClick={() => navigate(`/recepty/${id}/`, { state: { foods: props.location } })}>
         <img
           className={style.image}
           loading="lazy"
           src={foodRender[0] ? foodRender[0] : default_image}
 
           alt="Food image"
-          onLoad={() => setImgLoader(prev => prev - 1)}
+          onLoad={() => props.setImgLoader(prev => prev - 1)}
           key={food.images}
         />
         <div className={style.foodName}>{props.food.name}</div>

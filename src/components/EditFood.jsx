@@ -191,7 +191,7 @@ function EditFood(props) {
   const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] = useState(false);
   const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
   const [isVisibleEdit, setIsVisibleEdit] = useState(false)
-  const [imgLoader, setImgLoader] = useState(0)
+
 
 
 
@@ -854,7 +854,7 @@ function EditFood(props) {
             </div>
           </div>
         </div>
-        <div className={imgLoader > 0 ? style.unvisible : style.fooodbox} >
+        <div className={style.fooodbox} >
         <div className={style.fooodboxMidpanel} >
 
           <LeftPanelFilter
@@ -904,7 +904,7 @@ function EditFood(props) {
               No Files chosen
             </p>}
             <div className={style.imagebox}>
-              <Image onImgLoader={[imgLoader, setImgLoader]} imageURLs={imageURLsList} makeImageDelete={makeImageDelete} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component} ></Image>
+              <Image  imageURLs={imageURLsList} makeImageDelete={makeImageDelete} setModalFlag={setModalLightboxFlag} handlerImage={handlerImage} component={component} ></Image>
             </div>
           </div>
           <div className={style.thirdColumn}>

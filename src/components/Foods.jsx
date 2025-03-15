@@ -5,22 +5,19 @@ import FoodItemList from "./FoodItemList";
 import TagInput from "./TagInput";
 import LeftPanelFilter from "./LeftPanelFilter";
 import SaveError from "../reports/SaveError";
-import PageButton from "./PageButton"
 import React from "react";
-import { useQueryClient, } from "@tanstack/react-query"
 import { Link, useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
-import { useGet, useMutate } from "restful-react";
-// import { RestfulProvider, error } from "restful-react";
-import { render } from "@testing-library/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useFoods } from "../hooks/Queries/useFoods";
 import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import useAuth from "../hooks/useAuth";
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 
 
 function Foods(props) {
@@ -36,32 +33,50 @@ function Foods(props) {
     const pagePar = searchParams.get('page')
     const orderingPar = searchParams.get('ordering')
 
-    const { page,setPage, pageSize, setPageSize,ordering, setOrdering} = useAuth();
+    const { page, setPage, pageSize, setPageSize, ordering, setOrdering } = useAuth();
 
 
 
     const location = useLocation()
-    const foodsURL = location
 
+<<<<<<< HEAD
 
     const foodsQf = useFoods(axiosPrivate, foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
     const imagesQf = useImagesList(axiosPrivate, foodsQf)
     const tagsQf = useTags(axiosPrivate)
+=======
+    const foodsQf = useFoods(foodTags__foodTagPar, searchPar, orderingPar, pagePar, pageSizePar)
+    const imagesQf = useImagesList(foodsQf)
+    const tagsQf = useTags()
+>>>>>>> main
 
 
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)
 
+    const [foods, setFoods] = useState([])
+    const [imgLoader, setImgLoader] = useState(0)
+    const [load, setLoad] = useState(false);
 
     useEffect(() => {
-        if (tagsQf.data !=undefined) { searchLoader() }
+        if (tagsQf.data != undefined) { searchLoader() }
     }, [tagsQf.data])
 
 
+<<<<<<< HEAD
     
     useEffect(() => {
         if (!orderingPar || !pagePar|| !pageSizePar) { 
             setSearchParams({ordering:ordering,page:page,page_size :pageSize})}
     }, [])
+=======
+    useEffect(() => {
+        if (imgLoader === 0) {
+          setLoad(true); 
+        }
+      }, [imgLoader, foods.length]);
+
+
+>>>>>>> main
 
 
     function paramsUpdater(params) {
@@ -69,16 +84,16 @@ function Foods(props) {
         if (searchPar != null) { return params.search = searchPar }
     }
 
-function orderingHandler(e){
-    setOrdering(e.target.value)
-    let params = {}
-    paramsUpdater(params)
-    params.ordering = e.target.value
-    params.page = 1
-    params.page_size = pageSize
-    setPage(1)
-    setSearchParams(params)
-}
+    function orderingHandler(e) {
+        setOrdering(e.target.value)
+        let params = {}
+        paramsUpdater(params)
+        params.ordering = e.target.value
+        params.page = 1
+        params.page_size = pageSize
+        setPage(1)
+        setSearchParams(params)
+    }
     function pageSizeChange(e) {
         setPageSize(e.target.value)
         let params = {}
@@ -88,6 +103,7 @@ function orderingHandler(e){
         params.page_size = e.target.value
         setSearchParams(params)
         setPage(1)
+
     }
 
     function pageChange(newpage) {
@@ -127,8 +143,8 @@ function orderingHandler(e){
     }
 
 
-    const [foods, setFoods] = useState([])
-    const [imgLoader, setImgLoader] = useState(0)
+
+
 
 console.log("foodsQf :",foodsQf)
 console.log("imagesQf :",imagesQf)
@@ -148,6 +164,7 @@ console.log("imagesQf :",imagesQf)
             })
             setFoods(foods)
             setImgLoader(foods.length)
+
         }
     }, [foodsQf.data, imagesQf.data, tagsQf.data])
 
@@ -167,7 +184,7 @@ console.log("imagesQf :",imagesQf)
         let newTagList = new Set(filterTagSet);
         newTagList.add(tag);
         let foodTags__foodTag = Array.from(newTagList).map(res => res.foodTag).join("&")
-        setSearchParams({ foodTags__foodTag: foodTags__foodTag, ordering: ordering ,page: 1, page_size: pageSize })
+        setSearchParams({ foodTags__foodTag: foodTags__foodTag, ordering: ordering, page: 1, page_size: pageSize })
         setFilterTagSet(newTagList);
         setPage(1)
     }
@@ -187,11 +204,11 @@ console.log("imagesQf :",imagesQf)
         newFilterTagSet.delete(tag)
         setFilterTagSet(newFilterTagSet);
         if (newFilterTagSet.size == 0) {
-            setSearchParams({ordering: ordering , page: 1, page_size: pageSize })
+            setSearchParams({ ordering: ordering, page: 1, page_size: pageSize })
         }
         else {
             let foodTags__foodTag = (`${Array.from(newFilterTagSet).map(res => res.foodTag).join("&")}`)
-            setSearchParams({ foodTags__foodTag: foodTags__foodTag, ordering: ordering ,page: 1, page_size: pageSize })
+            setSearchParams({ foodTags__foodTag: foodTags__foodTag, ordering: ordering, page: 1, page_size: pageSize })
         }
 
     }
@@ -220,13 +237,12 @@ console.log("imagesQf :",imagesQf)
         if (response === undefined) {
             postFoodTag.mutate({ foodTag: foodTag })
         } else {
-            console.log("response :", response)
             addToTagList(response)
         }
     }
 
     function filterTagSetCheck(foodTag) {
-        console.log("Filter foodTag :", foodTag)
+
         const response = tagSearchInArray([...filterTagSet], foodTag)
         if (response === undefined) { dataFoodTagsCheck(foodTag) } else {
             removeFromTagSet(response)
@@ -238,7 +254,7 @@ console.log("imagesQf :",imagesQf)
     return (
         <>
             {(foodsQf.isLoading || imagesQf.isLoading || tagsQf.isLoading) ? (
-                
+
                 <div className={style.loadingContainer}>
                     <FontAwesomeIcon
                         className={style.loadingIcon}
@@ -246,12 +262,12 @@ console.log("imagesQf :",imagesQf)
                         id="inpFileIcon"
                         spin ></FontAwesomeIcon>
                 </div>
-           )
-                : (<> 
-             <div className={style.foodsmain}>
-                <div className={style.searchbox}>
-                
-                {/* <div>Zoradit podla</div>
+            )
+                : (<>
+                    <div className={style.foodsmain}>
+                        <div className={style.searchbox}>
+
+                            {/* <div>Zoradit podla</div>
                 <select
             className={style.ordering}
             onChange={(e) => orderingHandler(e)}
@@ -264,72 +280,44 @@ console.log("imagesQf :",imagesQf)
  
 
           </select> */}
-                    <TagInput
-                        filterTagListState={[filterTagSet, setFilterTagSet]}
-                        searchAddToTagList={searchAddToTagList}
-                        removeFromTagList={removeFromTagSet}
-                    />
+                            <TagInput
+                                filterTagListState={[filterTagSet, setFilterTagSet]}
+                                searchAddToTagList={searchAddToTagList}
+                                removeFromTagList={removeFromTagSet}
+                            />
 
-                    <div className={style.foodButton} onClick={() => navigate(`/recepty/novy_recept/`, { state: { foods: foodsURL } })}>
-                    Nový recept
-                    </div>
-                </div>
-                    <div className={style.main}>
+                            <div className={style.foodButton} onClick={() => navigate(`/recepty/novy_recept/`, { state: { foods: location } })}>
+                                Nový recept
+                            </div>
+                        </div>
+                        <div className={style.main}>
 
-                        <LeftPanelFilter
-                            onFoodTagSet={filterTagSet}
-                            handleAddTagToFoodTagsList={filterTagSetCheck}
-                            // handleAddTagToFoodTagsList2={foodTagListCheck2}
-                            foodTagsContainer={foodsQf?.data?.tags_list}
-                            orderingHandler={orderingHandler}
-                            component={component}
-                        />
-
-          
+                            <LeftPanelFilter
+                                onFoodTagSet={filterTagSet}
+                                handleAddTagToFoodTagsList={filterTagSetCheck}
+                                // handleAddTagToFoodTagsList2={foodTagListCheck2}
+                                foodTagsContainer={foodsQf?.data?.tags_list}
+                                orderingHandler={orderingHandler}
+                                component={component}
+                            />
                             <FoodItemList
                                 foods={foods}
-                                imgLoader={[imgLoader, setImgLoader]}
                                 filterTagList={filterTagSet}
-                                foodsURL={foodsURL}
-
+                                location={location}
+                                onImgLoader={[imgLoader, setImgLoader]}
                                 pageSizeChange={pageSizeChange}
                                 pageChange={pageChange}
                                 page={page}
                                 pageSize={pageSize}
                                 foodsQf={foodsQf}
+                                load={load}
                             ></FoodItemList>
+                        </div>
 
-               
-                        {/* <div className={style.paginationBox}>
-                                <nav className={style.navigationbar}>
-                                    <button className={style.button} onClick={() => pageChange(page - 1)} disabled={!foodsQf?.data?.previous || page === 1} id={!foodsQf?.data?.previous || page === 1 ? style["buttondisabled"] : style["buttonenabled"]}>&lt;&lt;</button>
-                                    {pagesArray.map(pg => <PageButton key={pg} pg={pg} page={page} pageChange={pageChange} />)}
-                                    <button className={style.button} onClick={() => pageChange(page + 1)} disabled={page === foodsQf?.data?.TotalNumOfPages} id={page === foodsQf?.data?.TotalNumOfPages ? style["buttondisabled"] : style["buttonenabled"]}>&gt;&gt;</button>
-                                </nav>
-                                <div className={style.navdisplay}>({foodsQf?.data?.FirstItemsOnPage} - {foodsQf?.data?.LastItemsOnPage})  z  {foodsQf?.data?.TotalItems}
-
-                                    <select
-                                        className={style.pageSize}
-                                        onChange={(e) => pageSizeChange(e)}
-                                        value={pageSize}
-                                    >
-                                        <option>2</option>
-                                        <option>4</option>
-                                        <option>6</option>
-                                        <option>8</option>
-                                        <option>20</option>
-                                        <option>30</option>
-                                        <option>40</option>
-
-                                    </select>
-                                </div>
-                            </div> */}
-                    </div>
-
-                    <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
-                        <SaveError
-                        ></SaveError>
-                    </Modal>
+                        <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
+                            <SaveError
+                            ></SaveError>
+                        </Modal>
                     </div> </>)}
         </>
     );

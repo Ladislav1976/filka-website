@@ -4,8 +4,7 @@ import useAuth from "../hooks/useAuth";
 
 const RequireAuthUserEdit = ({ allowedRoles }) => {
     const { auth, setAuth ,usercont, setUsercont, csrftoken, setCSRFToken} = useAuth();
-console.log("userContext :",usercont)
-console.log("auth :",auth)
+
     const location = useLocation();
     return (
        !allowedRoles?.includes(auth?.userRes?.role)

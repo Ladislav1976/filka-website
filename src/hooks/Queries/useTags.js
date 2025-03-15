@@ -1,9 +1,9 @@
-import { getData } from "../use-get";
+import { getDataPrivate} from "../use-get";
 import {  useQuery } from "@tanstack/react-query"
-export const useTags = () => {
+export const useTags = (axiosPrivate) => {
     return useQuery({
         queryKey: ["foodTags"],
-        queryFn: (queryKey) => getData(queryKey.queryKey[0]),
+        queryFn: (queryKey) => getDataPrivate(axiosPrivate, queryKey.queryKey),
         
     });
 };

@@ -53,14 +53,14 @@ function EditFood(props) {
   const component = "editcomponent"
   const navigate = useNavigate()
   const axiosPrivate = useAxiosPrivate()
-  const controller = new AbortController();
+
   const { setUsercont } = useAuth();
 
 
-  const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
-  const stepsQf = useSteps(foodQf)
-  const ingredientsQf = useIngredients(foodQf, ingredientQf, unitsQf)
-  const imagesQf = useImages(foodQf)
+  const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate)
+  const stepsQf = useSteps(axiosPrivate,foodQf)
+  const ingredientsQf = useIngredients(axiosPrivate,foodQf, ingredientQf, unitsQf)
+  const imagesQf = useImages(axiosPrivate,foodQf)
 
 
   // const [foodID, setFoodID] = useState(foodQf?.data?.id)

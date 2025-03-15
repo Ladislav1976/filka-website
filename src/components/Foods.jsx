@@ -14,10 +14,16 @@ import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import useAuth from "../hooks/useAuth";
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
 
 
 function Foods(props) {
     const component = "foodscomponent"
+      const axiosPrivate = useAxiosPrivate()
+
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -33,9 +39,16 @@ function Foods(props) {
 
     const location = useLocation()
 
+<<<<<<< HEAD
+
+    const foodsQf = useFoods(axiosPrivate, foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
+    const imagesQf = useImagesList(axiosPrivate, foodsQf)
+    const tagsQf = useTags(axiosPrivate)
+=======
     const foodsQf = useFoods(foodTags__foodTagPar, searchPar, orderingPar, pagePar, pageSizePar)
     const imagesQf = useImagesList(foodsQf)
     const tagsQf = useTags()
+>>>>>>> main
 
 
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)
@@ -49,6 +62,13 @@ function Foods(props) {
     }, [tagsQf.data])
 
 
+<<<<<<< HEAD
+    
+    useEffect(() => {
+        if (!orderingPar || !pagePar|| !pageSizePar) { 
+            setSearchParams({ordering:ordering,page:page,page_size :pageSize})}
+    }, [])
+=======
     useEffect(() => {
         if (imgLoader === 0) {
           setLoad(true); 
@@ -56,6 +76,7 @@ function Foods(props) {
       }, [imgLoader, foods.length]);
 
 
+>>>>>>> main
 
 
     function paramsUpdater(params) {
@@ -125,7 +146,8 @@ function Foods(props) {
 
 
 
-
+console.log("foodsQf :",foodsQf)
+console.log("imagesQf :",imagesQf)
     useEffect(() => {
 
         let foods = []

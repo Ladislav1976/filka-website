@@ -1,6 +1,6 @@
 
 import axios from "axios"
-
+import useAxiosPrivate from "./useAxiosPrivate";
 
 export async function defaultQueryFn({ queryKey }) {
 
@@ -123,17 +123,39 @@ export async function getData( queryKey) {
   }).then(res => res.data)
 }
 
-export async function getDataPrivate(axiosPrivate, controller, queryKey) {
-  console.log("queryKey :",queryKey)
+export async function getDataPrivate(axiosPrivate, queryKey) {
+  let isMounted = true;
+  const controller = new AbortController();
   const res = await axiosPrivate.get(`${queryKey}/`, {
     signal: controller.signal,
-
-
   }).then(res => res.data)
+  isMounted = false;
   controller.abort();
-
   return await res
+}
 
+export async function getDataPrivateID(axiosPrivate, queryKey) {
+  let isMounted = true;
+    const controller = new AbortController();
+    // console.log("queryKey",`${queryKey[0]}/${queryKey[1]}`)
+    const res = await axiosPrivate.get(`${queryKey[0]}/${queryKey[1]}/`, {
+      signal: controller.signal,
+    }).then(res => res.data)
+  isMounted = false;
+  controller.abort();
+  return await res
+}
+
+export async function getDataPrivateParams(axiosPrivate, queryKey,foodTags__foodTag,search,ordering,page,page_size) {
+  let isMounted = true;
+    const controller = new AbortController();
+    const res = await axiosPrivate.get(`${queryKey[0]}/`, {
+      params: { foodTags__foodTag,search, ordering, page  ,page_size,},
+      signal: controller.signal,
+    }).then(res => res.data)
+  isMounted = false;
+  controller.abort();
+  return await res
 }
 
 

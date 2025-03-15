@@ -1,6 +1,6 @@
 
-import { getDataId } from "../use-get";
-import {  useQueries,useQueryClient } from "@tanstack/react-query"
+import { getDataId ,getDataPrivateID} from "../use-get";
+import { useQueries, useQueryClient } from "@tanstack/react-query"
 
 // function ingredientsDownl(ingredientsList, unitsList, ingredientList) {
 //     console.log("ingredientsList" ,ingredientsList,"unitsList", unitsList,"ingredientList", ingredientList,)
@@ -32,8 +32,8 @@ import {  useQueries,useQueryClient } from "@tanstack/react-query"
 // }
 
 
-export const useIngredients = (food,ingredient,unit) => {
-      const queryClient = useQueryClient();
+export const useIngredients = (axiosPrivate,food, ingredient, unit) => {
+    const queryClient = useQueryClient();
     // return useQuery({
     //     queryKey: ["ingredients", ID],
     //     enabled: !!ID ,
@@ -44,25 +44,26 @@ export const useIngredients = (food,ingredient,unit) => {
     // console.log("food data:",food.data,ingredient.data,unit.data )
     return useQueries({
 
-        queries: food.isLoading ==false 
-            && ingredient.isLoading ==false 
-            && unit.isLoading ==false 
+        queries: food.isLoading == false
+            && ingredient.isLoading == false
+            && unit.isLoading == false
 
             ? food?.data?.ingredients?.map((id) => ({
                 queryKey: ["ingredients", id],
-                queryFn: (queryKey) => getDataId(queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivateID(axiosPrivate, queryKey.queryKey),
+                // queryFn: (queryKey) => getDataId(queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["ingredients", id])
-                  },
+                },
             }))
-            
-     
-: [],
+
+
+            : [],
 
         combine: (results) => {
             // if (!results) return
             return {
-                data: results.map((result) =>result.data),
+                data: results.map((result) => result.data),
                 // data: results.map((result) => ingredientsDownl(result.data, unit.data, ingredient.data)),
                 // data: ingredientsDownl(results, unit, ingredient),
                 isPending: results.some((result) => result.isPending),

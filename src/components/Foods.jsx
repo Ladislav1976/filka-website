@@ -56,6 +56,14 @@ function Foods(props) {
         if (tagsQf.data !=undefined) { searchLoader() }
     }, [tagsQf.data])
 
+
+    
+    useEffect(() => {
+        if (!orderingPar || !pagePar|| !pageSizePar) { 
+            setSearchParams({ordering:ordering,page:page,page_size :pageSize})}
+    }, [])
+
+
     function paramsUpdater(params) {
         if (foodTags__foodTagPar != null) { return params.foodTags__foodTag = foodTags__foodTagPar }
         if (searchPar != null) { return params.search = searchPar }

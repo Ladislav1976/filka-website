@@ -3,14 +3,14 @@ import { getDataPrivate, getDataPrivateID, getDataId, getData } from "../use-get
 
 
 
-export const useQueriesItems = (ID, axiosPrivate, controller) => {
+export const useQueriesItems = (ID, axiosPrivate ) => {
     const queryClient = useQueryClient();
 
     return useQueries({
         queries: [
             {
                 queryKey: ["users"],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate, controller, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(['users'])
                   },
@@ -22,7 +22,7 @@ export const useQueriesItems = (ID, axiosPrivate, controller) => {
                 queryKey: ["foods", ID],
                 enabled: !!ID,
                 // && !!tags && !!users,
-                queryFn: (queryKey) => getDataPrivateID (axiosPrivate, controller, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivateID (axiosPrivate,  queryKey.queryKey),
                 // queryFn: (queryKey) => getDataId(queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["foods", ID])
@@ -30,7 +30,7 @@ export const useQueriesItems = (ID, axiosPrivate, controller) => {
             },
             {
                 queryKey: ["ingredient"],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate, controller, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["ingredient"])
                   },
@@ -38,21 +38,21 @@ export const useQueriesItems = (ID, axiosPrivate, controller) => {
   
             {
                 queryKey: ['unit'],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate, controller, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["unit"])
                   },
             },
             {
                 queryKey: ['url'],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate, controller, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["url"])
                   },
             },
             {
                 queryKey: ["foodTags"],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate, controller, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["foodTags"])
                   },

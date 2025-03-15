@@ -1,20 +1,21 @@
-import { getDataId } from "../use-get";
-import { useQueries,useQueryClient } from "@tanstack/react-query"
+import { getDataId,getDataPrivateID } from "../use-get";
+import { useQueries, useQueryClient } from "@tanstack/react-query"
 
 
-export const useImages = (food) => {
+export const useImages = (axiosPrivate,food) => {
     const queryClient = useQueryClient();
     return useQueries({
         queries: food.isLoading == false
             // && dataFoodsStIngre.data.ingredients.ingredientName!=undefined
             ? food?.data?.images?.map((id) => ({
                 queryKey: ["imagefood", id],
-                queryFn: (queryKey) => getDataId(queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivateID(axiosPrivate, queryKey.queryKey),
+                // queryFn: (queryKey) => getDataId(queryKey.queryKey),
                 initialData: () => {
                     return queryClient.getQueryData(["imagefood", id])
-                  },
+                },
                 // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-    
+
             })
             ) : [],
 

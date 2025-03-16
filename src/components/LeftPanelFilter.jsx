@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import style from "./LeftPanelFilter.module.css";
 import useAuth from "../hooks/useAuth";
+import UsersFilter from "./UsersFilter";
+
 
 function PanelTag(props) {
     const component = props.component
@@ -11,6 +13,11 @@ function PanelTag(props) {
             .map((str) => str?.foodTag.toLowerCase())
             .includes(label)
     }
+    // function handleFilterTagListArray(label) {
+    //     return props.filterTagListArray
+    //         .map((str) => str?.id.toLowerCase())
+    //         .includes(label)
+    // }
 
     function checkboxContainerChild() {
         if (component === "viewcomponent") {
@@ -40,7 +47,7 @@ function PanelTag(props) {
     }
     return (
 
-        <div className={checkboxContainerChild()} onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}>
+        <div className={checkboxContainerChild()} onClick={() => props.handleAddTagToFoodTagsList({ type: "tag", tag: tag.tagName })}>
             <input
                 type="checkbox"
                 checked={handleFilterTagListArray(tag.tagName)}
@@ -49,13 +56,13 @@ function PanelTag(props) {
                 value={tag.tagName}
                 id={tag.tagName}
 
-                onChange={() => props.handleAddTagToFoodTagsList(tag.tagName)}
+                onChange={() => props.handleAddTagToFoodTagsList({ type: "tag", tag: tag.tagName })}
             />
             <div
                 className={buttonCSS()}
                 htmlFor="tag"
 
-                onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}
+                onClick={() => props.handleAddTagToFoodTagsList({ type: "tag", tag: tag.tagName })}
             />
             <div
                 className={labelCSS()}
@@ -88,7 +95,7 @@ function PanelButton(props) {
             let result = false
             for (let i = 0; i < props.filterTagListArray.length; i++) {
                 for (let u = 0; u < array.tagChildren.length; u++)
-                    if (props.filterTagListArray[i].foodTag.toLowerCase() === array.tagChildren[u].tagName) {
+                    if (props.filterTagListArray[i].foodTag === array.tagChildren[u].tagName) {
                         result = true;
                     }
             }
@@ -169,7 +176,7 @@ export default function LeftPanelFilter(props) {
     const filterTagListArray = [...props.onFoodTagSet]
     const handleAddTagToFoodTagsList = props.handleAddTagToFoodTagsList
 
-    const { page, setPage, pageSize, setPageSize, ordering, setOrdering } = useAuth();
+    const { ordering } = useAuth();
 
     let tagList = [
         {
@@ -278,6 +285,7 @@ export default function LeftPanelFilter(props) {
                 filterTagListArray={filterTagListArray}
                 component={component}
                 tagList={tagList}
+           
             />
 
         )
@@ -303,13 +311,13 @@ export default function LeftPanelFilter(props) {
                             onClick={() => setOpen(!open)}
 
                         >
-                            <option  value="date">Dátumu (najstarší)</option>
-                            <option  value="-date">Dátumu (najnovší)</option>
-                            <option  value="name">Vzostupne (od A po Z)</option>
-                            <option  value="-name">Zostupne (od Z po A)</option>
+                            <option value="date">Dátumu (najstarší)</option>
+                            <option value="-date">Dátumu (najnovší)</option>
+                            <option value="name">Vzostupne (od A po Z)</option>
+                            <option value="-name">Zostupne (od Z po A)</option>
                         </select>
                         <div id={style.icon} className={style.select_icon}
-                      
+
                         >
                             <div className={!open ? style.icon_up : style.icon_down}
                             >&#10094;</div>
@@ -319,8 +327,9 @@ export default function LeftPanelFilter(props) {
 
                 </div>
             </div>
-
+            <UsersFilter component={component} handleAddTagToFoodTagsList={props.handleAddTagToFoodTagsList} />
             {tagListRender}
+
         </div>
     </>
     )

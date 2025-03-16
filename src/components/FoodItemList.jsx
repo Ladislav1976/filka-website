@@ -8,10 +8,6 @@ export default function FoodItemList(props) {
   const foodItemListRender = []
   const [imgLoader, setImgLoader] = props.onImgLoader
  
-
-console.log("imgLoader :",imgLoader,"foods.length :",props.foods.length)
-
-
   if (props.foods) {
     for (const food of props.foods) {
         foodItemListRender.push(

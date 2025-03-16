@@ -12,13 +12,15 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useFoods } from "../hooks/Queries/useFoods";
 import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
+import { useUsers } from "../hooks/Queries/useUsers";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 
 function Foods(props) {
     const component = "foodscomponent"
-      const axiosPrivate = useAxiosPrivate()
+    const axiosPrivate = useAxiosPrivate()
 
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -36,9 +38,11 @@ function Foods(props) {
     const location = useLocation()
 
 
-    const foodsQf = useFoods(axiosPrivate, foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
+    const foodsQf = useFoods(axiosPrivate, foodTags__foodTagPar, searchPar, orderingPar, pagePar, pageSizePar)
     const imagesQf = useImagesList(axiosPrivate, foodsQf)
     const tagsQf = useTags(axiosPrivate)
+    const usersQf = useUsers(axiosPrivate)
+
 
 
     const postFoodTag = usePostTag(addToTagList, handlerSetModalError)
@@ -52,17 +56,18 @@ function Foods(props) {
     }, [tagsQf.data])
 
 
-    
+
     useEffect(() => {
-        if (!orderingPar || !pagePar|| !pageSizePar) { 
-            setSearchParams({ordering:ordering,page:page,page_size :pageSize})}
+        if (!orderingPar || !pagePar || !pageSizePar) {
+            setSearchParams({ ordering: ordering, page: page, page_size: pageSize })
+        }
     }, [])
-    
+
     useEffect(() => {
         if (imgLoader === 0) {
-          setLoad(true); 
+            setLoad(true);
         }
-      }, [imgLoader, foods.length]);
+    }, [imgLoader, foods.length]);
 
 
 
@@ -131,11 +136,6 @@ function Foods(props) {
     }
 
 
-
-
-
-console.log("foodsQf :",foodsQf)
-console.log("imagesQf :",imagesQf)
     useEffect(() => {
 
         let foods = []
@@ -163,11 +163,11 @@ console.log("imagesQf :",imagesQf)
 
     function addToTagList(tag) {
 
-        if (tag.foodTag === "") {
-            return;
-        } else if (Array.from(filterTagSet).map(res => res.foodTag.toLowerCase()).includes(tag.foodTag.toLowerCase())) {
-            return;
-        }
+        // if (tag.foodTag === "") {
+        //     return;
+        // } else if (Array.from(filterTagSet).map(res => res.foodTag.toLowerCase()).includes(tag.foodTag.toLowerCase())) {
+        //     return;
+        // }
 
         let newTagList = new Set(filterTagSet);
         newTagList.add(tag);
@@ -210,7 +210,7 @@ console.log("imagesQf :",imagesQf)
     }
 
     function tagSearchInArray(array, label) {
-
+        console.log("label", label)
         let response;
         array
             .map((str) => {
@@ -219,20 +219,35 @@ console.log("imagesQf :",imagesQf)
             })
         return response
     }
+    function userSearchInArray(array, label) {
+
+        let response;
+        array
+            .map((str) => {
+                if (str?.id == label.id) { response = str }
+            })
+        return response
+    }
 
     function dataFoodTagsCheck(foodTag) {
-        const response = tagSearchInArray(tagsQf?.data, foodTag)
-        if (response === undefined) {
-            postFoodTag.mutate({ foodTag: foodTag })
-        } else {
-            addToTagList(response)
-        }
+        const responseTag = tagSearchInArray(tagsQf?.data, foodTag)
+        if (!responseTag) {
+            const responseUser = userSearchInArray(usersQf?.data, foodTag)
+            if (!responseUser) { postFoodTag.mutate({ foodTag: foodTag }) }
+            else { console.log("responseUser :",responseUser);addToTagList({ ...responseUser, foodTag: `${responseUser.first_name}  ${responseUser.last_name}`}) }
+        } else { console.log("responseTag :",responseTag); addToTagList(responseTag) }
+        // const responseUser = userSearchInArray(usersQf?.data, foodTag)
+        // console.log("responseTag",responseTag)
+        // if (responseTag === undefined && responseUser === undefined) {
+        //     postFoodTag.mutate({ foodTag: foodTag })
+        // } else {
+        //     addToTagList(responseTag)
+        // }
     }
 
     function filterTagSetCheck(foodTag) {
-
-        const response = tagSearchInArray([...filterTagSet], foodTag)
-        if (response === undefined) { dataFoodTagsCheck(foodTag) } else {
+        const response = tagSearchInArray([...filterTagSet], foodTag.tag)
+        if (!response) { dataFoodTagsCheck(foodTag.tag) } else {
             removeFromTagSet(response)
         }
     }

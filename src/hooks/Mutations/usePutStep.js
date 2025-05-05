@@ -1,11 +1,12 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query"
-import { createPutStep } from "../use-post";
+import { createPutStep ,putDataPrivate} from "../use-post";
 
-export const usePutStep =()=>{
+export const usePutStep =(axiosPrivate)=>{
     const queryClient = useQueryClient();
     return useMutation({
         // queryKey: (id) => [`/steps/${id}/`],
-        mutationFn: createPutStep,
+        mutationFn:(step)=> createPutStep(axiosPrivate,step),
+        // mutationFn:()=> putDataPrivate(axiosPrivate, "step"),
         onMutate: (step)=>{queryClient.setQueryData(["steps", step.id], step)},
         onError: error => { console.log("Error Put Step :", error) },
         onSuccess: (stepUpdated) => {

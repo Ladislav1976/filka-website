@@ -195,23 +195,23 @@ function EditFood(props) {
 
 
 
-  const putFood = usePutFood(setModalLoadingFlag, handlerSetModalError, handlerSetModalSave)
+  const putFood = usePutFood(axiosPrivate,setModalLoadingFlag, handlerSetModalError, handlerSetModalSave)
   const deleteFood = useDeleteFood(setModalLoadingFlag, handlerSetModalError, handlerFoodDeleteConfirmed)
-  const postImage = usePostImage()
-  const putImage = usePutImage()
+  const postImage = usePostImage(axiosPrivate)
+  const putImage = usePutImage(axiosPrivate)
   const deleteImage = useDeleteImage()
   const postFoodTag = usePostTag(addTagTofoodTagSet, handlerSetModalError)
-  const postStep = usePostStep()
-  const putStep = usePutStep()
+  const postStep = usePostStep(axiosPrivate)
+  const putStep = usePutStep(axiosPrivate)
   const deleteStep = useDeleteStep()
   const postIngredients = usePostIngredients()
   const deleteIngredients = useDeleteIngredients()
-  const putIngredients = usePutIngredients()
+  const putIngredients = usePutIngredients(axiosPrivate)
   const postIngredient = usePostIngredient()
   const postUnit = usePostUnit()
   const postUrl = usePostUrl()
   const deleteUrl = useDeleteUrl()
-  const putUrl = usePutUrl()
+  const putUrl = usePutUrl(axiosPrivate)
 
 
   function nameKeyDown(event) {
@@ -604,6 +604,7 @@ function EditFood(props) {
         formdata.append("image", res.imageForBackEnd);
         formdata.append("position", index + 1);
 
+    
         const formdataPut = {
           id: imageID,
           imageForm: form
@@ -614,7 +615,7 @@ function EditFood(props) {
           return deleteImage.mutateAsync(formdataPut)
         }
         if (!Number.isInteger(res.id) && res.statusDelete === false) {
-          return postImage.mutateAsync({ formdata })
+          return postImage.mutateAsync( {formdata} )
         }
         if (!Number.isInteger(res.id) && res.statusDelete === true) { return { status: 204 } }
         if (Number.isInteger(res.id)) {
@@ -801,9 +802,8 @@ function EditFood(props) {
     setImages([...e.target.files]);
   }
 
-
   return (<>
-    {(!usersQf.isSuccess || !foodQf.isSuccess || !ingredientQf.isSuccess || !unitsQf.isSuccess || !urlsQf.isSuccess || !tagsQf.isSuccess || !stepsQf.isSuccess || !ingredientsQf.isSuccess || !imagesQf.isSuccess) ? (
+    {(!usersQf.isSuccess || !foodQf.isSuccess || !ingredientQf.isSuccess || !unitsQf.isSuccess || !urlsQf.isSuccess || !tagsQf.isSuccess || !stepsQf.isSuccess || !ingredientsQf.isSuccess || imagesQf.isLoading ||imagesQf.isError ) ? (
 
       <div className={style.loadingContainer}>
         <FontAwesomeIcon

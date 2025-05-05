@@ -2,11 +2,10 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPutUrl } from "../use-post";
 
 
-export const usePutUrl = () => {
+export const usePutUrl = (axiosPrivate) => {
     const queryClient = useQueryClient();
     return useMutation({
-
-        mutationFn: createPutUrl,
+        mutationFn: (url)=>createPutUrl(axiosPrivate,url),
         onError: error => { console.log("Error Put URL :", error) },
         onSuccess: (urlUpdated) => {
             console.log("URL :", urlUpdated, "sucsesfully updated!",)

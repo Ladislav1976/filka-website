@@ -71,18 +71,30 @@ h3 {
 /* .button13:hover {
     background-color: #4ba5a5;
 } */
-#yes_button13:hover {
+/* #yes_button13:hover {
     background-color: rgb(235, 153, 153);
-}
+
 #nobutton13:hover {
     background-color: rgb(154, 194, 121);
-}
+} */
 
 #yes_button13:focus {
     background-color: rgb(235, 153, 153);
 }
+
 #nobutton13:focus {
     background-color: rgb(154, 194, 121);
-
 }
+/* #nobutton13{
+    background-color: clear;
+    &:hover {
+    background-color: rgb(154, 194, 121);
+} 
+&:focus {
+    background-color: rgb(154, 194, 121);
+} 
+} */
+
+
+
 

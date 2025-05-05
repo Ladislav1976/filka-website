@@ -2,11 +2,11 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPutIngredients } from "../use-post";
 
 
-export const usePutIngredients =()=>{
+export const usePutIngredients =(axiosPrivate)=>{
     const queryClient = useQueryClient();
     return useMutation({
         // queryKey: (id) => [`/steps/${id}/`],
-        mutationFn: createPutIngredients,
+        mutationFn: (ingredients)=>createPutIngredients(axiosPrivate,ingredients),
         onMutate: (ingredients)=>{queryClient.setQueryData(["ingredients", ingredients.id], ingredients)},
         onError: error => { console.log("Error Put Ingredients :", error) },
         onSuccess: (ingredientsUpdated, variable) => {

@@ -35,8 +35,8 @@ export default function DeleteConfirm(props) {
   
       <h3>Vymazať ? </h3>
       <div>
-        <button ref={deleteRef} onKeyDown={delKeyDown} id={style.yes_button13} className={style.button13}  onClick={props.foodDelete}>ANO</button>
-        <button ref={cancelRef} onKeyDown={canKeyDown} id={style.nobutton13} className={style.button13}  onClick={props.handlerFoodDeleteCancel}>NIE</button>
+        <button ref={deleteRef} onMouseEnter ={()=>deleteRef.current.focus()} onKeyDown={delKeyDown} id={style.yes_button13} className={style.button13}  onClick={props.foodDelete}>ANO</button>
+        <button ref={cancelRef} onMouseEnter ={()=>cancelRef.current.focus()} onKeyDown={canKeyDown} id={style.nobutton13} className={style.button13}  onClick={props.handlerFoodDeleteCancel}>NIE</button>
 
       </div></div>
   </>

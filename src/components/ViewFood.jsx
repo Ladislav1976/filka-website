@@ -45,8 +45,8 @@ function ViewFood(props) {
     const component = "viewcomponent"
     const navigate = useNavigate()
     const location = useLocation();
-    const foods = location.state?.foods.pathname + location.state?.foods.search || "/";
-
+    const foods = location.state?.foods.pathname + location.state?.foods.search //|| "/";
+console.log("foods :",foods)
     const goBack = () => navigate(foods);
 
 

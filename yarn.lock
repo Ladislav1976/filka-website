@@ -5582,6 +5582,60 @@ data-view-byte-offset@^1.0.1:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
+datatables.net-dt@^2, datatables.net-dt@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.npmjs.org/datatables.net-dt/-/datatables.net-dt-2.2.2.tgz"
+  integrity sha512-Qfe9g/E3yAPTHoDASc1J0r5Yx++3Y3VdcEOFCupvfGJ8LhRrreebUC70UYEzO8vPOKnkutoRanW/VBMRIbXKXA==
+  dependencies:
+    datatables.net "2.2.2"
+    jquery ">=1.7"
+
+datatables.net-react@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/datatables.net-react/-/datatables.net-react-1.0.0.tgz"
+  integrity sha512-Rhuxu5KEnEHC8rCbXhwcLZ+tbjWkCiI7X8nj5p6+6UT5RHqJpKYjDxLQZnva0sLLOCSvmjHS+3TatzckTAk+Pw==
+
+datatables.net-responsive-dt@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npmjs.org/datatables.net-responsive-dt/-/datatables.net-responsive-dt-3.0.4.tgz"
+  integrity sha512-0PMpLn+qEE2adKPeu7oURnmhlA0/Bq+OB3Y0HOynH2I1ejCsaNE71MeHHqSapdvfk+lBxjVdfvw41XEmO3JipA==
+  dependencies:
+    datatables.net-dt "^2"
+    datatables.net-responsive "3.0.4"
+    jquery ">=1.7"
+
+datatables.net-responsive@3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npmjs.org/datatables.net-responsive/-/datatables.net-responsive-3.0.4.tgz"
+  integrity sha512-d1JKaWPRp81xydZrTDqrzGTloXthDtyvwbqiSKYUhDBKWTL4wN5IW5WYr4OBPwu21Ctpi/QgOl7mt9MfyF8KxA==
+  dependencies:
+    datatables.net "^2"
+    jquery ">=1.7"
+
+datatables.net-select-dt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/datatables.net-select-dt/-/datatables.net-select-dt-3.0.0.tgz"
+  integrity sha512-3DkuDQN+2l4g600emm5zpDkUQ+qYnjSoAuHxuFm1pdmXWU3ga71vEc0gJa2VhH2vVbhXaCuhf16lxXMpj4Qn8A==
+  dependencies:
+    datatables.net-dt "^2"
+    datatables.net-select "3.0.0"
+    jquery ">=1.7"
+
+datatables.net-select@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/datatables.net-select/-/datatables.net-select-3.0.0.tgz"
+  integrity sha512-g01Q5ISjiAtoKz/DvOcf3qFqhwRt0mDhy5buivFxEgpiIDOkLFhtvYEjtUctrLX7PT2yVJfsQY5cPFM/5spjKQ==
+  dependencies:
+    datatables.net "^2"
+    jquery ">=1.7"
+
+datatables.net@^2, datatables.net@^2.2.2, datatables.net@2.2.2:
+  version "2.2.2"
+  resolved "https://registry.npmjs.org/datatables.net/-/datatables.net-2.2.2.tgz"
+  integrity sha512-gfODIKE3gpgbVeZy2QGj2Dq9roO6hy00S+k1knklrqlMyAMrh1wt0Q6ryBUM7gU96U77ysbq8dYhxFdmcC/oPQ==
+  dependencies:
+    jquery ">=1.7"
+
 debounce@2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/debounce/-/debounce-2.1.0.tgz"
@@ -9143,6 +9197,11 @@ jiti@^1.21.6:
   version "1.21.7"
   resolved "https://registry.npmjs.org/jiti/-/jiti-1.21.7.tgz"
   integrity sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==
+
+jquery@^3.7.1, jquery@>=1.7:
+  version "3.7.1"
+  resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
 js-cookie@^3.0.5:
   version "3.0.5"

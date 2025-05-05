@@ -1,10 +1,10 @@
 import {  useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPutImagefood } from "../use-post";
 
-export const usePutImage =()=> {
+export const usePutImage =(axiosPrivate)=> {
     const queryClient = useQueryClient();
     return   useMutation({
-        mutationFn: createPutImagefood,
+        mutationFn: (putFormdata)=>createPutImagefood(axiosPrivate,putFormdata),
         retry: 3,
         onMutate: (image)=>{queryClient.setQueryData(["imagefood", image.id], image)},
         onError: error => { console.log("Error Put Imagefood :", error) },

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import style from "./Register.module.css";
 import useAuth from "../hooks/useAuth";
@@ -11,7 +11,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faXmark, faCheck, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 // import { putDataPrivate } from "../hooks/use-post";
 import { usePutUser } from "../hooks/Mutations/usePutUser";
+import DataTable from 'datatables.net-react';
+import DT from 'datatables.net-dt';
+import 'datatables.net-select-dt';
+import 'datatables.net-responsive-dt';
+import '../lib/datatable/dataTables.css';
 
+
+// const $ = require('jquery')
+// $.DataTable = require('datatables.net')
 
 function Role(props) {
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
@@ -107,24 +115,24 @@ function Role(props) {
 
 export default function Users() {
 
-    const [users, setUsers] = useState()
+    const [users, setUsers] = useState([])
 
     const axiosPrivate = useAxiosPrivate()
-    const controller = new AbortController();
-    const { auth } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
+
+    // const { auth } = useAuth();
+    // const navigate = useNavigate();
+    // const location = useLocation();
 
 
-    const getUsers = useUsers(axiosPrivate, controller)
-
-
+    const usersQf = useUsers(axiosPrivate)
+    const table = useRef()
+    console.log("usersQf.isSuccess", usersQf)
 
 
     useEffect(() => {
         let isMounted = true;
-        if (getUsers.isSuccess) {
-            setUsers(getUsers.data)
+        if (usersQf.isSuccess) {
+            setUsers(usersQf.data)
 
         }
         // const controller = new AbortController();
@@ -160,13 +168,35 @@ export default function Users() {
         }
 
 
-    }, [getUsers])
+    }, [usersQf])
+
+    // const putUser = usePutUser(setRole, roleDefault, setRoleDefault, handlerSetModalError, axiosPrivate, controller, props.user?.id)
+    // function handlePostRole(data) {
+
+    //     // if (roleDefault != "") 
+    //     // {
+    //     console.log("POST")
+    //     putUser.mutate({
+    //         id: data?.id,
+    //         email: data.email,
+    //         role: data.role
+    //     })
+    //     // };
+    // }
+    const columns = [
+        { data: 'id' },
+        { data: 'first_name' },
+        { data: 'last_name' },
+        { data: 'role' },
+   
 
 
+    ];
+    DataTable.use(DT);
 
     return (
         <>
-            {getUsers.isLoading ? (
+            {usersQf.isLoading ? (
 
                 <div className={style.loadingContainer}>
                     <FontAwesomeIcon
@@ -177,8 +207,10 @@ export default function Users() {
                 </div>
 
             )
-                : (<main className={style.MainApp}>
-              
+                : (
+
+                    <main className={style.MainApp}>
+
                         <h2>Zoznam užívateľov</h2>
                         {users?.length
                             ?
@@ -207,46 +239,101 @@ export default function Users() {
 
 
 
-            
-                    <div className={style.popisky}>
+
+                        <div className={style.popisky}>
 
 
 
 
-                        <table >
-                            <tbody>
-                                <tr>
-                                    <td className={style.fonttable}>Admin</td><td className={style.fonttable}>- Admin</td>
-                                </tr>
-                                <tr>
-                                    <td className={style.fonttable}>Editor</td><td className={style.fonttable}>- Môže editovať všetky recepty</td>
-                                </tr>
-                                <tr>
-                                    <td className={style.fonttable}>User_edit</td><td className={style.fonttable}>- Môže editovať iba vlastne recepty</td>
-                                </tr>
-                                <tr>
-                                    <td className={style.fonttable}>User_readOnly</td><td className={style.fonttable}>- Nemôže editovať</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <br />
-                        <table >
-                            <tbody>
-                                <tr>
-                                    <td className={style.fonttable}><FontAwesomeIcon icon={faCheck} style={{ color: "558113" }} /></td><td className={style.fonttable}>- Uložené</td>
-                                </tr>
-                                <tr>
-                                    <td className={style.fonttable}><FontAwesomeIcon icon={faFloppyDisk} style={{ color: "fd0000" }} /></td><td className={style.fonttable}>- Uložiť</td>
-                                </tr>
-                                <tr>
-                                    <td className={style.fonttable}><FontAwesomeIcon icon={faXmark} style={{ color: "rgb(68, 68, 68)" }} /></td><td className={style.fonttable}>- Zrušiť</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table >
+                                <tbody>
+                                    <tr>
+                                        <td className={style.fonttable}>Admin</td><td className={style.fonttable}>- Admin</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={style.fonttable}>Editor</td><td className={style.fonttable}>- Môže editovať všetky recepty</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={style.fonttable}>User_edit</td><td className={style.fonttable}>- Môže editovať iba vlastne recepty</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={style.fonttable}>User_readOnly</td><td className={style.fonttable}>- Nemôže editovať</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br />
+                            <table >
+                                <tbody>
+                                    <tr>
+                                        <td className={style.fonttable}><FontAwesomeIcon icon={faCheck} style={{ color: "558113" }} /></td><td className={style.fonttable}>- Uložené</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={style.fonttable}><FontAwesomeIcon icon={faFloppyDisk} style={{ color: "fd0000" }} /></td><td className={style.fonttable}>- Uložiť</td>
+                                    </tr>
+                                    <tr>
+                                        <td className={style.fonttable}><FontAwesomeIcon icon={faXmark} style={{ color: "rgb(68, 68, 68)" }} /></td><td className={style.fonttable}>- Zrušiť</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                    </div>
-                </main>)}
+                        </div>
+
+                        <DataTable
+
+                            id="example"
+                            className="display"
+                            data={usersQf.data}
+                            columns={columns}
+                            ref={table}
+                            options={{
+                                responsive: true,
+                                select: true,
+                                // paging: false
+                            }}
+                            slots={{
+                                // 1: (data) => {
+                                //     return <square value={data} />;
+                                // },
+                               3 : (data) => 
+                                <select
+                               className={style.roleinput}
+                               disabled={data.role === "Admin" ? true : false}
+                            //    onChange={()=>handlePostRole(data)}
+                               value={data.role}
+                           // ref={props.unitRef}
+                           // onKeyDown={props.unitKeyDown}
+                           >
+                               <option hidden={true} value="Admin">Admin</option>
+                               <option value="Editor">Editor</option>
+                               <option value="User_edit">User_edit</option>
+                               <option value="User_readOnly">User_readOnly</option>
+                           </select>
+                                
+                            }}
+
+
+
+                        // options={{
+                        //     responsive: true,
+                        //     select: true,
+                        // }}
+                        >
+                            <thead>
+                                <tr>
+                                    <th>P.č.</th>
+                                    <th>Meno</th>
+                                    <th>Priezvisko</th>
+                                    <th>Právomoc</th>
+                                 
+              
+                                </tr>
+                            </thead>
+                        </DataTable>
+                       
+                    </main >)
+}
         </>
 
     )
 }
+

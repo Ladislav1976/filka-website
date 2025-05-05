@@ -30,6 +30,7 @@ export const useImages = (axiosPrivate,food) => {
                 isPending: results.some((result) => result.isPending),
                 isLoading: results.some((result) => result.isLoading),
                 isSuccess: results.some((result) => result.isSuccess),
+                isError: results.some((result) => result.isError),
                 status: results.some((result) => result.status),
                 isFetched: results.some((result) => result.isFetched),
                 fetchStatus: results.some((result) => result.fetchStatus),

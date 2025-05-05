@@ -14,6 +14,7 @@ import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 
 function Foods(props) {
@@ -34,6 +35,7 @@ function Foods(props) {
 
 
     const location = useLocation()
+    console.log("location :",location)
 
 
     const foodsQf = useFoods(axiosPrivate, foodTags__foodTagPar, searchPar, orderingPar,pagePar, pageSizePar)
@@ -54,7 +56,7 @@ function Foods(props) {
 
     
     useEffect(() => {
-        if (!orderingPar || !pagePar|| !pageSizePar) { 
+        if (!searchPar ||!orderingPar || !pagePar|| !pageSizePar) { 
             setSearchParams({ordering:ordering,page:page,page_size :pageSize})}
     }, [])
     

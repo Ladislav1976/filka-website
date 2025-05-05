@@ -2,10 +2,10 @@ import {  useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPostImagefood } from "../use-post";
 
 
-export const usePostImage=()=>{
+export const usePostImage=(axiosPrivate)=>{
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: createPostImagefood,
+        mutationFn: (formdata)=>createPostImagefood(axiosPrivate,formdata),
         onError: error => { console.log("Error Post Imagefood :", error); },
         onSuccess: (ImageCreated) => {
           console.log("Imagefood :", ImageCreated, "sucsesfully created!")

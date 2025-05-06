@@ -124,6 +124,7 @@ export async function getData( queryKey) {
 }
 
 export async function getDataPrivate(axiosPrivate, queryKey) {
+
   let isMounted = true;
   const controller = new AbortController();
   const res = await axiosPrivate.get(`${queryKey}/`, {

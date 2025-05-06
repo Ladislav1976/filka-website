@@ -9,9 +9,10 @@ export function AuthProvider({ children }) {
     const [page, setPage] = useState("")
     const [pageSize, setPageSize] = useState("")
     const [ordering, setOrdering] = useState("")
+    const [foodsback, setFoodsback] = useState("")
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, usercont, setUsercont, csrftoken, setCSRFToken, page, setPage, pageSize, setPageSize, ordering, setOrdering }}>
+        <AuthContext.Provider value={{ auth, setAuth, usercont, setUsercont, csrftoken, setCSRFToken, page, setPage, pageSize, setPageSize, ordering, setOrdering,foodsback, setFoodsback }}>
             {children}
         </AuthContext.Provider>
     )

@@ -20,6 +20,7 @@ console.log("imgLoader :",imgLoader,"foods.length :",props.foods.length)
             key={food.id}
             setImgLoader={ setImgLoader}
             location={props.location}
+            setFoodsback={props.setFoodsback}
           />
 
         );

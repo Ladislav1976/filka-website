@@ -3,39 +3,26 @@ import Cookies from 'js-cookie';
 
 
 
-export async function createPostStep(step) {
+export async function createPostStep(axiosPrivate,step) {
 
     return (
-        (await axios
-            .post("http://127.0.0.1:8000/steps/", step).then(res => res)))
+        (await axiosPrivate
+            .post("steps/", step).then(res => res)))
 
 }
 
-export async function createPutStep(step) {
+export async function createPutStep(axiosPrivate,step) {
 
-    return ((await axios
-        .put(`http://127.0.0.1:8000/steps/${step.id}/`,
+    return ((await axiosPrivate
+        .put(`steps/${step.id}/`,
             step
         ).then(res => res)))
 }
 
-export async function createDeleteStep(step) {
+export async function createDeleteStep(axiosPrivate,step) {
 
-    return ((await axios
-        .delete(`http://127.0.0.1:8000/steps/${step.id}/`,
-
-        ).then((res) => {
-            return {
-                status: res.status
-            }
-        }
-        )))
-}
-
-export async function createDeleteUrl(url) {
-
-    return ((await axios
-        .delete(`http://127.0.0.1:8000/url/${url.id}/`,
+    return ((await axiosPrivate
+        .delete(`steps/${step.id}/`,
 
         ).then((res) => {
             return {
@@ -45,105 +32,117 @@ export async function createDeleteUrl(url) {
         )))
 }
 
-export async function createPutUrl(url) {
+export async function createDeleteUrl(axiosPrivate,url) {
 
-    return ((await axios
-        .put(`http://127.0.0.1:8000/url/${url.id}/`,
+    return ((await axiosPrivate
+        .delete(`url/${url.id}/`,
+
+        ).then((res) => {
+            return {
+                status: res.status
+            }
+        }
+        )))
+}
+
+export async function createPutUrl(axiosPrivate,url) {
+
+    return ((await axiosPrivate
+        .put(`url/${url.id}/`,
             url
         ).then(res => res)))
 }
 
-export async function createPostUrl(url) {
+export async function createPostUrl(axiosPrivate,url) {
 
     return (
-        (await axios
-            .post("http://127.0.0.1:8000/url/", url).then(res => res)))
+        (await axiosPrivate
+            .post("url/", url).then(res => res)))
 
 }
 
 
 
-export async function createPostUnit({ unit }) {
+export async function createPostUnit(axiosPrivate,{ unit }) {
     console.log("createPostUnit", unit)
-    return ((unit), (await axios
-        .post("http://127.0.0.1:8000/unit/", {
+    return ((unit), (await axiosPrivate
+        .post("unit/", {
             unit
         }).then(res => res)))
 }
 
-export async function createPostIngredient({ ingredient }) {
+export async function createPostIngredient(axiosPrivate,{ ingredient }) {
 
-    return ((await axios
-        .post("http://127.0.0.1:8000/ingredient/", {
+    return ((await axiosPrivate
+        .post("ingredient/", {
             ingredient
         }).then(res => res)))
 }
 
-export async function createPostIngredients(ingredients) {
+export async function createPostIngredients(axiosPrivate,ingredients) {
     console.log("createPostIngredients : ", ingredients)
-    return ((await axios
-        .post("http://127.0.0.1:8000/ingredients/",
+    return ((await axiosPrivate
+        .post("ingredients/",
             // id:ingredients.id,  units:ingredients.units, quantity:ingredients.quantity, ingredientName: ingredients.ingredientName, ingreposition:ingredients.ingreposition
             ingredients).then(res => res)))
 }
-export async function createPostFoodTag({ foodTag }) {
+export async function createPostFoodTag(axiosPrivate,{ foodTag }) {
 
-    return ((await axios
-        .post("http://127.0.0.1:8000/foodTags/", {
+    return ((await axiosPrivate
+        .post("foodTags/", {
             foodTag
         }).then(res => res.data)))
 }
 
-export async function createPostFood(food) {
+export async function createPostFood(axiosPrivate,food) {
 
-    return ((await axios
-        .post("http://127.0.0.1:8000/foods/", food).then(res => res)))
+    return ((await axiosPrivate
+        .post("foods/", food).then(res => res)))
 }
-export async function createPutFood(food) {
-    return ((await axios
-        .put(`http://127.0.0.1:8000/foods/${food.id}/`, food
+export async function createPutFood(axiosPrivate,food) {
+    return ((await axiosPrivate
+        .put(`foods/${food.id}/`, food
         ).then(res => res)))
 }
 
-export async function createDeleteFood(food) {
-    return ((await axios
-        .delete(`http://127.0.0.1:8000/foods/${food.id}/`,
+export async function createDeleteFood(axiosPrivate,food) {
+    return ((await axiosPrivate
+        .delete(`foods/${food.id}/`,
         ).then(res => res)))
 }
 
-export async function createPostImagefood(
+export async function createPostImagefood(axiosPrivate,
     { formdata }
 ) {
-    return ((await axios
-        .post("http://127.0.0.1:8000/imagefood/", formdata,
+    return ((await axiosPrivate
+        .post("imagefood/", formdata,
             {
-                withCredentials: false,
                 headers: {
-                    "X-CSRFToken": "csrftoken",
+                    'Content-Type': 'multipart/form-data', 
                 },
             }
         ).then((res) => res)
     ))
 }
 
-export async function createPutImagefood(putFormdata) {
+export async function createPutImagefood(axiosPrivate,putFormdata) {
     return (
-        (await axios
-            .put(`http://127.0.0.1:8000/imagefood/${putFormdata.id}/`, (putFormdata.imageForm)
+        (await axiosPrivate
+            .put(`imagefood/${putFormdata.id}/`, (putFormdata.imageForm)
                 , {
-                    withCredentials: false,
+                    
                     headers: {
-                        "X-CSRFToken": "csrftoken",
+                        'Content-Type': 'multipart/form-data', 
                     },
                 }
             ).then((res) => { return res }).catch(err => { console.log("Error PUT Image message :", err.message) })
         ))
 }
 
-export async function createDeleteImagefood(formdata
+export async function createDeleteImagefood(axiosPrivate,formdata
 ) {
-    return (await axios
-        .delete(`http://127.0.0.1:8000/imagefood/${formdata.id}/`,
+    return (await axiosPrivate
+        .delete(`imagefood/${formdata.id}/`,
             formdata.imageForm,
             // {
             //     withCredentials: false,
@@ -180,19 +179,19 @@ export async function createPostFunction(
 }
 
 
-export async function createDeleteIngredients(id) {
-    return ((await axios
-        .delete(`http://127.0.0.1:8000/ingredients/${id}/`,
+export async function createDeleteIngredients(axiosPrivate,id) {
+    return ((await axiosPrivate
+        .delete(`ingredients/${id}/`,
 
         ).then((res) => res)))
 }
 
 
-export async function createPutIngredients(ingredients) {
+export async function createPutIngredients(axiosPrivate,ingredients) {
 
     //id,  units, quantity, ingredientName, ingreposition)
-    return ((await axios
-        .put(`http://127.0.0.1:8000/ingredients/${ingredients.id}/`,
+    return ((await axiosPrivate
+        .put(`ingredients/${ingredients.id}/`,
             {
                 id: ingredients.id, units: [ingredients.units[0].id], quantity: ingredients.quantity, ingredientName: [ingredients.ingredientName[0].id], position: ingredients.position
             }).then(res => res)))

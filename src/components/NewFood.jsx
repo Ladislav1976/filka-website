@@ -44,15 +44,15 @@ function NewFood() {
 
     const goBack = () => navigate(foods);
 
-    const postFood = usePostFood(handlerSetModalSave)
+    const postFood = usePostFood(axiosPrivate,handlerSetModalSave)
     // const deleteFood = useDeleteFood(setModalLoadingFlag, handlerSetModalError, handlerFoodDeleteConfirmed)
-    const postImage = usePostImage()
-    const postFoodTag = usePostTag(addTagTofoodTagSet, handlerSetModalError)
-    const postStep = usePostStep()
-    const postIngredients = usePostIngredients()
-    const postIngredient = usePostIngredient()
-    const postUnit = usePostUnit()
-    const postUrl = usePostUrl()
+    const postImage = usePostImage(axiosPrivate)
+    const postFoodTag = usePostTag(axiosPrivate,addTagTofoodTagSet, handlerSetModalError)
+    const postStep = usePostStep(axiosPrivate)
+    const postIngredients = usePostIngredients(axiosPrivate)
+    const postIngredient = usePostIngredient(axiosPrivate)
+    const postUnit = usePostUnit(axiosPrivate)
+    const postUrl = usePostUrl(axiosPrivate)
 
     const [name, setName] = useState("")
     const [ingredientsList, setIngredientsList] = useState([]);

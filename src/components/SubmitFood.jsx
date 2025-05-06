@@ -33,8 +33,8 @@ export default function SubmitFood(props) {
 
     const { auth } = useAuth();
     const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate, controller)
-    const stepsQf = useSteps(foodQf)
-    const ingredientsQf = useIngredients(foodQf, ingredientQf, unitsQf)
+    const stepsQf = useSteps(axiosPrivate,foodQf)
+    const ingredientsQf = useIngredients(axiosPrivate,foodQf, ingredientQf, unitsQf)
 
 
 

@@ -10,7 +10,7 @@ export const usePutUser=(setRole,roleDefault,setRoleDefault,handlerSetModalError
                 setRole(roleDefault)
                 setRoleDefault("") },
             onSuccess: (user) => {
-                console.log("URL :", user, "sucsesfully updated!",)
+                console.log("User :", user, "sucsesfully updated!",)
                 queryClient.setQueryData(["users"], (prev) => {
                     if (!prev) return undefined;
                     // return [...prev,

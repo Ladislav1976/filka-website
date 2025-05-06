@@ -80,7 +80,7 @@ export default function Login() {
             setPage(1);
             setPageSize(20);
             setOrdering("date");
-            resetEmail();
+            // resetEmail();
             setPwd('');
             window.localStorage.setItem("IsLogedIn", true)
             // navigate(from, { replace: true });

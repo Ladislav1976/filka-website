@@ -1,10 +1,10 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPostIngredient } from "../use-post";
 
-export const usePostIngredient = () => {
+export const usePostIngredient = (axiosPrivate) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: createPostIngredient,
+        mutationFn: (ingre)=>createPostIngredient(axiosPrivate,ingre),
         onError: error => { console.log("Error Post Ingredient :", error) },
         onSuccess: (ingredientCreated, ingredient) => {
             console.log("Ingredient :", ingredientCreated, "sucsesfully created!")

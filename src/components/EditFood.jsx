@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Navigate } from "react-router-dom";
 import StepsInput from "./StepsInput";
 import SaveLoading from "../reports/SaveLoading";
 import SaveSaved from "../reports/SaveSaved";
@@ -195,23 +195,23 @@ function EditFood(props) {
 
 
 
-  const putFood = usePutFood(setModalLoadingFlag, handlerSetModalError, handlerSetModalSave)
-  const deleteFood = useDeleteFood(setModalLoadingFlag, handlerSetModalError, handlerFoodDeleteConfirmed)
-  const postImage = usePostImage()
-  const putImage = usePutImage()
-  const deleteImage = useDeleteImage()
-  const postFoodTag = usePostTag(addTagTofoodTagSet, handlerSetModalError)
-  const postStep = usePostStep()
-  const putStep = usePutStep()
-  const deleteStep = useDeleteStep()
-  const postIngredients = usePostIngredients()
-  const deleteIngredients = useDeleteIngredients()
-  const putIngredients = usePutIngredients()
-  const postIngredient = usePostIngredient()
-  const postUnit = usePostUnit()
-  const postUrl = usePostUrl()
-  const deleteUrl = useDeleteUrl()
-  const putUrl = usePutUrl()
+  const putFood = usePutFood(axiosPrivate,setModalLoadingFlag, handlerSetModalError, handlerSetModalSave)
+  const deleteFood = useDeleteFood(axiosPrivate,setModalLoadingFlag, handlerSetModalError, handlerFoodDeleteConfirmed)
+  const postImage = usePostImage(axiosPrivate)
+  const putImage = usePutImage(axiosPrivate)
+  const deleteImage = useDeleteImage(axiosPrivate)
+  const postFoodTag = usePostTag(axiosPrivate,addTagTofoodTagSet, handlerSetModalError)
+  const postStep = usePostStep(axiosPrivate)
+  const putStep = usePutStep(axiosPrivate)
+  const deleteStep = useDeleteStep(axiosPrivate)
+  const postIngredients = usePostIngredients(axiosPrivate)
+  const deleteIngredients = useDeleteIngredients(axiosPrivate)
+  const putIngredients = usePutIngredients(axiosPrivate)
+  const postIngredient = usePostIngredient(axiosPrivate)
+  const postUnit = usePostUnit(axiosPrivate)
+  const postUrl = usePostUrl(axiosPrivate)
+  const deleteUrl = useDeleteUrl(axiosPrivate)
+  const putUrl = usePutUrl(axiosPrivate)
 
 
   function nameKeyDown(event) {
@@ -803,7 +803,7 @@ function EditFood(props) {
 
 
   return (<>
-    {(!usersQf.isSuccess || !foodQf.isSuccess || !ingredientQf.isSuccess || !unitsQf.isSuccess || !urlsQf.isSuccess || !tagsQf.isSuccess || !stepsQf.isSuccess || !ingredientsQf.isSuccess || !imagesQf.isSuccess) ? (
+    {(usersQf.isLoading || foodQf.isLoading || ingredientQf.isLoading || unitsQf.isLoading || urlsQf.isLoading || tagsQf.isLoading || stepsQf.isLoading || ingredientsQf.isLoading || imagesQf.isLoading) ? (
 
       <div className={style.loadingContainer}>
         <FontAwesomeIcon

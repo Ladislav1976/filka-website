@@ -35,7 +35,7 @@ function ViewFood(props) {
     const axiosPrivate = useAxiosPrivate()
 
 
-    const { setUsercont } = useAuth();
+    const {foodsback, setUsercont } = useAuth();
     const [usersQf, foodQf, ingredientQf, unitsQf, urlsQf, tagsQf] = useQueriesItems(ID, axiosPrivate)
     const stepsQf = useSteps(axiosPrivate,foodQf)
     const ingredientsQf = useIngredients(axiosPrivate,foodQf, ingredientQf, unitsQf)
@@ -45,7 +45,8 @@ function ViewFood(props) {
     const component = "viewcomponent"
     const navigate = useNavigate()
     const location = useLocation();
-    const foods = location.state?.foods.pathname + location.state?.foods.search || "/";
+    const foods= foodsback || "/"
+    // const foods = location.state?.foods.pathname + location.state?.foods.search || "/";
 
     const goBack = () => navigate(foods);
 

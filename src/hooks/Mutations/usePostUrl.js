@@ -2,10 +2,10 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPostUrl } from "../use-post";
 
 
-export const usePostUrl = () => {
+export const usePostUrl = (axiosPrivate) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: createPostUrl,
+    mutationFn: (url)=>createPostUrl(axiosPrivate,url),
     onError: error => { console.log("Error Post URL :", error) },
     onSuccess: (urlCreated) => {
       console.log("URL :", urlCreated, "sucsesfully created!")

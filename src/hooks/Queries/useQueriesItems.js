@@ -24,9 +24,9 @@ export const useQueriesItems = (ID, axiosPrivate ) => {
                 // && !!tags && !!users,
                 queryFn: (queryKey) => getDataPrivateID (axiosPrivate,  queryKey.queryKey),
                 // queryFn: (queryKey) => getDataId(queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(["foods", ID])
-                  },
+                // initialData: () => {
+                //     return queryClient.getQueryData(["foods", ID])
+                //   },
             },
             {
                 queryKey: ["ingredient"],

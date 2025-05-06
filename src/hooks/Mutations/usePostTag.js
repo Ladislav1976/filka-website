@@ -1,10 +1,10 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { createPostFoodTag } from "../use-post";
 
-export const usePostTag = (addTagTofoodTagSet,handlerSetModalError) => {
+export const usePostTag = (axiosPrivate,addTagTofoodTagSet,handlerSetModalError) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: createPostFoodTag,
+        mutationFn: (tag)=>createPostFoodTag(axiosPrivate,tag),
         onError: error => { console.log("Error Post FoodTag :", error); handlerSetModalError() },
         onSuccess: (foodTagCreated) => {
             console.log("FoodTag :", foodTagCreated, "sucsesfully created!")

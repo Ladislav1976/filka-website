@@ -14,7 +14,7 @@ import { useImagesList } from "../hooks/Queries/useImagesList";
 import { useTags } from "../hooks/Queries/useTags";
 import { usePostTag } from "../hooks/Mutations/usePostTag";
 import useAuth from "../hooks/useAuth";
-
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function Foods(props) {
     const component = "foodscomponent"
@@ -29,7 +29,7 @@ function Foods(props) {
     const pagePar = searchParams.get('page')
     const orderingPar = searchParams.get('ordering')
 
-    const { page, setPage, pageSize, setPageSize, ordering, setOrdering } = useAuth();
+    const { page, setPage, pageSize, setPageSize, ordering, setOrdering ,foodsback, setFoodsback} = useAuth();
 
 
 
@@ -299,6 +299,7 @@ console.log("imagesQf :",imagesQf)
                                 pageSize={pageSize}
                                 foodsQf={foodsQf}
                                 load={load}
+                                setFoodsback={setFoodsback}
                             ></FoodItemList>
                         </div>
 

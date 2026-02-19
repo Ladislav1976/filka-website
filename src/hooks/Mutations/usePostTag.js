@@ -1,21 +1,69 @@
-import { useQueryClient, useMutation } from "@tanstack/react-query"
-import { createPostFoodTag } from "../use-post";
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { createPostFoodTag } from '../use-post';
 
-export const usePostTag = (axiosPrivate,addTagTofoodTagSet,handlerSetModalError) => {
+export const usePostTag = (
+    axiosPrivate,
+    // addTagTofoodTagSet,
+    // handlerSetModalError,
+) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (tag)=>createPostFoodTag(axiosPrivate,tag),
-        onError: error => { console.log("Error Post FoodTag :", error); handlerSetModalError() },
-        onSuccess: (foodTagCreated) => {
-            console.log("FoodTag :", foodTagCreated, "sucsesfully created!")
-            queryClient.setQueryData(["foodTags"], (prev) => {
-                if (!prev) return undefined;
-                return [...prev,
-                    foodTagCreated]
-            })
-            queryClient.invalidateQueries(["foodTags"])
-            addTagTofoodTagSet(foodTagCreated)
+        mutationFn: (foodTag) => createPostFoodTag(axiosPrivate, foodTag),
+        onMutate: async (newFoodTag) => {
+            const queryKey = ['foodTags'];
+            await queryClient.cancelQueries({ queryKey });
+            const previousFoodTags = queryClient.getQueryData(queryKey);
+            const tempId = `temp-${Date.now()}`;
+            const newFoodTagWithId = {
+                ...newFoodTag,
+                id: tempId,
+            };
+            queryClient.setQueryData(queryKey, (old) => {
+                const currentFoodTags = Array.isArray(old) ? old : [];
+                return [...currentFoodTags, newFoodTagWithId];
+            });
+            return { tempId, previousFoodTags, queryKey };
+        },
+        onError: (err, newUnit, context) => {
+            console.log('Error Post FoodTag :', err);
+            if (context?.previousFoodTags) {
+                queryClient.setQueryData(
+                    context.queryKey,
+                    context.previousFoodTags,
+                );
+            } else {
+                queryClient.setQueryData(context.queryKey, (old) => {
+                    return Array.isArray(old)
+                        ? old.filter((u) => u.id !== context.tempId)
+                        : [];
+                });
+            }
+        },
+        onSettled: (data, error, newFoodTag, context) => {
+            console.log('Post settled for FoodTag:', newFoodTag);
 
-        }
-    })
-}
+            if (data?.data) {
+                queryClient.setQueryData(context.queryKey, (old) => {
+                    if (!Array.isArray(old)) return [data.data];
+                    return old.map((unit) =>
+                        unit.id === context.tempId ? data.data : unit,
+                    );
+                });
+            }
+            queryClient.invalidateQueries(context.queryKey);
+        },
+        // onSuccess: (data, newTag) => {
+        //     console.log('Post succeed for FoodTag:', data);
+
+        //     const queryKey = ['foodTags'];
+        //     if (data?.data) {
+        //         queryClient.setQueryData(queryKey, (old) => {
+        //             const currentTags = Array.isArray(old) ? old : [];
+        //             return [...currentTags, data.data];
+        //         });
+        //     }
+
+        //     queryClient.invalidateQueries(['foodTags']);
+        // },
+    });
+};

@@ -1,0 +1,17 @@
+# Ignore all CSS files
+*.css
+*.scss
+
+# Ignore images files
+src/image/*.png
+src/image/*.jpg
+src/image/*.svg
+
+# Ignore wav files
+src/audio/*.wav
+src/audio/*.mp3
+
+# Ignore build folders
+build/
+dist/
+node_modules/

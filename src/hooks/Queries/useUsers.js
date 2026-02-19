@@ -1,6 +1,6 @@
 import { getDataPrivate } from "../use-get";
 import {  useQuery } from "@tanstack/react-query"
-export const useUsers = (axiosPrivate, controller) => {
+export const useUsers = (axiosPrivate) => {
     return useQuery({
         queryKey: ["users"],
         queryFn: (queryKey) => getDataPrivate(axiosPrivate, queryKey.queryKey[0]),

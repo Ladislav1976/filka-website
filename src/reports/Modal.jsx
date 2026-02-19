@@ -1,22 +1,34 @@
-import style from "../reports/Modal.module.css";
+import style from '../assets/styles/Reports/Modal.module.css';
+import { createPortal } from 'react-dom';
+import { useEffect } from 'react';
 
-//props.visible -> says if modal should appear
 export default function Modal(props) {
-  function onModalClose(e) {
-    // props.setModalFlag(false);
-  }
+    useEffect(() => {
+        if (props.visible) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
 
-  function onModalContentClick(event) {
-    event.stopPropagation();
-  }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [props.visible]);
+    if (!props.visible) return null;
+    function onModalClose(e) {
+        // props.setModalFlag(false);
+    }
 
-  if (props.visible) {
-    return (
-      <div className={style.modalWrapper} onClick={onModalClose}>
-        <div className={style.modal} onClick={onModalContentClick}>{props.children}</div>
-      </div>
+    function onModalContentClick(event) {
+        event.stopPropagation();
+    }
+
+    return createPortal(
+        <div className={style.modalWrapper} onClick={onModalClose}>
+            <div className={style.modal} onClick={onModalContentClick}>
+                {props.children}
+            </div>
+        </div>,
+        document.body,
     );
-  } else {
-    return null;
-  }
 }

@@ -1,0 +1,19 @@
+.modalWrapper {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(26, 25, 25, 0.911);
+    z-index: 100;
+}
+
+.modal {
+    position: relative;
+    top: 0;
+    width: 100%;
+    width: 100%;
+}

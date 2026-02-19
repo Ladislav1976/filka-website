@@ -201,7 +201,7 @@ export default function SubmitFood(props) {
             {' '}
             <div className={styla.main}>
                 <div className={styla.panel}>
-                    <div className={styla.messagebox}>{}</div>
+                    <div className={styla.messagebox}>{props.errMsg}</div>
                     <div className={styla.buttonBox}>
                         <div className={styla.foodButton}>
                             <FontAwesomeIcon
@@ -303,6 +303,7 @@ export default function SubmitFood(props) {
                                                 setMessage(e.target.value)
                                             }
                                             value={message}
+                                            rows="10"
                                             required
                                             aria-describedby="uidnote"
                                         />

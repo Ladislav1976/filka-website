@@ -26,18 +26,16 @@
     width: 100%;
 }
 .receptyLogo {
-    display: block;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--greydark);
-
     width: 3rem;
     aspect-ratio: 1/1;
     margin: 0.2rem;
     cursor: pointer;
-
     border-radius: 50%;
+    visibility: hidden;
 }
 .familyLogo,
 .logo {
@@ -220,6 +218,9 @@
     .lHeader {
         padding: 0 1rem;
         grid-template-columns: 3.3rem 1fr 3.3rem;
+    }
+    .receptyLogo {
+        visibility: unset;
     }
     .logo,
     .familyLogo {

@@ -93,7 +93,7 @@
     grid-template-columns: auto;
     /* gap: 1rem; */
     /* row-gap: 1rem; */
-    column-gap: 1rem;
+    /* column-gap: 1rem; */
     height: 100%;
 
     font-size: 1rem;
@@ -128,19 +128,12 @@
 }
 .ingreUpDown {
     justify-content: space-between;
+    padding-left: 1rem;
 }
 .qtUnit {
     justify-content: flex-end;
 }
-.qtUnit::after {
-    content: '';
-    position: absolute;
-    right: -1.2rem;
-    bottom: -1px;
-    width: 1.2rem;
-    height: 1px;
-    background-color: var(--greydark);
-}
+
 .upddownbox {
     display: flex;
     flex-direction: row;

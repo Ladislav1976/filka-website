@@ -9,7 +9,18 @@
     flex-grow: 1;
     background-color: var(--whitesmoke);
 }
-
+.receptyLogo {
+    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--greydark);
+    height: 100%;
+    aspect-ratio: 1/1;
+    padding: 1rem;
+    margin-left: 3rem;
+    border-radius: 50%;
+}
 .image {
     display: block;
     position: relative;
@@ -32,6 +43,7 @@
 }
 
 .container {
+    position: relative;
     display: flex;
     justify-content: space-between;
     flex-direction: row;
@@ -48,7 +60,7 @@
     z-index: 11;
 }
 .container span {
-    width: 30%;
+    width: 70%;
     font-size: 2.2rem;
     font-weight: 400;
     color: white;
@@ -68,5 +80,8 @@
     }
     .container span {
         font-size: 1.3rem;
+    }
+    .receptyLogo {
+        display: none;
     }
 }

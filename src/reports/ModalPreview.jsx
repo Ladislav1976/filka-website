@@ -14,7 +14,9 @@ export default function ModalPreview(props) {
             document.body.style.overflow = 'unset';
         };
     }, [props.visible]);
+
     if (!props.visible) return null;
+
     function onModalClose() {
         props.setModalFlag(false);
     }

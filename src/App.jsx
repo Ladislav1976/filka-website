@@ -83,7 +83,7 @@ function App() {
                                     ></Route>
                                     <Route
                                         path=":id/email"
-                                        element={<SubmitFood />}
+                                        element={<SubmitFood errMsg={errMsg} />}
                                     ></Route>
                                     <Route
                                         path="novy_recept/"

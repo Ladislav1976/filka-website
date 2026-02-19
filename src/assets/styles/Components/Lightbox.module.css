@@ -141,28 +141,25 @@
     justify-content: center;
     align-items: center;
     height: 10%;
-    overflow: hidden;
+    /* overflow-x: auto; */
     opacity: 0.7;
-    overflow-x: auto;
 }
 
 .imageListBox1 {
     display: flex;
     justify-content: flex-end;
-    overflow: hidden;
+
     height: 100%;
     gap: 0px;
     width: 50%;
-    overflow-x: auto;
 }
 .imageListBox2 {
     display: flex;
     justify-content: flex-start;
-    overflow: hidden;
+    /* overflow-x: auto; */
     height: 100%;
     gap: 0px;
     width: 50%;
-    overflow-x: auto;
 }
 
 #imagedisplayed {

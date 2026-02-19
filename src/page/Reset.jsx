@@ -152,9 +152,9 @@ export default function Reset() {
                                     <h1>{successMsg}</h1>
                                 ) : (
                                     <>
-                                        <h5>Zadajte svoj e-mail</h5>
-                                        <h5>a my vám pošleme odkaz</h5>
-                                        <h5>na vytvorenie nového hesla.</h5>
+                                        <h5>Zadajte svoju e-mailovú adresu,</h5>
+                                        <h5>na ktorú Vám obratom zašleme</h5>
+                                        <h5>inštrukcie na zmenu hesla.</h5>
                                     </>
                                 )}
                             </div>

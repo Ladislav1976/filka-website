@@ -791,6 +791,8 @@ function EditFood(props) {
             </Modal>
             <Modal visible={modalDeleteFlag} setModalFlag={setModalDeleteFlag}>
                 <DeleteConfirm
+                    item={name}
+                    errMsg={errMsg}
                     onDelete={foodDelete}
                     onDeleteCancel={handlerFoodDeleteCancel}
                 ></DeleteConfirm>

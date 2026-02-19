@@ -38,7 +38,7 @@ body,
     width: 100%;
     /* overflow-x: hidden;
     overflow-y: auto; */
-    scrollbar-gutter: stable;
+    scrollbar-gutter: auto;
 }
 
 code {
@@ -131,7 +131,7 @@ footer {
         height: auto;
         min-height: 100%;
         /* overflow-y: auto; */
-        -webkit-overflow-scrolling: touch; /* Hladký scroll pre staršie iPhony */
+        /* -webkit-overflow-scrolling: touch; */
     }
     html {
         height: -webkit-fill-available;

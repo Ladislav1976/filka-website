@@ -9,6 +9,7 @@
     min-height: 100%;
     box-sizing: border-box;
     background-color: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
+    overflow-y: auto;
 }
 .layerMain {
     background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
@@ -100,7 +101,8 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin: 1rem;
+    /* margin: 1rem; */
+    margin-bottom: 3rem;
     padding: 0 3.5rem;
     width: 100%;
     & h1,
@@ -109,6 +111,7 @@
     h4,
     h5,
     h6 {
+        margin: 0.3rem;
         font-weight: normal;
     }
     & h5 {
@@ -141,6 +144,7 @@
     gap: 0.2rem;
     width: 100%;
     padding: 0 1rem;
+    margin-bottom: 1rem;
     min-height: 0.3rem;
 }
 

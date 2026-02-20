@@ -1,0 +1,11 @@
+.loadingContainer {
+    position: relative;
+    top: 70px;
+    width: auto;
+    height: 100px;
+    color: white;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

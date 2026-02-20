@@ -1,38 +1,44 @@
-import style from "./FoodItem.module.css";
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import default_image from "../image/default_image1.jpg"
+import style from '../assets/styles/Components/FoodItem.module.css';
 
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import default_image from '../image/default_image1.jpg';
 
 export default function FoodItem(props) {
-  const navigate = useNavigate()
-
-
-  const food = props.food
-  const id = props.food.id
-
-  let foodRender = []
-
-  for (let f of food.images) {
-
-    foodRender.push(f.image)
-  }
-  return (
-    <>
-      {<div className={style.food} onClick={() => navigate(`/recepty/${id}/`, { state: { foods: props.location } })}>
-        <img
-          className={style.image}
-          loading="lazy"
-          src={foodRender[0] ? foodRender[0] : default_image}
-
-          alt="Food image"
-          onLoad={() => props.setImgLoader(prev => prev - 1)}
-          key={food.images}
-        />
-        <div className={style.foodName}>{props.food.name}</div>
-      </div>}
-    </>
-  );
+    const navigate = useNavigate();
+    const [loaded, setLoaded] = useState(false);
+    const food = props.food;
+    const id = props.food.id;
+    console.log(food?.images);
+    return (
+        <>
+            {
+                <div
+                    className={style.foodcontainer}
+                    onClick={() => navigate(`/recepty/${id}/`)}
+                >
+                    <div
+                        style={{
+                            position: 'relative',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <img
+                            className={style.image}
+                            loading="lazy"
+                            src={food?.images || default_image}
+                            alt="Nacitany obrazok"
+                            onLoad={() => setLoaded(true)}
+                            style={{
+                                opacity: loaded ? 1 : 0,
+                                transition: 'opacity 0.3s ease-in',
+                            }}
+                            key={food.images}
+                        />
+                        <div className={style.foodName}>{props.food.name}</div>
+                    </div>
+                </div>
+            }
+        </>
+    );
 }
-

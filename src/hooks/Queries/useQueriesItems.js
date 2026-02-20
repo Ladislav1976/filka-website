@@ -1,63 +1,61 @@
-import { useQueries,useQueryClient } from "@tanstack/react-query"
-import { getDataPrivate, getDataPrivateID, getDataId, getData } from "../use-get";
+import { useQueries } from '@tanstack/react-query';
+import { getDataPrivate, getDataPrivateID } from '../use-get';
 
-
-
-export const useQueriesItems = (ID, axiosPrivate ) => {
-    const queryClient = useQueryClient();
-
+export const useQueriesItems = (ID, axiosPrivate) => {
     return useQueries({
         queries: [
             {
-                queryKey: ["users"],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(['users'])
-                  },
-           
-            }
-            
-            ,
+                queryKey: ['users'],
+                queryFn: (queryKey) =>
+                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+                placeholderData: (previousData) => previousData,
+            },
+
             {
-                queryKey: ["foods", ID],
+                queryKey: ['foods', ID],
                 enabled: !!ID,
                 // && !!tags && !!users,
-                queryFn: (queryKey) => getDataPrivateID (axiosPrivate,  queryKey.queryKey),
-                // queryFn: (queryKey) => getDataId(queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(["foods", ID])
-                  },
+                queryFn: (queryKey) =>
+                    getDataPrivateID(axiosPrivate, queryKey.queryKey),
+                placeholderData: (previousData) => previousData,
             },
             {
-                queryKey: ["ingredient"],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(["ingredient"])
-                  },
+                queryKey: ['ingredient'],
+                queryFn: (queryKey) =>
+                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+
+                placeholderData: (previousData) => previousData,
             },
-  
+
             {
                 queryKey: ['unit'],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(["unit"])
-                  },
+                queryFn: (queryKey) =>
+                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+                placeholderData: (previousData) => previousData,
             },
-            {
-                queryKey: ['url'],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(["url"])
-                  },
-            },
-            {
-                queryKey: ["foodTags"],
-                queryFn: (queryKey) => getDataPrivate(axiosPrivate,  queryKey.queryKey),
-                initialData: () => {
-                    return queryClient.getQueryData(["foodTags"])
-                  },
-            }
-        ],
-    })
 
-}
+            {
+                queryKey: ['foodTags'],
+                queryFn: (queryKey) =>
+                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+
+                placeholderData: (previousData) => previousData,
+            },
+        ],
+        combine: (results) => {
+            // usersQf, foodQf, ingredientQf, unitsQf, tagsQf
+            return {
+                data: {
+                    usersQf: results[0].data,
+                    foodQf: results[1].data,
+                    ingredientQf: results[2].data,
+                    unitsQf: results[3].data,
+                    tagsQf: results[4].data,
+                },
+
+                isLoading: results.some((r) => r.isLoading),
+                isError: results.some((r) => r.isError),
+            };
+        },
+    });
+};

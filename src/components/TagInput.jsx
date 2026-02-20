@@ -1,80 +1,88 @@
-import { useState } from "react";
-import style from "./TagInput.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
+import { useState } from 'react';
+import style from '../assets/styles/Components/TagInput.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 function Tag(props) {
-  return (
-    <div className={style.tag} onClick={props.onTagDelete}>
-      <FontAwesomeIcon
-        icon={faXmark}
-        onClick={props.onTagDelete}
-      ></FontAwesomeIcon>{" "}
-      {props.tag.foodTag}
-    </div>
-  );
+    return (
+        <div className={style.tag} onClick={props.onTagDelete}>
+            <FontAwesomeIcon
+                icon={faXmark}
+                onClick={props.onTagDelete}
+            ></FontAwesomeIcon>{' '}
+            {props.tag.foodTag}
+        </div>
+    );
 }
 
-
 export default function TagInput(props) {
-  const [searchedTag, setSearchedTag] = useState("");
-  const [filterTagList, setFilterTagList] = props.filterTagListState;
+    const [searchedTag, setSearchedTag] = useState('');
+    const setModalFlag = props.setModalFlag;
+    const filterTagList = props.filterTagListState;
+    let tagListRender = [];
 
-  function addSearchTagToTagList() {
-    props.searchAddToTagList(searchedTag);
-    setSearchedTag("");
-  }
-
-  function handleChange(event) {
-    setSearchedTag(event.target.value);
-  }
-
-  function handleKeyPress(event) {
-    if (event.key === "Enter") {
-      addSearchTagToTagList();
+    function addSearchTagToTagList() {
+        props.searchAddToTagList(searchedTag);
+        setSearchedTag('');
     }
-  }
 
-  function handleTagDelete(tag) {
-    console.log("tag delete", tag);
-    props.removeFromTagList(tag);
-  }
+    function handleChange(event) {
+        setSearchedTag(event.target.value);
+    }
 
-  const tagListRender = [];
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            addSearchTagToTagList();
+        }
+    }
 
-  for (const tag of filterTagList) {
-    tagListRender.push(
-      <Tag
-        className={style.tagname}
-        tag={tag}
-        key={tag.id}
-        onTagDelete={() => handleTagDelete(tag)}
-      />
+    function handleTagDelete(tag) {
+        props.removeFromTagList(tag);
+    }
+
+    function openModal() {
+        setModalFlag(true);
+    }
+
+    for (const tag of filterTagList) {
+        tagListRender.push(
+            <Tag
+                className={style.tagname}
+                tag={tag}
+                key={tag.id}
+                onTagDelete={() => handleTagDelete(tag)}
+            />,
+        );
+    }
+
+    return (
+        <>
+            <div className={style.searchMain}>
+                <div className={style.searchList}>{tagListRender}</div>
+
+                <div className={style.searchBox}>
+                    <div
+                        className={style.searchonClickButton}
+                        onClick={openModal}
+                    ></div>{' '}
+                    <input
+                        type="text"
+                        className={style.searchInput}
+                        placeholder="Hľadať ..."
+                        aria-label="Hľadať ..."
+                        value={searchedTag}
+                        onChange={handleChange}
+                        onKeyDown={handleKeyPress}
+                    />
+                    <div
+                        className={style.searchButton}
+                        onClick={addSearchTagToTagList}
+                    >
+                        <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
+                    </div>
+                </div>
+            </div>
+        </>
     );
-  }
-
-  return (
-    <>
-      <div className={style.searchMain}>
-      <div className={style.searchList}>{tagListRender}</div>
-        <div className={style.searchBox}>
-          <input
-            type="text"
-            className={style.searchInput}
-            placeholder="Hľadať recept ..."
-            value={searchedTag}
-            onChange={handleChange}
-            onKeyDown={handleKeyPress}
-          />
-          <div className={style.searchButton} onClick={addSearchTagToTagList}>
-            <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
-          </div>
-        </div>
-
-       
-      </div>
-    </>
-  );
 }

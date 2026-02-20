@@ -1,0 +1,77 @@
+.loadingIcon {
+    font-size: 3rem;
+    color: white;
+}
+
+.loadingBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(124, 124, 124, 0);
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 500px;
+    min-height: 300px;
+    padding-top: 5rem;
+    background-color: white;
+}
+
+.box h3 {
+    text-align: center;
+    color: var(--greydark);
+}
+
+.saveIcon {
+    font-size: 3rem;
+    color: #558113;
+}
+
+.errorIcon {
+    font-size: 70px;
+    color: red;
+}
+
+.errmsg {
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.offScreen {
+    display: none;
+}
+
+.button {
+    width: 120px;
+    padding: 0.6rem;
+    cursor: pointer;
+    border-radius: 0.6rem;
+    border: 1px solid #ccc;
+
+    background-color: var(--greydark);
+    color: white;
+    font-weight: 500;
+    text-align: center;
+    margin: 1rem;
+    &:hover {
+        background-color: var(--orange);
+
+        color: white;
+    }
+}
+.delete {
+    background-color: #f9f9f9;
+    color: var(--greydark);
+}
+@media (width <= 768px) {
+    .box {
+        width: 100dvw;
+    }
+}

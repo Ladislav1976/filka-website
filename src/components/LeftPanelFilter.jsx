@@ -1,327 +1,498 @@
-import { useState, useEffect } from "react";
-import style from "./LeftPanelFilter.module.css";
-import useAuth from "../hooks/useAuth";
+import { useState, useEffect } from 'react';
+import style from '../assets/styles/Components/LeftPanelFilter.module.css';
+import useAuth from '../hooks/useAuth';
 
-function PanelTag(props) {
-    const component = props.component
-    const tag = props.tag
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+function FilterOption(props) {
+    const component = props.component;
+    const tag = props.tag;
 
-    function handleFilterTagListArray(label) {
-        return props.filterTagListArray
-            .map((str) => str?.foodTag.toLowerCase())
-            .includes(label)
+    function handleFilterTagListArray(tag) {
+        if (!tag || !props.filterTagListArray) return false;
+
+        return props.filterTagListArray.some((item) => {
+            const tagMatch =
+                Boolean(item?.foodTag && tag?.foodTag) &&
+                item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase() &&
+                item?.id === tag?.id;
+            const emailMatch =
+                Boolean(item?.email && tag?.email) &&
+                item?.email === tag?.email &&
+                item?.id === tag?.id;
+            const orderTagMatch =
+                Boolean(item?.foodTag && tag?.orderTag) &&
+                item?.foodTag?.toLowerCase() === tag?.orderTag?.toLowerCase();
+
+            return tagMatch || emailMatch || orderTagMatch;
+        });
     }
 
-    function checkboxContainerChild() {
-        if (component === "viewcomponent") {
-            return style.checkboxContainerChildView
-        } else { return style.checkboxContainerChild }
-    }
-
-
-    function labelCSS() {
-
-        if (component == "viewcomponent") {
-            return style.labelView
+    function getOptionContainerStyle() {
+        if (component === 'viewcomponent') {
+            return style.filterOption;
+        } else {
+            return style.filterOption__clickable;
         }
-        if (component == "foodscomponent") {
-            return style.labelfoods
+    }
+
+    function getLabelStyle() {
+        if (component === 'viewcomponent') {
+            return style.labelView;
         }
-        if (component === "editcomponent" || component === "newcomponent") {
-            return style.labelEdit
+        if (component === 'foodscomponent') {
+            return style.labelFoods;
+        }
+        if (component === 'editcomponent' || component === 'newcomponent') {
+            return style.labelEdit;
         }
     }
 
-    function buttonCSS() {
-
-        if (component == "viewcomponent") {
-            return style.buttonView
-        } else { return style.buttonEdit }
+    function getCheckmarkStyle() {
+        if (component === 'viewcomponent') {
+            return style.buttonView;
+        } else {
+            return style.buttonEdit;
+        }
     }
+    // function handleTagLoader(type, tag) {
+    //     console.log(type, tag);
+    //     if (type === 'filterTag' && tag.foodTag) {
+    //         return { type: type, obj: tag, tag: tag.foodTag };
+    //     }
+    //     if (type === 'filterUser' && tag.email) {
+    //         return { type: type, obj: tag, tag: tag.id };
+    //     }
+    // }
     return (
-
-        <div className={checkboxContainerChild()} onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}>
+        <div
+            className={`${getOptionContainerStyle()} ${
+                props.open ? style.isActive : ''
+            }`}
+            onClick={() =>
+                props.handleAddTagToFoodTagsList(
+                    tag,
+                    // { type: props.type, tag: tag },
+                    // tag.foodTag,
+                )
+            }
+        >
             <input
                 type="checkbox"
-                checked={handleFilterTagListArray(tag.tagName)}
+                checked={handleFilterTagListArray(tag)}
                 name="foodTagSet"
                 className={style.checkboxInput}
-                value={tag.tagName}
-                id={tag.tagName}
-
-                onChange={() => props.handleAddTagToFoodTagsList(tag.tagName)}
+                value={tag.foodTag}
+                id={tag.foodTag}
+                onChange={() => props.handleAddTagToFoodTagsList(tag)}
             />
             <div
-                className={buttonCSS()}
+                className={getCheckmarkStyle()}
                 htmlFor="tag"
-
-                onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}
+                onClick={() => props.handleAddTagToFoodTagsList(tag)}
             />
             <div
-                className={labelCSS()}
+                className={getLabelStyle()}
 
-            // onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}
-
+                // onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}
             >
-                {tag.tagName.toUpperCase()} <b className={style.tagQuantity} >{props.foodTagsContainer ? `(${props.tagList[props.index1].tagChildren[props.index2].quantity})` : ""}</b>
+                {tag.label || tag.foodTag.toUpperCase()}
+                {/* {tag.tagName.toUpperCase()}{' '} */}
+                <b className={style.tagQuantity}>
+                    {props.foodTagsContainer
+                        ? `  (${
+                              props.tagList[props.index1].tags[props.index2]
+                                  .quantity
+                          })`
+                        : ''}
+                </b>
             </div>
         </div>
         // </div>
-
-    )
+    );
 }
 
+function FilterCategory(props) {
+    const component = props.component;
 
+    const result =
+        props.type === 'filterTag' || props.type === 'filterUser'
+            ? setterOpenTagList(props.tag)
+            : false;
 
-function PanelButton(props) {
+    const [open, setOpen] = useState(result);
 
-    const component = props.component
-    const result = setterOpenTagList(props.tag)
-    const [open, setOpen] = useState(result)
-    useEffect(() => { setOpen(result) }, [result])
+    useEffect(() => {
+        setOpen(result);
+    }, [result]);
 
     function setterOpenTagList(array) {
-        if (!props.filterTagListArray) return
-        if (!array.tagChildren) return
-        if (component === "newcomponent") { return (true) }
-        if (component === "editcomponent" || "viewcomponent") {
-            let result = false
+        if (!props.filterTagListArray) return;
+        if (!array.tags) return;
+        if (component === 'newcomponent') {
+            return true;
+        }
+        if (component === 'editcomponent' || 'viewcomponent') {
+            let result = false;
             for (let i = 0; i < props.filterTagListArray.length; i++) {
-                for (let u = 0; u < array.tagChildren.length; u++)
-                    if (props.filterTagListArray[i].foodTag.toLowerCase() === array.tagChildren[u].tagName) {
+                for (let u = 0; u < array?.tags.length; u++) {
+                    const tagMatch =
+                        props.filterTagListArray[i]?.foodTag?.toLowerCase() ===
+                        array?.tags[u]?.foodTag?.toLowerCase();
+                    const emailMatch =
+                        Boolean(
+                            props.filterTagListArray[i].email &&
+                            array?.tags[u]?.foodTag,
+                        ) &&
+                        props.filterTagListArray[i]?.email?.toLowerCase() ===
+                            array?.tags[u]?.foodTag?.toLowerCase();
+                    if (tagMatch || emailMatch) {
                         result = true;
                     }
+                }
             }
             return result;
         }
     }
 
-
-
     function labelParents() {
-        if (open) { return style.labelParentsActive } else { return style.labelParentsNoNActive }
+        if (open) {
+            return style.parentLabelActive;
+        } else {
+            return style.parentLabelInactive;
+        }
     }
 
     function upDownCSS() {
-        if (open) { return style.down } else { return style.up }
+        if (open) {
+            return style.arrowDown;
+        } else {
+            return style.arrowUp;
+        }
     }
 
-    function checkboxContainer() {
-        if (component === "viewcomponent") {
-            return style.checkboxContainerView
-        } else { return style.checkboxContainer }
+    function handleCheckboxContainer() {
+        if (component === 'viewcomponent') {
+            return style.categoryHeader;
+        } else {
+            return style.categoryHeaderInteractive;
+        }
     }
 
+    // function handleBlur(e) {
+    //     // Ak miesto, na ktoré sme klikli, NIE JE vo vnútri nášho kontajnera
+    //     if (!e.currentTarget.contains(e.relatedTarget)) {
+    //         setOpen(false);
+    //     }
+    // }
     function setterOpen() {
-        if (component === "editcomponent" || component === "foodscomponent" || component === "newcomponent") {
-            if (!result) { setOpen(!open) } else { setOpen(true) }
+        if (
+            component === 'editcomponent' ||
+            component === 'foodscomponent' ||
+            component === 'newcomponent'
+        ) {
+            if (!result) {
+                setOpen(!open);
+            } else {
+                setOpen(true);
+            }
         }
     }
     function sumQt(array) {
-        let i = 0
-        array?.tagChildren?.forEach((res) => i += (Number(res.quantity)))
-        return i
+        let i = 0;
+        array?.tags?.forEach((res) => (i += Number(res.quantity)));
+        return i;
     }
-    let array = []
 
-    let ID = 0
-    props.tag?.tagChildren?.map((tag, index2) => {
+    const getDynamicLabel = () => {
+        if (props.type === 'ordering' && props.tag.tags) {
+            // filterTagListArray[0].foodTag obsahuje aktuálnu hodnotu (napr. 'date' alebo '-name')
+            const currentTagValue = props.filterTagListArray?.[0]?.foodTag;
+            const activeOption = props.tag.tags.find(
+                (child) => child.foodTag === currentTagValue,
+            );
 
+            return activeOption ? activeOption.label : props.tag.groupName;
+        }
+
+        // return props.tag?.groupName.toUpperCase();
+
+        return props.tag?.groupName;
+    };
+    let array = [];
+
+    props.tag?.tags?.forEach((tag, index2) => {
         array.push(
-            <PanelTag
-                key={ID}
+            <FilterOption
+                open={open}
+                key={`${tag.id}${tag.foodTag}`}
                 tag={tag}
+                type={props.type}
                 index2={index2}
                 index1={props.index1}
-                ID={ID}
                 handleFilterTagListArray={props.handleFilterTagListArray}
                 handleAddTagToFoodTagsList={props.handleAddTagToFoodTagsList}
                 foodTagsContainer={props.foodTagsContainer}
                 component={props.component}
                 tagList={props.tagList}
                 filterTagListArray={props.filterTagListArray}
-            />
-        ); ID++;
-    })
-
+            />,
+        );
+    });
 
     return (
-        // <><div key={`${props.tag.tagType}${props.tag.tagName}`}>
         <>
-            <div className={checkboxContainer()} onClick={() => setterOpen()}>
+            <div
+                className={handleCheckboxContainer()}
+                onClick={() => setterOpen()}
+            >
                 <div className={labelParents()}>
-                    {props.tag.tagName.toUpperCase()} <b className={style.tagQuantity} >{props.foodTagsContainer ? `(${sumQt(props.tagList[props.index1])})` : ""}</b>
+                    {getDynamicLabel()}{' '}
+                    <b className={style.tagQuantity}>
+                        {props.foodTagsContainer
+                            ? `(${sumQt(props.tagList[props.index1])})`
+                            : ''}
+                    </b>
                 </div>
-                <div className={upDownCSS()}
-                >&#10094;</div>
+                <div className={upDownCSS()}>&#10094;</div>
             </div>
-            <div className={style.checkBoxOpenner} >
-                {open && array}
+            <div
+                className={`${style.tagsContainer} ${
+                    open ? style.isActive : ''
+                }`}
+            >
+                {array}
             </div>
-
         </>
-    )
+    );
 }
 export default function LeftPanelFilter(props) {
-    const foodTagsContainer = props.foodTagsContainer
-    const component = props.component
+    const foodTagsContainer = props.foodTagsContainer;
+    const component = props.component;
 
-    const filterTagListArray = [...props.onFoodTagSet]
-    const handleAddTagToFoodTagsList = props.handleAddTagToFoodTagsList
+    const filterTagListArray = [...props.onFoodTagSet];
+    const handleAddTagToFoodTagsList = props.handleAddTagToFoodTagsList;
 
-    const { page, setPage, pageSize, setPageSize, ordering, setOrdering } = useAuth();
+    const { ordering } = useAuth();
 
-    let tagList = [
-        {
-            tagType: "parent", tagName: "polievky", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "polievky", quantity: 0, tagChildren: null },]
-        },
-        {
-            tagType: "parent", tagName: "maso a hydina", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "hovadzie", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "bravcove", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "kuracie", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "morčacie", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "kacacie", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "kralik", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "jahna", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "ryba", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "ine", quantity: 0, tagChildren: null },
-            ]
-        },
+    const users = props.users || [];
+    const tagGroups = props.tagGroups || [];
 
-        {
-            tagType: "parent", tagName: "bezmasite jedla", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "bezmasite jedla", quantity: 0, tagChildren: null },
+    let usersOptions = {
+        groupName: 'UŽÍVATELIA',
+        tags: users
+            ? users.map((u) => {
+                  return {
+                      ...u,
+                      foodTag: `${u.first_name} ${u.last_name}`,
+                  };
+              })
+            : [],
+    };
 
-            ]
-        },
-        {
-            tagType: "parent", tagName: "prilohy", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "prílohy", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "omacky", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "šaláty", quantity: 0, tagChildren: null },
-            ]
-        },
-        {
-            tagType: "parent", tagName: "kolace a dezerty", quantity: 0, tagChildren:
-                [
-                    { tagType: "children", tagName: "torty", quantity: 0, tagChildren: null },
-                    { tagType: "children", tagName: "suche kolace", quantity: 0, tagChildren: null },
-                    { tagType: "children", tagName: "mokre kolace", quantity: 0, tagChildren: null },
-                    { tagType: "children", tagName: "vianocne kolace", quantity: 0, tagChildren: null },
-                ]
-        },
-        {
-            tagType: "parent", tagName: "cestoviny", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "špagety", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "lazagne", quantity: 0, tagChildren: null },
-            ]
-        },
-        { tagType: "parent", tagName: "natierky", quantity: 0, tagChildren: null },
-        { tagType: "parent", tagName: "zavaraniny", quantity: 0, tagChildren: null },
-        {
-            tagType: "parent", tagName: "mäsové výrobky", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "klobásy a salámy", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "šunky", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "zabíjačkové špeciality", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "grilovanie", quantity: 0, tagChildren: null },
-            ]
-        },
-        {
-            tagType: "parent", tagName: "chlieb a pečivo", quantity: 0, tagChildren: [
-                { tagType: "children", tagName: "chlieb", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "rožky", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "vianočka", quantity: 0, tagChildren: null },
-                { tagType: "children", tagName: "bábovka", quantity: 0, tagChildren: null },
-            ]
-        }]
+    function sortingGroups(array) {
+        const sortedArray = array
+            ? [...array].sort((a, b) => a.groupName.localeCompare(b.groupName))
+            : [];
+        const finalArray = sortedArray.map((tag) => {
+            return { ...tag, tags: sortingTags(tag?.tags) };
+        });
 
+        return finalArray;
+    }
 
+    function sortingTags(array) {
+        return array
+            ? [...array].sort((a, b) => a.foodTag.localeCompare(b.foodTag))
+            : [];
+    }
+    let tagList = sortingGroups(tagGroups);
 
+    let orderingOptions = {
+        groupName: 'ZORADIŤ PODĽA',
+        tags: [
+            {
+                foodTag: 'date',
+                label: 'DÁTUMU ( NAJSTARŠÍ )',
+            },
+            {
+                foodTag: '-date',
+                label: 'DÁTUMU ( NAJNOVŠÍ )',
+            },
+            {
+                foodTag: 'name',
+                label: 'VZOSTUPNE ( A - Z )',
+            },
+            {
+                foodTag: '-name',
+                label: 'ZOSTUPNE ( Z - A )',
+            },
+        ],
+    };
+
+    // const aa = tagList.map((i) => {
+    //     return {
+    //         groupName: i.groupName,
+    //         id: i.id,
+    //         tags: { tagCheckbox: a.foodTag, tags: i.tags },
+    //     };
+    // });
+    // console.log('new tagList', aa);
+    for (let i of tagList) {
+        for (let a of i.tags) {
+            if (!i.quantity) {
+                i.quantity = 0;
+            }
+            if (!a.quantity) {
+                a.quantity = 0;
+            }
+        }
+    }
     if (foodTagsContainer != null) {
         for (let a of foodTagsContainer) {
             for (let i of tagList) {
-                if (i.tagChildren == null) {
-                    if (i.tagName == a.tag_name) {
-                        i.quantity = a.tag_num
+                if (i.tags == null) {
+                    if (i.groupName === a.tag_name) {
+                        i.quantity = a.tag_num;
                     }
                 }
-                if (i.tagChildren != null) {
-                    if (i.tagName == a.tag_name) {
-                        i.quantity = a.tag_num
+                if (i.tags != null) {
+                    if (i.foodTag === a.tag_name) {
+                        i.quantity = a.tag_num;
                     }
-                    for (let e of i.tagChildren) {
-                        if (e.tagName == a.tag_name) {
-                            e.quantity = a.tag_num
+                    for (let e of i.tags) {
+                        if (e.foodTag === a.tag_name) {
+                            e.quantity = a.tag_num;
                         }
                     }
                 }
             }
-
         }
-
     }
+    // if (foodTagsContainer != null) {
+    //     for (let a of foodTagsContainer) {
+    //         for (let i of tagList) {
+    //             if (i.tagChildren == null) {
+    //                 if (i.tagName === a.tag_name) {
+    //                     i.quantity = a.tag_num;
+    //                 }
+    //             }
+    //             if (i.tagChildren != null) {
+    //                 if (i.tagName === a.tag_name) {
+    //                     i.quantity = a.tag_num;
+    //                 }
+    //                 for (let e of i.tagChildren) {
+    //                     if (e.tagName === a.tag_name) {
+    //                         e.quantity = a.tag_num;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
+    let tagListRender = [];
 
-    let tagListRender = []
-    let id = 0
-    tagList.map((tag, index) => {
-
+    tagList.forEach((tag, index) => {
         tagListRender.push(
-            <PanelButton
+            <FilterCategory
+                type="filterTag"
                 tag={tag}
-                key={id}
+                key={`${tag.id || index}${tag.groupName}`}
                 index1={index}
                 handleAddTagToFoodTagsList={handleAddTagToFoodTagsList}
                 foodTagsContainer={foodTagsContainer}
                 filterTagListArray={filterTagListArray}
                 component={component}
                 tagList={tagList}
-            />
+            />,
+        );
+    });
 
-        )
-        id++;
-    })
-    const [open, setOpen] = useState(false)
+    const [toggle, setToggle] = props.toggle;
 
-
-
-
-
-    return (<>
-        <div className={style.firstColumn} >
-            <div className={component == "foodscomponent" ? style.main_container : style.displayNoN}>
-                <div className={style.select_container}>
-                    <label className={component == "foodscomponent" ? style.select_label : style.displayNoN} htmlFor="select_ordering" >ZORADIŤ PODĽA:</label>
-                    <div id={style.select_ordering_container} className={component == "foodscomponent" ? style.select_body : style.displayNoN} >
-                        <select
-                            name="ordering" id="select_ordering"
-                            onChange={(e) => props.orderingHandler(e)}
-                            value={ordering}
-                            onBlur={() => setOpen(false)}
-                            onClick={() => setOpen(!open)}
-
-                        >
-                            <option  value="date">Dátumu (najstarší)</option>
-                            <option  value="-date">Dátumu (najnovší)</option>
-                            <option  value="name">Vzostupne (od A po Z)</option>
-                            <option  value="-name">Zostupne (od Z po A)</option>
-                        </select>
-                        <div id={style.icon} className={style.select_icon}
-                      
-                        >
-                            <div className={!open ? style.icon_up : style.icon_down}
-                            >&#10094;</div>
-                        </div>
-
+    return (
+        <>
+            <div
+                className={`${style.sidebarFilter} ${
+                    toggle ? style.isActive : ''
+                }`}
+                onClick={(e) => {
+                    if (toggle && e.target === e.currentTarget) {
+                        setToggle(!toggle);
+                    }
+                }}
+            >
+                <div className={style.container}>
+                    <div
+                        className={style.cancelButton}
+                        onClick={() => {
+                            if (toggle) {
+                                setToggle(!toggle);
+                            }
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faXmark} />
                     </div>
 
-                </div>
-            </div>
+                    {component === 'foodscomponent' && (
+                        <>
+                            <div className={style.selectContainer}>
+                                <label
+                                    className={
+                                        component === 'foodscomponent'
+                                            ? style.selectLabel
+                                            : style.displayNone
+                                    }
+                                    htmlFor="select_ordering"
+                                >
+                                    ZORADIŤ PODĽA:
+                                </label>
+                                <FilterCategory
+                                    type="ordering"
+                                    key={`${orderingOptions.id}${orderingOptions.groupName}`}
+                                    tag={orderingOptions}
+                                    filterTagListArray={[{ foodTag: ordering }]}
+                                    handleAddTagToFoodTagsList={(val) =>
+                                        props.orderingHandler({
+                                            target: { value: val.foodTag },
+                                        })
+                                    }
+                                    component={component}
+                                />
+                            </div>
+                        </>
+                    )}
 
-            {tagListRender}
-        </div>
-    </>
-    )
+                    <div className={style.filterContainer}>
+                        <label className={style.selectLabel}>
+                            {component === 'foodscomponent'
+                                ? 'FILTER: '
+                                : 'Druh jedla: '}
+                        </label>
+                        {component === 'foodscomponent' && (
+                            <FilterCategory
+                                type="filterUser"
+                                key={`${usersOptions.groupName}`}
+                                tag={usersOptions}
+                                filterTagListArray={filterTagListArray}
+                                handleAddTagToFoodTagsList={
+                                    handleAddTagToFoodTagsList
+                                }
+                                component={component}
+                                tagList={usersOptions}
+                            />
+                        )}
+                        {tagListRender}
+                    </div>
+                </div>
+                {component === 'foodscomponent' && (
+                    <div className={style.totalFoodsCount}>
+                        <span>Počet receptov : </span>
+                        <strong>{props.total_foods_count}</strong>
+                    </div>
+                )}
+            </div>
+        </>
+    );
 }

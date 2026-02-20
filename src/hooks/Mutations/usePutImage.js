@@ -1,17 +1,35 @@
-import {  useQueryClient, useMutation } from "@tanstack/react-query"
-import { createPutImagefood } from "../use-post";
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { createPutImagefood } from '../use-post';
 
-export const usePutImage =()=> {
+export const usePutImage = (axiosPrivate, controller) => {
     const queryClient = useQueryClient();
-    return   useMutation({
-        mutationFn: createPutImagefood,
+    return useMutation({
+        mutationFn: (putFormdata) =>
+            createPutImagefood(axiosPrivate, putFormdata, controller),
         retry: 3,
-        onMutate: (image)=>{queryClient.setQueryData(["imagefood", image.id], image)},
-        onError: error => { console.log("Error Put Imagefood :", error) },
-        onSuccess: (ImagefoodUpdated) => {
-          console.log("Imagefood :", ImagefoodUpdated.data, "sucsesfully updated!")
-          queryClient.setQueryData(["imagefood", ImagefoodUpdated.data.id], ImagefoodUpdated.data)
-          queryClient.invalidateQueries(["imagefood"])
-        }
-      })
-}
+        onMutate: async (image) => {
+            const queryKey = ['imagefood', image.food];
+            await queryClient.cancelQueries({ queryKey });
+            const previousImage = queryClient.getQueryData(queryKey);
+            queryClient.setQueryData(queryKey, image);
+            return { previousImage, queryKey };
+        },
+        onError: (err, previousImage, context) => {
+            console.log('Error Put Imagefood :', err);
+            // throw err;
+            if (context?.queryKey) {
+                if (context?.previousImage != null) {
+                    queryClient.setQueryData(
+                        context.queryKey,
+                        context.previousFood,
+                    );
+                } else {
+                    queryClient.removeQueries({ queryKey: context.queryKey });
+                }
+            }
+        },
+        onSettled: (data, error, ImagefoodUpdated, context) => {
+            console.log('PUT settled for Imagefood:', ImagefoodUpdated);
+        },
+    });
+};

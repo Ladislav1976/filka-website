@@ -1,12 +1,10 @@
-import { axiosPrivate as axiosCSFRToken } from "../api/axios"
-import { useEffect } from "react"
-import useRefreshToken from "./useRefreshToken"
-import useAuth from "./useAuth"
+import { axiosPrivate as axiosCSFRToken } from '../api/axios';
+import { useEffect } from 'react';
+import useRefreshCSFRToken from './useRefreshCSFRToken';
+import useAuth from './useAuth';
 // import { config } from "@fortawesome/fontawesome-svg-core";
 
-
 export default function useAxiosCSFRToken(props) {
-
     const refresh = useRefreshCSFRToken();
     const { auth, csrftoken } = useAuth();
     // console.log("csrftoken",csrftoken)
@@ -15,43 +13,41 @@ export default function useAxiosCSFRToken(props) {
 
     // useEffect(() => {
 
-    //     const CSFRToken = await 
+    //     const CSFRToken = await
     // },[])
     useEffect(() => {
-
         const requestIntercept = axiosCSFRToken.interceptors.request.use(
-            config => {
+            (config) => {
                 if (!config.headers['Authorization']) {
                     // config.headers['Authorization'] = `Bearer${auth?.access_token}`;
                     // config.headers['Content-Type']= 'application/json';
-                    config.headers['X-CSRFToken'] = csrftoken
-
+                    config.headers['X-CSRFToken'] = csrftoken;
                 }
                 return config;
-            }, (error) => Promise.reject(error)
-        )
+            },
+            (error) => Promise.reject(error)
+        );
         const responseIntercept = axiosCSFRToken.interceptors.response.use(
-            response => response,
+            (response) => response,
             async (error) => {
                 const prevRequest = error?.config;
-                if (error?.response?.status === 403
-                    && !prevRequest.sent
-                ) {
+                if (error?.response?.status === 403 && !prevRequest.sent) {
                     prevRequest.sent = true;
-                    const { csrfToken: newCSRFToken} = await refresh();
+                    const { csrfToken: newCSRFToken } = await refresh();
                     // prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     prevRequest.headers['X-CSRFToken'] = newCSRFToken;
                     // prevRequest.headers['Content-Type']= 'application/json';
                     return axiosCSFRToken(prevRequest);
-                } return Promise.reject(error)
+                }
+                return Promise.reject(error);
             }
-        )
+        );
 
         return () => {
             axiosCSFRToken.interceptors.request.eject(requestIntercept);
             axiosCSFRToken.interceptors.response.eject(responseIntercept);
-        }
-
-    }, [auth, refresh])
-    return axiosCSFRToken
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [auth, refresh]);
+    return axiosCSFRToken;
 }

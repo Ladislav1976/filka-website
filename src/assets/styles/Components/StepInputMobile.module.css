@@ -1,0 +1,73 @@
+.main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 7rem 1fr;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.stepContainer {
+    position: relative;
+    display: grid;
+    justify-content: center;
+    align-items: flex-start;
+
+    min-height: 100%;
+    width: 100%;
+}
+.stepid {
+    grid-column: 1/2;
+    align-self: self-end;
+    text-align: center;
+    align-content: center;
+    height: 1.6rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    background-color: rgb(228, 227, 227);
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 1rem;
+}
+.stepText {
+    grid-column: 1/3;
+    grid-row: 2/3;
+
+    background-color: white;
+    font-size: 1.2rem;
+    min-width: 0;
+    width: 100%;
+    height: 80dvh;
+    padding: 0.5rem;
+    flex: 1 1 0;
+    overflow: auto;
+}
+.iconSave,
+.iconCancel {
+    color: rgba(26, 25, 25, 0.911);
+    background-color: rgb(228, 227, 227);
+    grid-column: 2/3;
+    grid-row: 1/2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    font-size: 25px;
+    font-weight: lighter;
+    align-items: center;
+    z-index: 15;
+}
+
+.iconSave {
+    justify-self: flex-start;
+    align-self: self-start;
+}
+.iconCancel {
+    justify-self: flex-end;
+    align-self: self-start;
+}

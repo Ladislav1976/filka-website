@@ -15,7 +15,7 @@ import UrlInput from '../components/UrlInput';
 import Modal from '../reports/Modal';
 import ModalPreview from '../reports/ModalPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBackward, faCartPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBackward, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
 import useAuth from '../hooks/useAuth';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
@@ -78,12 +78,6 @@ function NewFood(props) {
     const qtRef = useRef();
     const unitRef = useRef();
     const ingrRef = useRef();
-
-    // useEffect(() => {
-    //     if (!ingreUnitsTagsQf.isLoading) {
-    //         nameRef.current.focus();
-    //     } // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [ingreUnitsTagsQf.data]);
 
     function nameKeyDown(event) {
         if (event.key === 'Enter') {
@@ -575,39 +569,23 @@ function NewFood(props) {
         setImages([...e.target.files]);
     }
 
-    // if (ingreUnitsTagsQf.isLoading)
-    //     return (
-    //         <label htmlFor="inpFile">
-    //             <div className={style.loadingContainer}>
-    //                 <FontAwesomeIcon
-    //                     className={style.loadingIcon}
-    //                     icon={faSpinner}
-    //                     id="inpFileIcon"
-    //                     spin
-    //                 ></FontAwesomeIcon>
-    //             </div>
-    //         </label>
-    //     ); //<h1>Loading...</h1>
     if (unitQf.isLoading || !unitQf.data || !tagGroupQf.data) return;
     if (unitQf.isError || tagGroupQf.isError) return;
     return (
         <>
-            <form className={style.main}>
+            <form className={style.main} onSubmit={handleFoodSave}>
                 <div className={style.panel}>
                     {' '}
                     <MenuToggle toggle={[toggle, setToggle]} />
                     <div className={style.messagebox}>{errMsg}</div>
                     <div className={style.buttonBox}>
-                        <div
+                        <button
                             className={style.foodButton}
                             id={style.foodButtonSave}
-                            // datatooltip="Uloziť"
+                            type="submit"
                         >
-                            <FontAwesomeIcon
-                                onClick={handleFoodSave}
-                                icon={faCartPlus}
-                            />
-                        </div>
+                            <FontAwesomeIcon icon={faFloppyDisk} />
+                        </button>
                         <div
                             className={style.foodButton}
                             // datatooltip="Spať"

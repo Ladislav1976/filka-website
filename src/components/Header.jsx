@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import receptyLogo from '../image/rodinneReceptyLogoCutted.png';
-// import znak from '../image/Rodinne_recepty.svg';
 
 import {
     faPeopleRoof,
@@ -24,7 +23,7 @@ export default function RenderHeader(props) {
     const { auth, page, pageSize, ordering } = useAuth();
     const [toggle, setToggle] = props.toggle;
     const errRef = useRef();
-    // const [errMsg, setErrMsg] = useState('');
+
     let setErrMsg = props.setErrMsg;
     const logOut = useLogout(errRef, handlerSetErrMessage);
 
@@ -42,11 +41,7 @@ export default function RenderHeader(props) {
             {auth.userRes ? (
                 <div className={style.lContainer}>
                     <div className={style.lHeader}>
-                        <div className={style.familyContainer}>
-                            {/* <div className={style.familyLogo}>
-                                {' '}
-                                <FontAwesomeIcon icon={faPeopleRoof} />
-                            </div> */}
+                        <div className={style.receptyLogoContainer}>
                             <div
                                 className={style.receptyLogo}
                                 onClick={() => navigate(`/`)}

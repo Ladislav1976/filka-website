@@ -16,6 +16,7 @@ export default function Modal(props) {
     }, [props.visible]);
     if (!props.visible) return null;
     function onModalClose(e) {
+        e.stopPropagation();
         // props.setModalFlag(false);
     }
 

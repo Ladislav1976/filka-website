@@ -64,19 +64,14 @@
         color: var(--orange);
     }
 }
-.familyContainer {
+.receptyLogoContainer {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 8rem;
     flex-shrink: 0;
 }
-.familyContainer span {
-    font-family: var(--font-lobster);
-    font-style: italic;
-    font-weight: bold;
-    color: var(--orange);
-}
+
 .familyLogo {
     background-color: var(--greydark);
     width: auto;
@@ -98,6 +93,7 @@
     flex-direction: row;
     justify-content: center;
     column-gap: 5rem;
+    height: 100%;
     align-items: center;
     background-color: white;
     flex-shrink: 1;
@@ -232,7 +228,7 @@
     .lHeader {
         padding: 0 1rem;
     }
-    .familyContainer {
+    .receptyLogoContainer {
         width: 4rem;
     }
 
@@ -273,7 +269,7 @@
 }
 
 @media (max-width: 530px) {
-    .familyContainer {
+    .receptyLogoContainer {
         width: 3rem;
     }
     .menu {

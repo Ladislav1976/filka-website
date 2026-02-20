@@ -280,9 +280,15 @@ label {
     padding-left: 0px;
     width: 3rem;
     color: var(--greydark);
+    background-color: white;
     cursor: pointer;
 }
-
+#foodButtonSave {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0;
+}
 #foodButtonSave:hover {
     color: #558113;
 }

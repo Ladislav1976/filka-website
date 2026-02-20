@@ -17,7 +17,8 @@ export default function ModalPreview(props) {
 
     if (!props.visible) return null;
 
-    function onModalClose() {
+    function onModalClose(e) {
+        e.stopPropagation();
         props.setModalFlag(false);
     }
 

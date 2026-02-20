@@ -17,6 +17,7 @@ export default function ModalUserCard(props) {
     if (!props.visible) return null;
 
     function onModalClose(e) {
+        e.stopPropagation();
         // props.setModalFlag(false);
     }
 

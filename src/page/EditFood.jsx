@@ -20,7 +20,7 @@ import {
     faSpinner,
     faTrash,
     faBackward,
-    faCartPlus,
+    faFloppyDisk,
 } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
@@ -35,6 +35,7 @@ import { usePutImage } from '../hooks/Mutations/usePutImage';
 import { useDeleteImage } from '../hooks/Mutations/useDeleteImage';
 import useAuth from '../hooks/useAuth';
 import MenuToggle from '../components/MenuToggle';
+// import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 
 function EditFood(props) {
     const id = useParams();
@@ -650,32 +651,22 @@ function EditFood(props) {
                     ></FontAwesomeIcon>
                 </div>
             ) : (
-                <form
-                    className={style.main}
-                    // onSubmit={(e) => {
-                    //   e.preventDefault();
-                    // const formData = new FormData(e.currentTarget);
-                    // const formValues = Object.fromEntries(formData)
-                    //   handleFoodSave(e);
-                    // }}
-                >
+                <form className={style.main} onSubmit={handleFoodSave}>
                     <div className={style.panel}>
                         <MenuToggle toggle={[toggle, setToggle]} />
                         <div className={style.messagebox}>{errMsg}</div>
 
                         <div className={style.buttonBox}>
-                            <div
+                            <button
                                 className={style.foodButton}
                                 id={style.foodButtonSave}
-
-                                // datatooltip="Uloziť"
+                                type="submit"
                             >
                                 <FontAwesomeIcon
-                                    onClick={(e) => handleFoodSave(e)}
-                                    icon={faCartPlus}
+                                    icon={faFloppyDisk}
                                     disabled={isSaving}
                                 />
-                            </div>
+                            </button>
                             <div
                                 className={style.foodButton}
                                 id={style.foodButtonDelete}

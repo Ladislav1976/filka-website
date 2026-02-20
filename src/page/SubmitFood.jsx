@@ -69,60 +69,6 @@ export default function SubmitFood(props) {
         imageURLsList,
     );
 
-    // function itemListDownlImgStp(backEndItems, sorting) {
-    //     let returnList = [];
-    //     backEndItems?.map((e) => {
-    //         returnList.push({
-    //             ...e,
-    //             statusDelete: false,
-    //         });
-    //     });
-
-    //     //sorting of items from 1 to 999
-    //     if (sorting) {
-    //         returnList.sort(function (a, b) {
-    //             return a.position - b.position;
-    //         });
-    //     }
-    //     return returnList;
-    // }
-
-    // function ingredientsListDownl(
-    //     backEndFood,
-    //     backEndIngredients,
-    //     backEndUnit,
-    //     backEndIngredient,
-    // ) {
-    //     let ingredients = [];
-    //     backEndFood?.ingredients?.map((datatags) => {
-    //         backEndIngredients?.map((e) => {
-    //             if (e?.id === datatags) {
-    //                 backEndUnit?.map((u) => {
-    //                     if (u?.id === e?.units) {
-    //                         backEndIngredient?.map((i) => {
-    //                             if (i?.id === e?.ingredientName) {
-    //                                 ingredients.push({
-    //                                     id: e.id,
-    //                                     quantity: e.quantity,
-    //                                     unit: [u],
-    //                                     ingredient: [i],
-    //                                     position: e.position,
-    //                                     statusDelete: false,
-    //                                 });
-    //                             }
-    //                         });
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     });
-    //     ingredients.sort(function (a, b) {
-    //         return a.position - b.position;
-    //     });
-
-    //     return ingredients;
-    // }
-
     useEffect(() => {
         if (!itemsDw.isLoading && itemsDw.data) {
             setName(itemsDw.data.name);
@@ -130,18 +76,6 @@ export default function SubmitFood(props) {
             setIngredientsList(itemsDw.data.ingredients);
             setUrlList(itemsDw.data.urls);
             setImageURLsList(itemsDw.data.images);
-            // setName(itemsDw.data.foodQf.name);
-            // setStepsList(itemListDownlImgStp(itemsDw.data.stepsQf, true));
-            // setIngredientsList(
-            //     ingredientsListDownl(
-            //         itemsDw.data.foodQf,
-            //         itemsDw.data.ingredientsQf,
-            //         itemsDw.data.unitsQf,
-            //         itemsDw.data.ingredientQf,
-            //     ),
-            // );
-            // setUrlList(itemListDownlImgStp(itemsDw.data.urlsQf, false));
-            // setImageURLsList(itemListDownlImgStp(itemsDw.data.imagesQf, true));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemsDw.data]);

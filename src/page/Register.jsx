@@ -118,15 +118,15 @@ export default function Register() {
                     withCredentials: true,
                 },
             );
-
-            setSuccess(true);
-
-            setFirst_name('');
-            setLast_name('');
-            setUser_name('');
-            setEmail('');
-            setPwd('');
-            setMatchPwd('');
+            if (response) {
+                setSuccess(true);
+                setFirst_name('');
+                setLast_name('');
+                setUser_name('');
+                setEmail('');
+                setPwd('');
+                setMatchPwd('');
+            }
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');

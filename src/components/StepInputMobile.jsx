@@ -32,7 +32,6 @@ export default function StepInputMobile(props) {
     return (
         <>
             <div className={style.main}>
-                {/* <div className={style.stepContainer}> */}
                 <div
                     className={style.iconSave}
                     datatooltip="Uložiť"
@@ -49,7 +48,7 @@ export default function StepInputMobile(props) {
                     <FontAwesomeIcon icon={faXmark} />
                 </div>
                 <div className={style.stepid}>{props.index}.</div>
-                {/* </div> */}
+
                 <textarea
                     className={style.stepText}
                     type="text"

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import StepsInput from '../components/StepsInput';
 import SaveLoading from '../reports/SaveLoading';
 import SaveSaved from '../reports/SaveSaved';
@@ -36,10 +36,9 @@ function NewFood(props) {
     const unitQf = useUnit(axiosPrivate);
     const tagGroupQf = useTagGroups(axiosPrivate);
     // const [isSaving, setIsSaving] = useState(false);
-    const location = useLocation();
+
     let uniqueID = new Date().toISOString();
-    const foods =
-        location.state?.foods.pathname + location.state?.foods.search || '/';
+
     const nav = `/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}&search=${search}`;
     const goBack = () => navigate(nav);
 

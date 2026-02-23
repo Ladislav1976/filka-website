@@ -14,14 +14,12 @@ export default function Users() {
     const [modalAdminFlag, setModalAdminFlag] = useState(false);
     const [userCard, setUserCard] = useState(null);
 
-    // const [isVisibleEdit, setIsVisibleEdit] = useState(false);
     const axiosPrivate = useAxiosPrivate();
 
     const getUsers = useUsers(axiosPrivate);
-    console.log('getUsers :', getUsers);
+
     function closeModal(e) {
         setModalAdminFlag(false);
-        // setIsVisibleEdit(false);
     }
 
     const ROLES = [
@@ -40,34 +38,9 @@ export default function Users() {
         if (getUsers.isSuccess) {
             setUsers(getUsers.data);
         }
-        // const controller = new AbortController();
 
-        // const users = useUsers(axiosPrivate,controller)
-        // async function getUsers() {
-        //     try {
-        //         const response = await axiosPrivate.get('userslist/', {
-        //             signal: controller.signal
-        //         })
-        //         console.log(response.data)
-        //         isMounted && setUsers(response?.data)
-        //     } catch (err) {
-
-        //         if (err instanceof DOMException && err.name === "CanceledError") {
-        //             console.log(err.message);
-        //         } else {
-        //             console.error(err);
-        //             // navigate('/login',{state:{from:location},replace:true})
-        //         }
-        //         // if (err?.response?.status != 401 ){
-
-        //         // }
-        //     }
-        // }
-
-        // getUsers();
         return () => {
             isMounted = false;
-            // controller.abort();
         };
     }, [getUsers]);
 

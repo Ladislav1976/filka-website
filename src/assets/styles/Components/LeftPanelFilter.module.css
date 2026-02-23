@@ -241,8 +241,7 @@
 
 .tagQuantity {
     font-size: 0.7rem;
-    color: rgb(157, 156, 156);
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 .select_body select option {

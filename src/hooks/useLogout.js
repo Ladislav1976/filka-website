@@ -33,7 +33,6 @@ const useLogout = (errRef, handlerSetErrMessage) => {
                 navigate('login');
             }
         } catch (err) {
-            console.log(err);
             if (!err?.response) {
                 handlerSetErrMessage('Porucha servera');
             } else if (err.response?.status === 404) {

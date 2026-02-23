@@ -9,7 +9,7 @@ export default function FoodItem(props) {
     const [loaded, setLoaded] = useState(false);
     const food = props.food;
     const id = props.food.id;
-    console.log(food?.images);
+
     return (
         <>
             {

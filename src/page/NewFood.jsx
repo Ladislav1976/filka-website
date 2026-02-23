@@ -28,7 +28,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import MenuToggle from '../components/MenuToggle';
 
 function NewFood(props) {
-    const { auth, pageSize } = useAuth();
+    const { auth, ordering, page, pageSize, search } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const queryClient = useQueryClient();
     const component = 'newcomponent';
@@ -40,8 +40,8 @@ function NewFood(props) {
     let uniqueID = new Date().toISOString();
     const foods =
         location.state?.foods.pathname + location.state?.foods.search || '/';
-
-    const goBack = () => navigate(foods);
+    const nav = `/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}&search=${search}`;
+    const goBack = () => navigate(nav);
 
     const postImage = usePostImage(axiosPrivate);
 
@@ -112,7 +112,8 @@ function NewFood(props) {
         }
     }
 
-    function handleFoodSave() {
+    function handleFoodSave(e) {
+        e.preventDefault();
         const filterIngredients = ingredientsList.filter(
             (ingre) => ingre.position !== 'delete',
         );
@@ -215,7 +216,6 @@ function NewFood(props) {
                 ingredients: ingredientsList
                     ?.filter((i) => !i.statusDelete)
                     .map((res, index) => {
-                        console.log('res :', res);
                         return {
                             // id: res.id,
                             units: [res.unit.id],
@@ -266,7 +266,6 @@ function NewFood(props) {
     }
 
     function addToIngredientList(quantity, unit, ing) {
-        console.log(quantity, unit, ing);
         if (ing === '') {
             return;
         }
@@ -298,16 +297,11 @@ function NewFood(props) {
     function makeItemDelete(item, array) {
         let newArray = array.slice();
         newArray.forEach((ingre) => {
-            console.log(ingre, item);
             if (ingre.id === item.id) {
                 ingre.statusDelete = true;
             }
         });
-        // console.log('array 1:', array);
-        // let itemIDPosition = getPosition(item.id, array);
-        // let newArray = array.slice();
-        // newArray.splice(itemIDPosition, 1, { ...item, statusDelete: true });
-        // console.log('array 2:', newArray);
+
         return newArray;
     }
 
@@ -337,7 +331,7 @@ function NewFood(props) {
 
     function updateItemList(oldID, newID, itemOldObj, itemNewObj, array) {
         let position = getPosition(oldID, array);
-        console.log(itemOldObj, itemNewObj);
+
         let newArray = array.slice();
         if (Number.isInteger(oldID)) {
             newArray.splice(position, 1, itemOldObj);
@@ -451,6 +445,7 @@ function NewFood(props) {
             await Promise.all([imagiesForPostHandler(foodCreated)]);
 
             handlerSetModalSave();
+            // goBack();
 
             queryClient.invalidateQueries(['imageFood', foodCreated.id]);
         } catch (err) {
@@ -500,7 +495,7 @@ function NewFood(props) {
         setModalSavedFlag(true);
         setTimeout(() => {
             setModalSavedFlag(false);
-            navigate(`/recepty/?page_size=${pageSize}`);
+            navigate(nav);
         }, 1000);
     }
     function handlerSetModalError() {

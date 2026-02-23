@@ -51,7 +51,6 @@ export default function Tag({ tagGroupQf }) {
                 } else {
                     showErr('Tag nebol uložený');
                 }
-                console.log(err);
 
                 setAddedGroup('');
                 tagRef.current.value = '';

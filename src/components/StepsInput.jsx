@@ -41,7 +41,6 @@ function Step(props) {
     }
 
     function handleUpdateStepList(step) {
-        console.log('2', step);
         props.updateStepList(step);
         setStepDefault('');
     }

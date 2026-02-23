@@ -1,7 +1,8 @@
 .button {
     font-size: medium;
     margin: 1px;
-    width: 40px;
+    width: 2.5rem;
+    aspect-ratio: 1/1;
     border-radius: 50%;
     display: flex;
     align-items: center;

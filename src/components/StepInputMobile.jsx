@@ -6,7 +6,6 @@ import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 export default function StepInputMobile(props) {
     const [step, setStep] = useState(props.step ? props.step : '');
 
-    console.log(step);
     function handleUpdateStep(e) {
         if (typeof step === 'object') {
             setStep({

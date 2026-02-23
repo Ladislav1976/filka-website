@@ -44,7 +44,6 @@ export async function createPostUrl(axiosPrivate, url) {
 }
 
 export async function createPostUnit(axiosPrivate, { unit }) {
-    console.log('createPostUnit', unit);
     return (
         unit,
         await axiosPrivate
@@ -64,7 +63,6 @@ export async function createPostIngredient(axiosPrivate, { ingredient }) {
 }
 
 export async function createPostIngredients(axiosPrivate, ingredients) {
-    console.log('createPostIngredients : ', ingredients);
     return await axiosPrivate
         .post(
             'ingredients/',
@@ -91,7 +89,6 @@ export async function createPostFood(axiosPrivate, food) {
 }
 
 export async function createPostLogin(login) {
-    console.log('login : ', login);
     return await axios
         .post('login', login, {
             headers: { 'Content-Type': 'application/json' },
@@ -131,14 +128,11 @@ export async function createPutImagefood(
             return res;
         })
         .catch((err) => {
-            console.log('Error PUT Image message :', err.message);
             throw err;
         });
 }
 
 export async function createDeleteImagefood(axiosPrivate, formdata) {
-    console.log('DELETE formdata : ', formdata);
-
     return await axiosPrivate
         .delete(
             `imagefood/${formdata.id}/`,
@@ -167,21 +161,6 @@ export async function createDeleteImagefood(axiosPrivate, formdata) {
         });
 }
 
-// export async function createDeleteImagefood2(queryKey) {
-//     return await axios
-//         .delete(`http://127.0.0.1:8000${queryKey[0]}`)
-//         .then((res) => {
-//             return res.status;
-//         });
-// }
-
-// export async function createPostFunction(queryKey) {
-//     console.log('queryKey POST', queryKey);
-//     return await axios
-//         .post(`http://127.0.0.1:8000${queryKey}/`)
-//         .then((res) => res);
-// }
-
 export async function createDeleteIngredients(axiosPrivate, id) {
     return await axiosPrivate.delete(`ingredients/${id}/`).then((res) => res);
 }
@@ -200,18 +179,7 @@ export async function createPutIngredients(axiosPrivate, ingredients) {
         .then((res) => res);
 }
 
-// export async function createPostForgotPassword(email) {
-//     return await axios.post('http://127.0.0.1:8000/forgot-password/', email, {
-//         headers: {
-//             Accept: 'application/json',
-//             'Content-Type': 'application/json',
-//             'X-CSRFToken': Cookies.get('csrftoken'),
-//         },
-//     });
-// }
-
 export async function putDataPrivate(axiosPrivate, controller, user) {
-    console.log('user PUT', user);
     try {
         const res = await axiosPrivate.patch(
             `users/${user.id}/`,

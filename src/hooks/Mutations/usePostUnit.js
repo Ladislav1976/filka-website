@@ -48,18 +48,5 @@ export const usePostUnit = (axiosPrivate) => {
             }
             queryClient.invalidateQueries(context.queryKey);
         },
-        // onSuccess: (data, newUnit) => {
-        //     console.log('Post succeed for unit:', newUnit);
-        //     const queryKey = ['unit'];
-
-        //     if (data?.data) {
-        //         queryClient.setQueryData(queryKey, (old) => {
-        //             const currentUnits = Array.isArray(old) ? old : [];
-        //             return [...currentUnits, data.data];
-        //         });
-        //     }
-
-        //     queryClient.invalidateQueries([queryKey]);
-        // },
     });
 };

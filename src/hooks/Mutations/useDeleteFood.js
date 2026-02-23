@@ -5,13 +5,12 @@ export const useDeleteFood = (
     axiosPrivate,
     setModalLoadingFlag,
     handlerSetModalError,
-    handlerFoodDeleteConfirmed
+    handlerFoodDeleteConfirmed,
 ) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (food) => createDeleteFood(axiosPrivate, food),
         onError: (error) => {
-            console.log('Error Delete Food :', error);
             setModalLoadingFlag(false);
             handlerSetModalError();
         },

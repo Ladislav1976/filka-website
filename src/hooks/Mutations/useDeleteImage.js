@@ -14,7 +14,6 @@ export const useDeleteImage = (axiosPrivate, foodID) => {
             queryClient.removeQueries({
                 queryKey: ['imagefood', imageDeleted.food],
             });
-            // queryClient.invalidateQueries(['imagefood', imageDeleted.food]);
         },
     });
 };

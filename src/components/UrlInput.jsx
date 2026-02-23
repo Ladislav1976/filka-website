@@ -254,7 +254,7 @@ export default function UrlInput(props) {
                             <FontAwesomeIcon
                                 icon={faPlus}
                                 onClick={addURL}
-                            ></FontAwesomeIcon>{' '}
+                            ></FontAwesomeIcon>
                         </div>
                     </div>
                 </>

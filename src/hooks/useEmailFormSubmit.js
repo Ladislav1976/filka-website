@@ -15,7 +15,7 @@ export default function useEmailFormSubmit(
         return Array.isArray(source) ? source.flat() : [source];
     }
     const name = `Nazov: \n${dataName}`;
-    console.log(dataIngredients);
+
     const ingredient =
         dataIngredients.length > 0
             ? `Suroviny: \n${textingre.concat(

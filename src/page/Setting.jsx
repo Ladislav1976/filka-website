@@ -36,7 +36,6 @@ export default function Tags() {
     }
 
     function handleGroupDelete(tag) {
-        console.log(tag);
         if (!Number.isInteger(tag.id)) return;
         setGroupToDelete(tag);
         setModalDeleteFlag(true);
@@ -84,7 +83,6 @@ export default function Tags() {
                 setModalDeleteFlag(false);
             }
         } catch (err) {
-            console.log('err', err);
             if (err.status && err.response.data.detail) {
                 showErr(err.response.data.detail);
             } else {

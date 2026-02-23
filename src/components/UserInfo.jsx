@@ -9,7 +9,6 @@ import ModalProfile from '../reports/ModalProfile';
 
 export default function UserInfo(props) {
     const { auth } = useAuth();
-    console.log(auth);
 
     const [imagePreview, setImagePreview] = useState('');
     const [modalUserProfileFlag, setModalUserProfileFlag] = useState(false);

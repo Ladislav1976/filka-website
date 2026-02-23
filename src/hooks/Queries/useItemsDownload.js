@@ -4,7 +4,6 @@ import { useFood } from './useFood';
 export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
     const foodQf = useFood(ID, axiosPrivate, isSaving);
 
-    console.log(foodQf.data);
     const isLoading = foodQf.isLoading;
     const isError = foodQf.isError;
 

@@ -39,7 +39,6 @@ export async function getIngredient() {
 }
 
 export async function getIngredientID(id) {
-    console.log('getIngredientID :', id);
     return await axios
         .get(`http://127.0.0.1:8000/ingredient/${id}/ `, {})
         .then((res) => res.data);
@@ -137,7 +136,7 @@ export async function getDataPrivate(axiosPrivate, queryKey) {
 export async function getDataPrivateID(axiosPrivate, queryKey) {
     let isMounted = true;
     const controller = new AbortController();
-    // console.log("queryKey",`${queryKey[0]}/${queryKey[1]}`)
+
     const res = await axiosPrivate
         .get(`${queryKey[0]}/${queryKey[1]}/`, {
             signal: controller.signal,
@@ -160,7 +159,7 @@ export async function getDataImagesFood(axiosPrivate, queryKey) {
     // eslint-disable-next-line no-unused-vars
     isMounted = false;
     controller.abort();
-    // console.log("res: ",res)
+
     return await res;
 }
 

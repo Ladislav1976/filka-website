@@ -61,7 +61,7 @@ export default function RenderHeader(props) {
                                 onClick={() => navigate(nav)}
                             >
                                 <FontAwesomeIcon icon={faUtensils} />
-                            </div>
+                            </div>{' '}
                             <MenuToggle toggle={[toggle, setToggle]} />
                             <RightPanelAdmin toggle={[toggle, setToggle]} />
                             <div

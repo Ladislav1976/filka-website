@@ -79,7 +79,7 @@ export default function RegisterNewAccount() {
             return;
         }
         try {
-            const response = await axiosPrivate.post(
+            await axiosPrivate.post(
                 REGISTER_URL,
                 JSON.stringify({
                     first_name: first_name,
@@ -90,7 +90,7 @@ export default function RegisterNewAccount() {
                     signal: controller.signal,
                 },
             );
-            console.log(response);
+
             setSuccess(true);
             setIsLoading(false);
 

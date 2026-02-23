@@ -13,7 +13,7 @@ export default function PersistLogin() {
     const refresh = useRefreshToken();
     const { auth } = useAuth();
     const [persist] = useLocalStorage('persist', false);
-    console.log('persist   :', persist);
+
     useEffect(() => {
         let isMounted = true;
         async function verifyRefreshToken() {
@@ -31,11 +31,11 @@ export default function PersistLogin() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        console.log(`isLoading: ${isLoading}`);
-        console.log(`aT: ${JSON.stringify(auth?.access_token)}`);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoading]);
+    // useEffect(() => {
+    //     console.log(`isLoading: ${isLoading}`);
+    //     console.log(`aT: ${JSON.stringify(auth?.access_token)}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [isLoading]);
 
     return (
         <>

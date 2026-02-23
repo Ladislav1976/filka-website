@@ -52,23 +52,7 @@ export const useIngre = (food, ingredient, unit) => {
         : [];
     return useQueries({
         queries: [...ingredientQueries, ...stepQueries],
-        // queries: [food.isLoading == false
-        //     && ingredient.isLoading == false
-        //     && unit.isLoading == false
 
-        //     ? food?.data?.ingredients?.map((id) => ({
-        //         queryKey: ["ingredients", id],
-        //         queryFn: (queryKey) => getDataId(queryKey.queryKey),
-        //         // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-        //         staleTime: Infinity,
-        //     })) : [],
-        //     ? food?.data?.steps?.map((id) => ({
-        //         queryKey: ["steps", id],
-        //         queryFn: (queryKey) => getDataId(queryKey.queryKey),
-        //         // queryFn:(queryKey)=> getData(axiosPrivate,controller, `${queryKey.queryKey[0]}/${queryKey.queryKey[1]}`),
-        //         staleTime: Infinity,
-
-        //     })) : []],
         combine: (results) => {
             if (!results) return;
             return {
@@ -83,22 +67,3 @@ export const useIngre = (food, ingredient, unit) => {
         },
     });
 };
-
-// export async function getData( queryKey) {
-//     console.log("queryKey :",queryKey)
-//     return await axios.get(`http://127.0.0.1:8000/${queryKey}/`, {
-
-//     }).then(res => res.data)
-//   }
-
-//   export async function getDataPrivate(axiosPrivate, controller, queryKey) {
-//      console.log(queryKey)
-//     const res = await axiosPrivate.get(`${queryKey}/`, {
-//       signal: controller.signal,
-
-//     }).then(res => res.data)
-//     controller.abort();
-
-//     return await res
-
-//   }

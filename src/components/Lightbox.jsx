@@ -38,7 +38,6 @@ export default function Lightbox(props) {
         return i;
     }
     function makeImageDelete(image) {
-        console.log('image :', image);
         let imageIDPosition = props.getPosition(image.id, imageURLsList);
         let newImageURLsList = imageURLsList.slice();
         newImageURLsList.splice(imageIDPosition, 1, {

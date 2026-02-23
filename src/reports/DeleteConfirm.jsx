@@ -25,7 +25,6 @@ export default function DeleteConfirm(props) {
     }
 
     function canKeyDown(event) {
-        console.log(event.key);
         if (event.key === 'ArrowLeft') {
             deleteRef.current.focus();
         }

@@ -114,8 +114,9 @@ export default function SubmitFood(props) {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log(response?.data);
-            setSuccess(true);
+            if (response) {
+                setSuccess(true);
+            }
         } catch (err) {
             if (!err?.respons) {
                 setErrMsg('No Server Response');

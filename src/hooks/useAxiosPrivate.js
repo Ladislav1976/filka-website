@@ -7,9 +7,7 @@ import useAuth from './useAuth';
 export default function useAxiosPrivate(props) {
     const refresh = useRefreshToken();
     const { auth, csrftoken } = useAuth();
-    // console.log("csrftoken",csrftoken)
-    // console.log("auth?.access_token",auth?.access_token)
-    // console.log("auth?.auth",auth?.userRes)
+
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
             (config) => {

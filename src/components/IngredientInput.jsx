@@ -148,7 +148,7 @@ export default function IngredientInput(props) {
     }
 
     const ingredientListRender = [];
-    console.log(ingredientListRender);
+
     ingredientsSet.forEach((ingre, index) => {
         if (ingre.statusDelete === false) {
             ingredientListRender.push(

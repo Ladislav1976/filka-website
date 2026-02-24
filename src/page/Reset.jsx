@@ -74,7 +74,7 @@ export default function Reset() {
             return;
         }
         try {
-            const response = await axios.post(RESET_URL, emailObject, {
+            await axios.post(RESET_URL, emailObject, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -83,13 +83,7 @@ export default function Reset() {
 
                 // withCredentials: true
             });
-            console.log(JSON.stringify(response?.data));
 
-            const url_reset = response?.data?.url_reset;
-            const reset_id = response?.data?.reset_id;
-
-            console.log('url_reset', url_reset);
-            console.log('reset_id', reset_id);
             successMsgShow();
             setIsLoading(false);
         } catch (err) {

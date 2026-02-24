@@ -242,7 +242,6 @@ function EditFood(props) {
                     ?.filter((i) => !i.statusDelete)
                     .map((res, index) => {
                         return {
-                            // id: res.id,
                             step: res.step,
                             position: index + 1,
                         };
@@ -251,8 +250,6 @@ function EditFood(props) {
                     ?.filter((i) => !i.statusDelete)
                     .map((res, index) => {
                         return {
-                            // id: res.id,
-
                             url: res.url,
                             urlname: res.urlname,
                         };
@@ -260,9 +257,7 @@ function EditFood(props) {
                 ingredients: ingredientsList
                     ?.filter((i) => !i.statusDelete)
                     .map((res, index) => {
-                        console.log('res :', res);
                         return {
-                            // id: res.id,
                             units: [res.unit.id],
                             quantity: res.quantity,
                             ingredientName: [res.ingredient.ingredient],
@@ -281,15 +276,14 @@ function EditFood(props) {
             const tagMatch =
                 item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase();
             const emailMatch = item?.email === tag?.email;
-            console.log('tagMatch || emailMatch', tagMatch, emailMatch);
+
             return tagMatch || emailMatch;
         });
     }
 
     function foodTagSetCheck(tag) {
-        console.log('tag', tag);
         const response = tagSearchInArray([...foodTagSet], tag);
-        console.log('response', response);
+
         if (response) {
             removeFromFoodTagSet(tag);
         } else {
@@ -410,13 +404,13 @@ function EditFood(props) {
         let array = [];
         res.forEach((r) => {
             if (!r) return;
-            // zmazané (status 204)
+
             if (r.status === 204) return;
             if (r.data && r.data.id) {
                 array.push(r.data.id);
             }
         });
-        console.log();
+
         return array;
     }
 
@@ -465,7 +459,7 @@ function EditFood(props) {
                 throw err;
             }
         }
-        console.log('results', results);
+
         return {
             status: 'fullfilled',
             value: handleDataID(results),
@@ -606,7 +600,6 @@ function EditFood(props) {
     }
 
     function makeImageDelete(image) {
-        console.log(image);
         let imageIDPosition = getPosition(image.id, imageURLsList);
         let newImageURLsList = imageURLsList.slice();
         newImageURLsList.splice(imageIDPosition, 1, {

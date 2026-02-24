@@ -46,7 +46,6 @@ export const usePostImage = (axiosPrivate) => {
                     );
                 });
             }
-            // queryClient.invalidateQueries(context.queryKey);
         },
     });
 };

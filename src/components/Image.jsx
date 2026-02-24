@@ -36,10 +36,11 @@ function Img(props) {
                     className={style.imageclicker}
                     onClick={() => props.uploader(props.image)}
                 >
+                    {' '}
                     <div className={style.imagecross}>
                         <FontAwesomeIcon icon={faXmark} />
                     </div>
-                </div>
+                </div>{' '}
                 <input type="checkbox" className={style.checkboxInput} />
                 <div
                     className={

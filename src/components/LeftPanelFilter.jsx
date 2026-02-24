@@ -55,27 +55,13 @@ function FilterOption(props) {
             return style.buttonEdit;
         }
     }
-    // function handleTagLoader(type, tag) {
-    //     console.log(type, tag);
-    //     if (type === 'filterTag' && tag.foodTag) {
-    //         return { type: type, obj: tag, tag: tag.foodTag };
-    //     }
-    //     if (type === 'filterUser' && tag.email) {
-    //         return { type: type, obj: tag, tag: tag.id };
-    //     }
-    // }
+
     return (
         <div
             className={`${getOptionContainerStyle()} ${
                 props.open ? style.isActive : ''
             }`}
-            onClick={() =>
-                props.handleAddTagToFoodTagsList(
-                    tag,
-                    // { type: props.type, tag: tag },
-                    // tag.foodTag,
-                )
-            }
+            onClick={() => props.handleAddTagToFoodTagsList(tag)}
         >
             <input
                 type="checkbox"
@@ -91,13 +77,9 @@ function FilterOption(props) {
                 htmlFor="tag"
                 onClick={() => props.handleAddTagToFoodTagsList(tag)}
             />
-            <div
-                className={getLabelStyle()}
-
-                // onClick={() => props.handleAddTagToFoodTagsList(tag.tagName)}
-            >
+            <div className={getLabelStyle()}>
                 {tag.label || tag.foodTag.toUpperCase()}
-                {/* {tag.tagName.toUpperCase()}{' '} */}
+
                 <b className={style.tagQuantity}>
                     {props.foodTagsContainer
                         ? `  (${
@@ -108,7 +90,6 @@ function FilterOption(props) {
                 </b>
             </div>
         </div>
-        // </div>
     );
 }
 
@@ -179,12 +160,6 @@ function FilterCategory(props) {
         }
     }
 
-    // function handleBlur(e) {
-    //     // Ak miesto, na ktoré sme klikli, NIE JE vo vnútri nášho kontajnera
-    //     if (!e.currentTarget.contains(e.relatedTarget)) {
-    //         setOpen(false);
-    //     }
-    // }
     function setterOpen() {
         if (
             component === 'editcomponent' ||
@@ -206,7 +181,6 @@ function FilterCategory(props) {
 
     const getDynamicLabel = () => {
         if (props.type === 'ordering' && props.tag.tags) {
-            // filterTagListArray[0].foodTag obsahuje aktuálnu hodnotu (napr. 'date' alebo '-name')
             const currentTagValue = props.filterTagListArray?.[0]?.foodTag;
             const activeOption = props.tag.tags.find(
                 (child) => child.foodTag === currentTagValue,
@@ -214,8 +188,6 @@ function FilterCategory(props) {
 
             return activeOption ? activeOption.label : props.tag.groupName;
         }
-
-        // return props.tag?.groupName.toUpperCase();
 
         return props.tag?.groupName;
     };
@@ -330,14 +302,6 @@ export default function LeftPanelFilter(props) {
         ],
     };
 
-    // const aa = tagList.map((i) => {
-    //     return {
-    //         groupName: i.groupName,
-    //         id: i.id,
-    //         tags: { tagCheckbox: a.foodTag, tags: i.tags },
-    //     };
-    // });
-    // console.log('new tagList', aa);
     for (let i of tagList) {
         for (let a of i.tags) {
             if (!i.quantity) {
@@ -369,27 +333,6 @@ export default function LeftPanelFilter(props) {
             }
         }
     }
-    // if (foodTagsContainer != null) {
-    //     for (let a of foodTagsContainer) {
-    //         for (let i of tagList) {
-    //             if (i.tagChildren == null) {
-    //                 if (i.tagName === a.tag_name) {
-    //                     i.quantity = a.tag_num;
-    //                 }
-    //             }
-    //             if (i.tagChildren != null) {
-    //                 if (i.tagName === a.tag_name) {
-    //                     i.quantity = a.tag_num;
-    //                 }
-    //                 for (let e of i.tagChildren) {
-    //                     if (e.tagName === a.tag_name) {
-    //                         e.quantity = a.tag_num;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 
     let tagListRender = [];
 

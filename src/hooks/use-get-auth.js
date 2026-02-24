@@ -19,7 +19,7 @@ export default function useGetAuth({ queryKey }) {
                 const response = await axiosPrivate.get(queryKey, {
                     signal: controller.signal,
                 });
-                console.log(response.data);
+
                 isMounted && setUsers(response.data);
             } catch (err) {
                 console.error(err);
@@ -40,6 +40,5 @@ export default function useGetAuth({ queryKey }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    console.log('users 2 :', users);
     return users;
 }

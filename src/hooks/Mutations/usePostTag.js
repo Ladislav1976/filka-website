@@ -1,11 +1,7 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { createPostFoodTag } from '../use-post';
 
-export const usePostTag = (
-    axiosPrivate,
-    // addTagTofoodTagSet,
-    // handlerSetModalError,
-) => {
+export const usePostTag = (axiosPrivate) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (foodTag) => createPostFoodTag(axiosPrivate, foodTag),
@@ -52,18 +48,5 @@ export const usePostTag = (
             }
             queryClient.invalidateQueries(context.queryKey);
         },
-        // onSuccess: (data, newTag) => {
-        //     console.log('Post succeed for FoodTag:', data);
-
-        //     const queryKey = ['foodTags'];
-        //     if (data?.data) {
-        //         queryClient.setQueryData(queryKey, (old) => {
-        //             const currentTags = Array.isArray(old) ? old : [];
-        //             return [...currentTags, data.data];
-        //         });
-        //     }
-
-        //     queryClient.invalidateQueries(['foodTags']);
-        // },
     });
 };

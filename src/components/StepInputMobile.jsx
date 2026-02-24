@@ -6,7 +6,6 @@ import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 export default function StepInputMobile(props) {
     const [step, setStep] = useState(props.step ? props.step : '');
 
-    console.log(step);
     function handleUpdateStep(e) {
         if (typeof step === 'object') {
             setStep({
@@ -33,7 +32,6 @@ export default function StepInputMobile(props) {
     return (
         <>
             <div className={style.main}>
-                {/* <div className={style.stepContainer}> */}
                 <div
                     className={style.iconSave}
                     datatooltip="Uložiť"
@@ -50,7 +48,7 @@ export default function StepInputMobile(props) {
                     <FontAwesomeIcon icon={faXmark} />
                 </div>
                 <div className={style.stepid}>{props.index}.</div>
-                {/* </div> */}
+
                 <textarea
                     className={style.stepText}
                     type="text"

@@ -19,7 +19,7 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
     const errRef = useRef();
     const controller = new AbortController();
     const axiosPrivate = useAxiosPrivate();
-    console.log(userCard);
+
     useEffect(() => {
         errRef.current.focus();
     }, []);
@@ -73,11 +73,10 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                     id: userCard.id,
                     userForm: form,
                 };
-                console.log('formdataPut', formdataPut);
+
                 try {
                     await putUser.mutateAsync(formdataPut);
                 } catch (err) {
-                    console.log(err);
                     handlerSetError('Error');
                     setImageContainer({
                         image: imagePreview,
@@ -140,6 +139,13 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
             <form className={style.form} onSubmit={handlePostRole}>
                 <h4>Základné údaje</h4>
                 <div className={style.user_info}>
+                    <p
+                        ref={errRef}
+                        className={errMsg ? style.errmsg : style.hiden}
+                        aria-live="assertive"
+                    >
+                        {errMsg}
+                    </p>
                     <div className={style.user_photo}>
                         <img
                             src={imageContainer.image || default_image}
@@ -171,69 +177,10 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                                     icon={faCamera}
                                     id="inpFileIcon"
                                 ></FontAwesomeIcon>
-                                {/* <div
-                                    type="button"
-                                    className={style.buttonImage}
-                                    id="inpFileIcon"
-                                >
-                                    Zmeň obrázok
-                                </div> */}
-                                {/* <FontAwesomeIcon
-                                icon={faCircleArrowUp}
-                                id="inpFileIcon"
-                            ></FontAwesomeIcon> */}
                             </label>
                         </div>{' '}
-                        <p
-                            ref={errRef}
-                            className={errMsg ? style.errmsg : style.hiden}
-                            aria-live="assertive"
-                        >
-                            {errMsg}
-                        </p>
                     </div>
-
                     <div className={style.user_details}>
-                        {/* <table>
-                            <tbody>
-                                <tr>
-                                    <th>Meno</th>
-                                    <td>{userCard.first_name}</td>
-                                </tr>
-                                <tr>
-                                    <th>Priezvisko</th>
-                                    <td>{userCard.last_name}</td>
-                                </tr>{' '}
-                                <tr>
-                                    <th>E-mail</th>
-                                    <td>{userCard.email}</td>
-                                </tr>{' '}
-                                <tr>
-                                    <th>Profil</th>
-                                    <td>
-                                        {' '}
-                                        {ROLES.map((r) =>
-                                            r.role === userCard?.role
-                                                ? r.viewRole
-                                                : '',
-                                        )}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table> */}
-                        {/* <div className={style.details}> */}
-                        {/* <label className={style.group_label}> */}{' '}
-                        {/* <span>Meno</span> <span>:</span> */}
-                        {/* </label> */}
-                        {/* <strong>
-                                {userCard.first_name}
-                                &nbsp;
-                                {userCard.last_name}
-                            </strong>
-                        </div> */}
-                        {/* <div className={style.details}>
-                            <span>{userCard.email}</span>
-                        </div> */}
                         <table>
                             <tbody>
                                 <tr>

@@ -49,18 +49,5 @@ export const usePostTagGroup = (axiosPrivate) => {
             }
             queryClient.invalidateQueries(context.queryKey);
         },
-        // onSuccess: (data, newTagGroup) => {
-        //     console.log('Post succeed for tagGroup:', newTagGroup);
-        //     const queryKey = ['tagGroups'];
-
-        //     if (data?.data) {
-        //         queryClient.setQueryData(queryKey, (old) => {
-        //             const currentTags = Array.isArray(old) ? old : [];
-        //             return [...currentTags, data.data];
-        //         });
-        //     }
-
-        //     queryClient.invalidateQueries([queryKey]);
-        // },
     });
 };

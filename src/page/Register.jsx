@@ -118,27 +118,19 @@ export default function Register() {
                     withCredentials: true,
                 },
             );
-            console.log(response?.data);
-            console.log('response :', response);
-            console.log(response?.accessToken);
-            console.log(JSON.stringify(response));
-            setSuccess(true);
-            //clear state and controlled inputs
-            //need value attrib on inputs for this
-            setFirst_name('');
-            setLast_name('');
-            setUser_name('');
-            setEmail('');
-            setPwd('');
-            setMatchPwd('');
+            if (response) {
+                setSuccess(true);
+                setFirst_name('');
+                setLast_name('');
+                setUser_name('');
+                setEmail('');
+                setPwd('');
+                setMatchPwd('');
+            }
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
-            }
-            // else if (err.response?.status === 409 && err.response?.status === "username") {
-            //     setErrMsg('Tento "username" je uz zaregistrovany');
-            // }
-            else if (err.response?.status === 409) {
+            } else if (err.response?.status === 409) {
                 setErrMsg(
                     `Tento ${err.response?.data.message} je uz zaregistrovany`,
                 );

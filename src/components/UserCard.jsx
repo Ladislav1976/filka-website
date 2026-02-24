@@ -49,7 +49,6 @@ export default function UserCard({ userCard, closeModal }) {
     }
 
     function handleUpdateStatus(e) {
-        console.log('checked', e.target.checked);
         if (!statusDefault) {
             setStatusDefault(status);
             setStatus(e.target.checked ? true : false);
@@ -66,14 +65,6 @@ export default function UserCard({ userCard, closeModal }) {
     }
 
     function handlePostRole() {
-        console.log(
-            'post',
-            'roleDefault',
-            roleDefault,
-            'statusDefault',
-            statusDefault,
-        );
-
         const formdataPut = {
             id: userCard.id,
             userForm: {

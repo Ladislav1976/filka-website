@@ -28,7 +28,6 @@ export const useFoodsDownload = (
 
     const isSuccess = foodsQf.isSuccess;
 
-    console.log(foodsQf.data);
     const memoizedData = useMemo(() => {
         if (!foodsQf.data) return null;
 

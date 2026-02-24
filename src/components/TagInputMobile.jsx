@@ -38,7 +38,6 @@ export default function TagInputMobile(props) {
     }
 
     function handleTagDelete(tag) {
-        console.log('tag delete', tag);
         props.removeFromTagList(tag);
     }
 

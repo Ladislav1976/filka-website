@@ -36,11 +36,18 @@ function Foods(props) {
     const pageSizePar = searchParams.get('page_size');
     const pagePar = searchParams.get('page');
     const orderingPar = searchParams.get('ordering');
+    const { ref: refTop, inView: inViewTop } = useInView();
+    const { ref: refBottom, inView: inViewBottom } = useInView();
 
-    const { ref, inView } = useInView();
-
-    const { page, setPage, pageSize, setPageSize, ordering, setOrdering } =
-        useAuth();
+    const {
+        page,
+        setPage,
+        pageSize,
+        setPageSize,
+        ordering,
+        setOrdering,
+        setSearch,
+    } = useAuth();
 
     const location = useLocation();
 
@@ -53,7 +60,7 @@ function Foods(props) {
         pageSizePar,
         user__id__inPar,
     );
-    console.log(foodsQf.data);
+
     useEffect(() => {
         if (foodsQf?.data !== undefined) {
             searchLoader();
@@ -87,7 +94,6 @@ function Foods(props) {
     }
 
     function orderingHandler(e) {
-        console.log('orderingHandler', e);
         setOrdering(e.target.value);
         let params = {};
         paramsUpdater(params);
@@ -140,7 +146,6 @@ function Foods(props) {
         if (foodTagsPar.length > 0 && foodTags) {
             foodTagsPar.forEach((id) => {
                 const tagObj = foodTags.find((tag) => tag.id === Number(id));
-                console.log(tagObj, foodTagsPar, foodTags);
 
                 if (tagObj && !tagSearchInArray([...updatedSet], tagObj)) {
                     updatedSet.add(tagObj);
@@ -225,12 +230,34 @@ function Foods(props) {
     }, [foodsQf.data, foodsQf.isSuccess, foodsQf.isLoading, isMobile, pagePar]);
 
     useEffect(() => {
-        if (inView && isMobile && !foodsQf.isFetching && foodsQf.data?.next) {
+        if (
+            inViewBottom &&
+            isMobile &&
+            !foodsQf.isFetching &&
+            foodsQf?.data?.next
+        ) {
             const currentP = parseInt(pagePar || 1);
             pageChange(currentP + 1);
         }
+        if (
+            inViewTop &&
+            isMobile &&
+            !foodsQf.isFetching &&
+            foodsQf?.data?.previous
+        ) {
+            const currentP = parseInt(pagePar || 1);
+            pageChange(currentP - 1);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [inView, isMobile, foodsQf.isFetching, foodsQf.data?.next, pagePar]);
+    }, [
+        inViewTop,
+        inViewBottom,
+        isMobile,
+        foodsQf.isFetching,
+        foodsQf.data?.previous,
+        foodsQf.data?.next,
+        pagePar,
+    ]);
 
     const [filterTagSet, setFilterTagSet] = useState(new Set([]));
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
@@ -273,6 +300,7 @@ function Foods(props) {
 
     function searchAddToTagList(tag) {
         if (!tag) return;
+        setSearch(tag);
         addTagToFoodTagSet({ id: 0, searchTag: tag, foodTag: tag });
     }
 
@@ -337,12 +365,7 @@ function Foods(props) {
                 Boolean(item?.id === 0) &&
                 Boolean(item?.searchTag && tag?.searchTag) &&
                 item?.searchTag === tag?.searchTag;
-            console.log(
-                'tagMatch || emailMatch',
-                tagMatch,
-                emailMatch,
-                searchMatch,
-            );
+
             return (
                 (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch
             );
@@ -371,6 +394,12 @@ function Foods(props) {
             ) : (
                 <>
                     <div className={style.foodsmain}>
+                        {isMobile && (
+                            <div
+                                ref={refTop}
+                                style={{ height: '2px', position: 'absolute' }}
+                            />
+                        )}
                         <div className={style.panel}>
                             <MenuToggle toggle={[toggle, setToggle]} />
 
@@ -455,7 +484,7 @@ function Foods(props) {
                             />
                         </ModalSearch>
                         {isMobile && (
-                            <div ref={ref} style={{ height: '20px' }} />
+                            <div ref={refBottom} style={{ height: '2px' }} />
                         )}
                     </div>{' '}
                 </>

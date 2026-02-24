@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import style from '../assets/styles/Pages/Users.module.css';
 import { useUsers } from '../hooks/Queries/useUsers';
@@ -8,72 +8,31 @@ import { faSpinner, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 import UserCard from '../components/UserCard';
 import ModalUserCard from '../reports/ModalUserCard';
+const ROLES = [
+    { role: 'Admin', viewRole: 'Admin' },
+    { role: 'User_readOnly', viewRole: 'Read' },
+    {
+        role: 'User_edit',
+        viewRole: 'Self Edit',
+    },
+    { role: 'Editor', viewRole: 'Edit' },
+];
 
 export default function Users() {
-    const [users, setUsers] = useState();
     const [modalAdminFlag, setModalAdminFlag] = useState(false);
     const [userCard, setUserCard] = useState(null);
 
-    // const [isVisibleEdit, setIsVisibleEdit] = useState(false);
     const axiosPrivate = useAxiosPrivate();
 
-    const getUsers = useUsers(axiosPrivate);
-    console.log('getUsers :', getUsers);
+    const { data: users, isLoading } = useUsers(axiosPrivate);
+
     function closeModal(e) {
         setModalAdminFlag(false);
-        // setIsVisibleEdit(false);
     }
-
-    const ROLES = [
-        { role: 'Admin', viewRole: 'Admin' },
-        { role: 'User_readOnly', viewRole: 'Read' },
-        {
-            role: 'User_edit',
-            viewRole: 'Self Edit',
-        },
-        { role: 'Editor', viewRole: 'Edit' },
-    ];
-
-    useEffect(() => {
-        // eslint-disable-next-line no-unused-vars
-        let isMounted = true;
-        if (getUsers.isSuccess) {
-            setUsers(getUsers.data);
-        }
-        // const controller = new AbortController();
-
-        // const users = useUsers(axiosPrivate,controller)
-        // async function getUsers() {
-        //     try {
-        //         const response = await axiosPrivate.get('userslist/', {
-        //             signal: controller.signal
-        //         })
-        //         console.log(response.data)
-        //         isMounted && setUsers(response?.data)
-        //     } catch (err) {
-
-        //         if (err instanceof DOMException && err.name === "CanceledError") {
-        //             console.log(err.message);
-        //         } else {
-        //             console.error(err);
-        //             // navigate('/login',{state:{from:location},replace:true})
-        //         }
-        //         // if (err?.response?.status != 401 ){
-
-        //         // }
-        //     }
-        // }
-
-        // getUsers();
-        return () => {
-            isMounted = false;
-            // controller.abort();
-        };
-    }, [getUsers]);
 
     return (
         <>
-            {getUsers.isLoading ? (
+            {isLoading && !users ? (
                 <div className={style.loadingContainer}>
                     <FontAwesomeIcon
                         className={style.loadingIcon}
@@ -139,7 +98,7 @@ export default function Users() {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {getUsers.data.map(
+                                                        {(users || []).map(
                                                             (user, i) => (
                                                                 <tr
                                                                     key={

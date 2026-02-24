@@ -37,17 +37,16 @@ export default function ResetPassword() {
     const [pwd, setPwd] = useState('');
     const [showPwd, setShowPwd] = useState(false);
     const [validPwd, setValidPwd] = useState(false);
-    const [pwdFocus, setPwdFocus] = useState(false);
+    // const [pwdFocus, setPwdFocus] = useState(false);
 
     const [matchPwd, setMatchPwd] = useState('');
     const [showCnPwd, setShowCnPwd] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
     const [validMatch, setValidMatch] = useState(false);
-    const [matchFocus, setMatchFocus] = useState(false);
+    // const [matchFocus, setMatchFocus] = useState(false);
     const [points, setPoints] = useState(false);
     const [color, setColor] = useState(false);
-    console.log('pwdFocus', pwdFocus, 'matchFocus', matchFocus);
-    console.log('validPwd', validPwd, 'color', color);
+
     const [errMsg, setErrMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
@@ -129,7 +128,6 @@ export default function ResetPassword() {
             } else if (err.response?.status === 408) {
                 setErrMsg(`${err.data.message}`);
             } else {
-                console.log(err);
                 setErrMsg(`${err.message}`);
             }
             errRef.current.focus();
@@ -278,8 +276,8 @@ export default function ResetPassword() {
                                                 validPwd ? 'false' : 'true'
                                             }
                                             aria-describedby="pwdnote"
-                                            onFocus={() => setPwdFocus(true)}
-                                            onBlur={() => setPwdFocus(false)}
+                                            // onFocus={() => setPwdFocus(true)}
+                                            // onBlur={() => setPwdFocus(false)}
                                         />{' '}
                                         <div className={style.semafor}>
                                             {[1, 2, 3, 4, 5].map((num) => (
@@ -358,8 +356,8 @@ export default function ResetPassword() {
                                                 validMatch ? 'false' : 'true'
                                             }
                                             aria-describedby="confirmnote"
-                                            onFocus={() => setMatchFocus(true)}
-                                            onBlur={() => setMatchFocus(false)}
+                                            // onFocus={() => setMatchFocus(true)}
+                                            // onBlur={() => setMatchFocus(false)}
                                         />
                                         <div
                                             className={style.icon}

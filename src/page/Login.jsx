@@ -85,29 +85,22 @@ export default function Login() {
                 },
             );
 
-            // console.log('CSRFToken Headers', response?.headers);
-            // console.log('response', response);
-            // const refresh = response?.data?.refresh;
             const access_token = response?.data?.access_token;
             const userRes = response?.data?.user;
             const CSRFToken = response?.headers['x-csrftoken'];
 
-            // console.log("refresh refresh",response?.data.refresh)
-            // console.log('refresh access', response?.data?.access_token);
-            // console.log('response', response?.data);
             setAuth({ userRes, pwd, access_token });
             setCSRFToken(CSRFToken);
             setPage(1);
             setPageSize(20);
             setOrdering('date');
-            // resetEmail();
+
             setPwd('');
             window.localStorage.setItem('IsLogedIn', true);
-            // navigate(from, { replace: true });
+
             setIsLoading(false);
             navigate(from, { replace: true });
         } catch (err) {
-            console.log(err.response?.data?.message);
             if (!err?.response) {
                 handlerSetErrMessage('Problém so serverom');
             } else if (err.response?.status === 400) {

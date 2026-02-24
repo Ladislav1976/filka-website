@@ -176,6 +176,7 @@ export default function UrlInput(props) {
             urlList,
         );
         setAddedUrl('');
+        setAddedUrlName('');
     }
 
     function handleChangeUrl(event) {
@@ -250,11 +251,8 @@ export default function UrlInput(props) {
                         </div>
                         {/* </div> */}
 
-                        <div className={style.newUrlIcon}>
-                            <FontAwesomeIcon
-                                icon={faPlus}
-                                onClick={addURL}
-                            ></FontAwesomeIcon>
+                        <div className={style.newUrlIcon} onClick={addURL}>
+                            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
                         </div>
                     </div>
                 </>

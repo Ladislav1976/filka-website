@@ -12,17 +12,6 @@
     border-left: var(--border3px);
     border-right: var(--border3px);
 }
-.loadingContainer {
-    position: relative;
-    top: 70px;
-    width: auto;
-    height: 100px;
-    color: white;
-    font-size: xx-large;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .tableusers {
     border: solid 1px black;
@@ -170,6 +159,17 @@ tr td:nth-last-of-type(7) {
     vertical-align: middle;
 
     border-radius: 2rem;
+}
+.loadingContainer {
+    position: relative;
+    top: 70px;
+    width: auto;
+    height: 100px;
+    color: white;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .loadingIcon {
     font-size: 100px;
